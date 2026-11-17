@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Top3 — AI Discovery &amp; Notification Service</title>
+<meta name="description" content="Top3 is a personal AI discovery service that finds relevant events, videos and updates for a user's stated interests and delivers them on WhatsApp.">
+<style>
+  :root{
+    --ink:#111827; --body:#374151; --muted:#6b7280;
+    --line:#e5e7eb; --bg:#ffffff; --soft:#f9fafb; --brand:#2563eb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--body);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px}
+  header{border-bottom:1px solid var(--line); padding:28px 0}
+  .logo{font-weight:700; color:var(--ink); font-size:18px; letter-spacing:-.01em}
+  main{padding:56px 0 72px}
+  h1{font-size:34px; line-height:1.25; color:var(--ink); margin:0 0 16px; letter-spacing:-.02em}
+  .lede{font-size:18px; color:var(--body); margin:0 0 40px}
+  h2{font-size:20px; color:var(--ink); margin:44px 0 12px; letter-spacing:-.01em}
+  p{margin:0 0 14px}
+  ul{margin:0 0 14px; padding-left:22px}
+  li{margin-bottom:8px}
+  .box{background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:20px 24px; margin:20px 0}
+  dl{margin:0}
+  dt{font-weight:600; color:var(--ink); margin-top:14px}
+  dt:first-child{margin-top:0}
+  dd{margin:2px 0 0}
+  a{color:var(--brand)}
+  footer{border-top:1px solid var(--line); padding:28px 0 48px; color:var(--muted); font-size:14px}
+  footer a{margin-right:18px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap"><span class="logo">Top3</span></div>
+</header>
+
+<main class="wrap">
+
+  <h1>A personal AI discovery service, delivered on WhatsApp</h1>
+  <p class="lede">
+    Top3 tracks the topics a person tells us they care about, searches for what is new
+    and relevant, and sends them a short summary on WhatsApp. It is operated by
+    <strong>Kamalanathan Raman</strong>, a sole proprietor based in Bengaluru, India.
+  </p>
+
+  <h2>What we do</h2>
+  <p>
+    A user signs in and lists the subjects they want to follow — for example
+    "AI meet-ups in Bengaluru", "new releases in Kannada cinema", or
+    "changes to Indian F&amp;O margin rules". For each interest, Top3 runs a scheduled
+    search across public web sources and video platforms, ranks the results, and
+    produces a short digest of the most relevant items.
+  </p>
+  <p>
+    The digest is delivered to the phone number the user registered, over the
+    WhatsApp Business Platform. Each message contains the item titles, a one-line
+    summary and a link to the source.
+  </p>
+
+  <h2>How WhatsApp is used</h2>
+  <div class="box">
+    <dl>
+      <dt>Who receives messages</dt>
+      <dd>Only registered users who entered their own phone number and explicitly
+          opted in to WhatsApp delivery during sign-up.</dd>
+
+      <dt>What is sent</dt>
+      <dd>Scheduled interest digests, and replies to questions a user sends us
+          about their own account. Nothing else.</dd>
+
+      <dt>How often</dt>
+      <dd>At the frequency the user chooses — daily or weekly. Users can change
+          or pause this at any time from their profile page.</dd>
+
+      <dt>How to stop</dt>
+      <dd>Replying STOP to any message ends WhatsApp delivery immediately. The
+          same control is available in the account settings page.</dd>
+
+      <dt>What we never do</dt>
+      <dd>We do not send marketing or promotional messages, we do not message
+          people who have not registered themselves, and we do not sell, rent or
+          share phone numbers with third parties.</dd>
+    </dl>
+  </div>
+
+  <h2>Who it is for</h2>
+  <p>
+    Individual users in India who want to follow a handful of niche topics without
+    monitoring feeds themselves. Top3 is used directly by the people who sign up;
+    we do not send messages on behalf of other businesses and we are not a
+    messaging reseller or marketing platform.
+  </p>
+
+  <h2>How the service works</h2>
+  <ul>
+    <li>The user adds an interest in plain language on the Top3 web app.</li>
+    <li>Top3 matches the interest to a search strategy and queues a background job.</li>
+    <li>The job gathers results from public web and video sources and summarises them.</li>
+    <li>The summary is stored against the user's account and shown in the web app.</li>
+    <li>If the user opted in to WhatsApp, the same summary is sent to their number.</li>
+  </ul>
+
+  <h2>Data we hold</h2>
+  <p>
+    A user's account record contains their name, email address, phone number, the
+    interests they entered, and the digests we generated for them. Message content
+    is limited to those digests. Full detail, including retention periods and how to
+    request deletion, is in our <a href="/privacy.html">Privacy Policy</a>.
+  </p>
+
+  <h2>Contact</h2>
+  <div class="box">
+    <dl>
+      <dt>Business name</dt>
+      <dd>Kamalanathan Raman (sole proprietor, trading as Top3)</dd>
+
+      <dt>Address</dt>
+      <dd>211, 1st Floor, 5th Cross, Celebrity Paradise Layout, Electronic City Phase 1, Bengaluru, Karnataka 560100, India</dd>
+
+      <dt>Email</dt>
+      <dd><a href="mailto:kamalanathan.r@gmail.com">kamalanathan.r@gmail.com</a></dd>
+
+      <dt>Phone</dt>
+      <dd>+91 98806 03061</dd>
+    </dl>
+  </div>
+
+</main>
+
+<footer class="wrap">
+  <a href="/privacy.html">Privacy Policy</a>
+  <a href="/terms.html">Terms of Service</a>
+  <span>© 2026 Kamalanathan Raman</span>
+</footer>
+
+</body>
+</html>
