@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trips</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .nav-link {
+            @apply text-gray-700 hover:text-blue-600 font-medium transition;
+        }
+        /* Family-member expand/collapse card (copied from Profile → Family Members) */
+        .form-input { width:100%; padding:10px 12px; background:#f9fafb; border:1px solid #d1d5db; border-radius:8px; font-size:14px; color:#111827; }
+        .form-input:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.15); }
+        .form-label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
+        .currency-input-wrap { position:relative; display:flex; align-items:center; }
+        .currency-symbol { position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:13px; font-weight:600; color:#2563eb; pointer-events:none; }
+        .currency-input-wrap .form-input { padding-left:26px; }
+        .collapse-body { overflow:hidden; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .item-row { display:flex; align-items:center; gap:10px; padding:10px 16px; cursor:pointer; user-select:none; transition:background .12s; }
+        .item-row:hover { background:rgba(37,99,235,.04); }
+        .drag-handle { display:inline-flex;align-items:center;padding:4px 6px;border-radius:6px;color:#9ca3af;flex-shrink:0;user-select:none; }
+        .trip-card { border:1px solid #e5e7eb; border-radius:12px; background:#fff; padding:16px; height:100%; }
+        .trip-card-title { font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.04em; margin-bottom:12px; }
+        .trip-field-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+        .trip-field-row:last-child { margin-bottom:0; }
+        .trip-field-label { font-size:13px; font-weight:600; color:#374151; flex-shrink:0; min-width:130px; white-space:nowrap; }
+        .trip-field-row .form-input { flex:1; min-width:0; }
+        /* Find Flights: results list + per-itinerary expandable detail */
+        .btn-find { background:#2563eb; color:#fff; font-size:13px; font-weight:600; padding:8px 18px; border-radius:8px; border:none; cursor:pointer; transition:background .12s; }
+        .btn-find:hover:not(:disabled) { background:#1d4ed8; }
+        .btn-find:disabled { background:#93c5fd; cursor:not-allowed; }
+        .btn-ghost { background:#f3f4f6; color:#374151; font-size:12px; font-weight:600; padding:6px 12px; border-radius:8px; border:1px solid #e5e7eb; cursor:pointer; }
+        .btn-ghost:hover { background:#e5e7eb; }
+        .fl-log { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11.5px; line-height:1.6; color:#4b5563; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px; max-height:180px; overflow-y:auto; white-space:pre-wrap; }
+        .fl-item { border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; background:#fff; }
+        .fl-item.best { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.10); }
+        .fl-head { display:flex; align-items:center; gap:12px; padding:12px 14px; cursor:pointer; user-select:none; transition:background .12s; }
+        .fl-head:hover { background:rgba(37,99,235,.04); }
+        .fl-rank { font-size:12px; font-weight:700; color:#9ca3af; min-width:20px; }
+        .fl-title { font-size:14px; font-weight:700; color:#111827; }
+        .fl-sub { font-size:12px; color:#6b7280; margin-top:2px; }
+        .fl-price { font-size:15px; font-weight:700; color:#111827; text-align:right; white-space:nowrap; }
+        .fl-price small { display:block; font-size:11px; font-weight:500; color:#6b7280; }
+        .fl-chev { color:#9ca3af; transition:transform .25s; flex-shrink:0; }
+        .fl-item.open .fl-chev { transform:rotate(90deg); }
+        .fl-body { overflow:hidden; max-height:0; transition:max-height .35s cubic-bezier(0.4,0,0.2,1); }
+        .fl-body-inner { border-top:1px solid #e5e7eb; padding:14px; }
+        .leg { border:1px solid #e5e7eb; border-left:3px solid #2563eb; border-radius:8px; padding:12px 14px; margin-bottom:10px; }
+        .leg:last-child { margin-bottom:0; }
+        .leg.missing { border-left-color:#dc2626; background:#fef2f2; }
+        .leg-top { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+        .leg-route { font-size:13px; font-weight:700; color:#111827; }
+        .leg-date { font-size:12px; color:#6b7280; }
+        .leg-fare { margin-left:auto; font-size:13px; font-weight:700; color:#111827; }
+        .pill { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; }
+        .pill.grey { background:#f3f4f6; color:#4b5563; }
+        .pill.warn { background:#fff7ed; color:#c2410c; }
+        .leg-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px 18px; margin-top:8px; }
+        .leg-f { font-size:12px; color:#374151; }
+        .leg-f b { display:block; font-size:10.5px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px; }
+        .seg { font-size:12px; color:#374151; padding:6px 0 6px 12px; border-left:2px solid #e5e7eb; margin-top:6px; }
+        .book { font-size:12px; font-weight:600; color:#2563eb; text-decoration:none; }
+        .book:hover { text-decoration:underline; }
+        .no-bag { color:#dc2626; font-weight:700; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <!-- Navigation Bar -->
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10">
+        <!-- Header Section -->
+        <div class="max-w-7xl mx-auto px-6 mb-6">
+            <h2 class="text-3xl font-bold text-blue-700 mb-4">Trips</h2>
+        </div>
+
+        <!-- Trip Setup: expand/collapse window (same pattern as Profile → Family Members) -->
+        <div class="max-w-7xl mx-auto px-6 mb-6">
+            <div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff">
+                <div class="item-row" onclick="toggleTripPanel()">
+                    <span class="drag-handle" id="trip-panel-ch" title="Expand">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="2" cy="2" r="1.3"/><circle cx="2" cy="6" r="1.3"/><circle cx="2" cy="10" r="1.3"/><circle cx="6" cy="4" r="1.3"/><circle cx="6" cy="8" r="1.3"/><circle cx="10" cy="6" r="1.3"/></svg>
+                    </span>
+                    <span style="font-size:11px;font-weight:700;color:#9ca3af;min-width:100px;flex-shrink:0">Trip Details</span>
+                    <span id="trip-summary" style="font-size:13px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Loading…</span>
+                </div>
+                <div id="trip-panel-det" class="collapse-body" style="max-height:0">
+                    <div style="border-top:1px solid #e5e7eb;padding:16px">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+
+                            <!-- 1. Travellers Details (family members pulled live from MongoDB via /api/profile) -->
+                            <div class="trip-card">
+                                <div class="trip-card-title">Travellers Details</div>
+                                <p id="trip-member-sum" style="font-size:13px;color:#374151;font-weight:600;margin-bottom:10px">Loading…</p>
+                                <div id="travellers-list" class="space-y-1"></div>
+                                <p id="travellers-empty" style="display:none;font-size:13px;color:#9ca3af;font-style:italic;padding:8px 0">No family members found in profile.</p>
+                            </div>
+
+                            <!-- 2. Travel Dates -->
+                            <div class="trip-card">
+                                <div class="trip-card-title">Travel Dates</div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Starting Location</label>
+                                    <input type="text" id="travel-start-location" class="form-input" style="color:#9ca3af" value="Bengaluru" oninput="updateTripSummary();saveTripDetails()">
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Travelling Date From</label>
+                                    <input type="date" id="travel-date-from" class="form-input" onchange="onTravelDateFromChange()">
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Travelling Date To</label>
+                                    <input type="date" id="travel-date-to" class="form-input" onchange="onTravelDateToChange()">
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Flexible Dates</label>
+                                    <span style="font-size:14px;font-weight:700;color:#6b7280;flex-shrink:0">±</span>
+                                    <input type="number" id="travel-date-flex" class="form-input" style="color:#9ca3af;text-align:center" value="2" min="0" oninput="updateTripSummary();saveTripDetails()">
+                                    <span style="font-size:13px;color:#6b7280;flex-shrink:0">days</span>
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Trip Type</label>
+                                    <div style="display:flex;align-items:center;gap:16px;flex:1">
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="trip-type-checkbox" data-value="domestic" style="width:15px;height:15px;accent-color:#2563eb" onchange="onTripTypeChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Domestic</span>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="trip-type-checkbox" data-value="international" checked style="width:15px;height:15px;accent-color:#2563eb" onchange="onTripTypeChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">International</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Budget -->
+                            <div class="trip-card">
+                                <div class="trip-card-title">Budget</div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Amount</label>
+                                    <div class="currency-input-wrap" style="flex:1">
+                                        <span class="currency-symbol" id="budget-currency-symbol">₹</span>
+                                        <input type="text" id="budget-amount" class="form-input" style="color:#9ca3af" oninput="onBudgetAmountInput()">
+                                    </div>
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Currency</label>
+                                    <select id="budget-currency" class="form-input" onchange="onBudgetCurrencyChange()">
+                                        <option value="INR">INR (₹)</option>
+                                        <option value="USD">USD ($)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="AED">AED (د.إ)</option>
+                                    </select>
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Flexible</label>
+                                    <span style="font-size:14px;font-weight:700;color:#6b7280;flex-shrink:0">±</span>
+                                    <input type="number" id="budget-flex-pct" class="form-input" style="color:#9ca3af;text-align:center" value="5" min="0" max="100" oninput="updateTripSummary();saveTripDetails()">
+                                    <span style="font-size:13px;color:#6b7280;flex-shrink:0">%</span>
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Hotel Preference</label>
+                                    <div style="display:flex;align-items:center;gap:16px;flex:1">
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="hotel-pref-checkbox" data-value="budget" style="width:15px;height:15px;accent-color:#2563eb" onchange="onHotelPrefChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Budget</span>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="hotel-pref-checkbox" data-value="moderate" checked style="width:15px;height:15px;accent-color:#2563eb" onchange="onHotelPrefChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Moderate</span>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="hotel-pref-checkbox" data-value="premium" style="width:15px;height:15px;accent-color:#2563eb" onchange="onHotelPrefChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Premium</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="trip-field-row">
+                                    <label class="trip-field-label">Flight Preference</label>
+                                    <div style="display:flex;align-items:center;gap:16px;flex:1;flex-wrap:wrap">
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="flight-pref-checkbox" data-value="cheapest" checked style="width:15px;height:15px;accent-color:#2563eb" onchange="onFlightPrefChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Cheapest</span>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="flight-pref-checkbox" data-value="fastest" style="width:15px;height:15px;accent-color:#2563eb" onchange="onFlightPrefChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Fastest</span>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="flight-pref-checkbox" data-value="nonstop" style="width:15px;height:15px;accent-color:#2563eb" onchange="onFlightPrefChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Nonstop</span>
+                                        </label>
+                                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                                            <input type="checkbox" class="flight-pref-checkbox" data-value="premium" style="width:15px;height:15px;accent-color:#2563eb" onchange="onFlightPrefChange(this)">
+                                            <span style="font-size:13px;font-weight:600;color:#374151">Premium</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Countries interested in visiting: expand/collapse window (same pattern as Trip Details) -->
+        <div class="max-w-7xl mx-auto px-6 mb-6">
+            <div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff">
+                <div class="item-row" onclick="toggleCountriesPanel()">
+                    <span class="drag-handle" id="countries-panel-ch" title="Expand">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="2" cy="2" r="1.3"/><circle cx="2" cy="6" r="1.3"/><circle cx="2" cy="10" r="1.3"/><circle cx="6" cy="4" r="1.3"/><circle cx="6" cy="8" r="1.3"/><circle cx="10" cy="6" r="1.3"/></svg>
+                    </span>
+                    <span style="font-size:11px;font-weight:700;color:#9ca3af;min-width:180px;flex-shrink:0">Countries Interested In Visiting</span>
+                    <span id="countries-summary" style="font-size:13px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">Loading…</span>
+                </div>
+                <div id="countries-panel-det" class="collapse-body" style="max-height:0">
+                    <div style="border-top:1px solid #e5e7eb;padding:16px">
+                        <div id="countries-container">
+                            <p style="font-size:13px;color:#9ca3af;font-style:italic">Loading countries…</p>
+                        </div>
+
+                        <!-- Dynamic: one row per checked country, listing its cities -->
+                        <div id="country-cities-section" style="display:none;margin-top:18px;border-top:1px solid #e5e7eb;padding-top:16px">
+                            <div class="trip-card-title" style="margin-bottom:10px">Cities To Visit</div>
+                            <div id="country-cities-container" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Find Flights: prices every country/city combination ticked above -->
+        <div class="max-w-7xl mx-auto px-6 mb-10">
+            <div style="border:1px solid #e5e7eb;border-radius:12px;background:#fff;padding:16px">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                    <div style="flex:1;min-width:200px">
+                        <div class="trip-card-title" style="margin-bottom:4px">Flights</div>
+                        <div id="flight-status" style="font-size:13px;color:#6b7280">Pick your countries above, then find the routes and roughly what they cost.</div>
+                    </div>
+                    <button id="find-flights-btn" class="btn-find" onclick="startFlightSearch()">Find Flights</button>
+                    <button id="cancel-flights-btn" class="btn-ghost" style="display:none" onclick="cancelFlightSearch()">Cancel</button>
+                </div>
+
+                <div id="flight-log-wrap" style="display:none;margin-top:14px;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
+                    <div class="item-row" id="flight-log-head" onclick="toggleFlightLog()">
+                        <svg class="fl-chev" id="flight-log-chev" width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+                        <span style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Search Progress</span>
+                        <span id="flight-log-count" style="font-size:12px;color:#6b7280;margin-left:auto"></span>
+                    </div>
+                    <div id="flight-log-body" class="collapse-body" style="max-height:0">
+                        <div id="flight-log" class="fl-log" style="border:none;border-top:1px solid #e5e7eb;border-radius:0"></div>
+                    </div>
+                </div>
+
+                <div id="flight-meta" style="display:none;margin-top:14px;font-size:12px;color:#6b7280"></div>
+                <div id="flight-results" class="space-y-2" style="margin-top:12px"></div>
+                <div id="flight-notes" style="margin-top:12px"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let travellers = [];
+        let budgetAmountIsDefault = true; // true until the user types their own amount
+        let savedTripDetails = null;      // last-saved doc from /api/trip-details, applied once travellers render
+        let saveTimer = null;
+        let allCountries = [];            // flat [{key, name}] across every continent, for the summary line
+        let countryDataByKey = {};        // {key: {name, cities:[{city,code}]}}, for the cities-to-visit rows
+        let selectedCitiesByCountry = {}; // {key: Set(city codes)}, live state for the cities-to-visit rows
+
+        const CURRENCY_SYMBOLS = { INR: '₹', USD: '$', EUR: '€', GBP: '£', AED: 'د.إ' };
+
+        // ── Persistence (MongoDB → trip_details collection) ────────────────
+        function collectTripDetails() {
+            const selectedNames = Array.from(document.querySelectorAll('.traveller-checkbox:checked'))
+                .map(box => {
+                    const m = travellers[Number(box.dataset.idx)];
+                    return m ? (m.name || '') : '';
+                })
+                .filter(Boolean);
+
+            const tripTypes = Array.from(document.querySelectorAll('.trip-type-checkbox'))
+                .filter(cb => cb.checked)
+                .map(cb => cb.dataset.value);
+
+            const hotelPrefEl = document.querySelector('.hotel-pref-checkbox:checked');
+            const flightPrefEl = document.querySelector('.flight-pref-checkbox:checked');
+
+            const interestedCountries = Array.from(document.querySelectorAll('.country-checkbox:checked'))
+                .map(cb => cb.dataset.key);
+
+            // Only keep city selections for countries still checked above
+            const selectedCities = {};
+            interestedCountries.forEach(key => {
+                const citySet = selectedCitiesByCountry[key];
+                if (citySet && citySet.size) selectedCities[key] = Array.from(citySet);
+            });
+
+            return {
+                selected_traveller_names: selectedNames,
+                starting_location: document.getElementById('travel-start-location').value,
+                date_from: document.getElementById('travel-date-from').value,
+                date_to: document.getElementById('travel-date-to').value,
+                flexible_days: document.getElementById('travel-date-flex').value,
+                trip_types: tripTypes,
+                budget_amount: document.getElementById('budget-amount').value,
+                budget_amount_is_default: budgetAmountIsDefault,
+                budget_currency: document.getElementById('budget-currency').value,
+                budget_flex_pct: document.getElementById('budget-flex-pct').value,
+                hotel_preference: hotelPrefEl ? hotelPrefEl.dataset.value : null,
+                flight_preference: flightPrefEl ? flightPrefEl.dataset.value : null,
+                interested_countries: interestedCountries,
+                selected_cities: selectedCities,
+            };
+        }
+
+        function saveTripDetails() {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(async () => {
+                try {
+                    await fetch('/api/trip-details', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(collectTripDetails()),
+                    });
+                } catch (err) {
+                    console.error('Error saving trip details:', err);
+                }
+            }, 400);
+        }
+
+        function applyBudgetDefault() {
+            if (!budgetAmountIsDefault) return;
+            const intl = document.querySelector('.trip-type-checkbox[data-value="international"]').checked;
+            const dom  = document.querySelector('.trip-type-checkbox[data-value="domestic"]').checked;
+            const amountEl = document.getElementById('budget-amount');
+            // International takes priority when both are selected (higher typical budget)
+            amountEl.value = intl ? '1,00,000' : (dom ? '50,000' : '');
+            amountEl.style.color = '#9ca3af';
+            updateTripSummary();
+        }
+
+        function onBudgetAmountInput() {
+            budgetAmountIsDefault = false;
+            document.getElementById('budget-amount').style.color = '#111827';
+            updateTripSummary();
+            saveTripDetails();
+        }
+
+        function onBudgetCurrencyChange() {
+            const sel = document.getElementById('budget-currency');
+            const sym = document.getElementById('budget-currency-symbol');
+            sym.textContent = CURRENCY_SYMBOLS[sel.value] || '';
+            updateTripSummary();
+            saveTripDetails();
+        }
+
+        function onTravelDateFromChange() {
+            const fromEl = document.getElementById('travel-date-from');
+            const toEl   = document.getElementById('travel-date-to');
+            // Date To can never be earlier than Date From
+            toEl.min = fromEl.value || '';
+            if (fromEl.value && toEl.value && toEl.value < fromEl.value) {
+                toEl.value = fromEl.value;
+            }
+            updateTripSummary();
+            saveTripDetails();
+        }
+
+        function onTravelDateToChange() {
+            const fromEl = document.getElementById('travel-date-from');
+            const toEl   = document.getElementById('travel-date-to');
+            if (fromEl.value && toEl.value && toEl.value < fromEl.value) {
+                toEl.value = fromEl.value;
+            }
+            updateTripSummary();
+            saveTripDetails();
+        }
+
+        function onTripTypeChange(box) {
+            // Domestic and International can both be selected, but at least one must stay checked
+            if (!box.checked) {
+                const anyChecked = Array.from(document.querySelectorAll('.trip-type-checkbox'))
+                    .some(cb => cb.checked);
+                if (!anyChecked) box.checked = true;
+            }
+            applyBudgetDefault();
+            saveTripDetails();
+        }
+
+        function onHotelPrefChange(box) {
+            // Only one hotel preference can be selected at a time
+            if (box.checked) {
+                document.querySelectorAll('.hotel-pref-checkbox').forEach(other => {
+                    if (other !== box) other.checked = false;
+                });
+            } else {
+                // Prevent leaving zero options selected
+                box.checked = true;
+            }
+            saveTripDetails();
+        }
+
+        function onFlightPrefChange(box) {
+            // Only one flight preference (cheapest/fastest/nonstop/premium) at a time
+            if (box.checked) {
+                document.querySelectorAll('.flight-pref-checkbox').forEach(other => {
+                    if (other !== box) other.checked = false;
+                });
+            } else {
+                // Prevent leaving zero options selected
+                box.checked = true;
+            }
+            saveTripDetails();
+        }
+
+        function togglePanel(detId, chId) {
+            const det = document.getElementById(detId);
+            const ch  = document.getElementById(chId);
+            if (!det) return;
+            const isOpen = det.style.maxHeight !== '0px' && det.style.maxHeight !== '0' && det.style.maxHeight !== '';
+            if (isOpen) {
+                det.style.maxHeight = '0';
+                if (ch) ch.title = 'Expand';
+            } else {
+                det.style.maxHeight = det.scrollHeight + 'px';
+                if (ch) ch.title = 'Minimise';
+            }
+        }
+
+        function toggleTripPanel() {
+            togglePanel('trip-panel-det', 'trip-panel-ch');
+        }
+
+        function toggleCountriesPanel() {
+            togglePanel('countries-panel-det', 'countries-panel-ch');
+        }
+
+        function refreshPanelHeightIfOpen(detId) {
+            const det = document.getElementById(detId);
+            if (!det) return;
+            const isOpen = det.style.maxHeight !== '0px' && det.style.maxHeight !== '0' && det.style.maxHeight !== '';
+            if (isOpen) det.style.maxHeight = det.scrollHeight + 'px';
+        }
+
+        function formatDate(value) {
+            if (!value) return null;
+            const d = new Date(value);
+            if (isNaN(d)) return null;
+            let text = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            if (d.getDay() === 0) text += ' (Sunday)';
+            return text;
+        }
+
+        function nightsAndDaysBetween(fromValue, toValue) {
+            const from = new Date(fromValue);
+            const to = new Date(toValue);
+            if (isNaN(from) || isNaN(to)) return null;
+            const nights = Math.round((to - from) / (1000 * 60 * 60 * 24));
+            if (nights < 0) return null;
+            const days = nights + 1;
+            return `${nights} night${nights === 1 ? '' : 's'}, ${days} day${days === 1 ? '' : 's'}`;
+        }
+
+        function calcAge(dob) {
+            if (!dob) return null;
+            const birth = new Date(dob);
+            if (isNaN(birth)) return null;
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+            return age;
+        }
+
+        function buildTravellerSummary() {
+            if (!travellers.length) return 'No travellers found';
+
+            const checked = Array.from(document.querySelectorAll('.traveller-checkbox:checked'));
+            if (!checked.length) return 'No travellers selected';
+
+            let adults = 0, children = 0;
+            checked.forEach(box => {
+                const m = travellers[Number(box.dataset.idx)];
+                const age = m ? calcAge(m.dob) : null;
+                if (age !== null && age < 18) children++;
+                else adults++;
+            });
+
+            const parts = [];
+            if (adults)   parts.push(`${adults} adult${adults === 1 ? '' : 's'}`);
+            if (children) parts.push(`${children} child${children === 1 ? '' : 'ren'}`);
+            return parts.join(', ');
+        }
+
+        function updateTripSummary() {
+            // Traveller sub-summary (adults / children), shown inside the Travellers card
+            const travellerSummary = buildTravellerSummary();
+            const memberSumEl = document.getElementById('trip-member-sum');
+            if (memberSumEl) memberSumEl.textContent = travellerSummary;
+
+            // Dates
+            const fromRaw = document.getElementById('travel-date-from').value;
+            const toRaw   = document.getElementById('travel-date-to').value;
+            const from = formatDate(fromRaw);
+            const to   = formatDate(toRaw);
+            let dateSummary = null;
+            if (from && to) {
+                dateSummary = `${from} – ${to}`;
+                const span = nightsAndDaysBetween(fromRaw, toRaw);
+                if (span) dateSummary += ` (${span})`;
+            } else if (from) {
+                dateSummary = `From ${from}`;
+            } else if (to) {
+                dateSummary = `Until ${to}`;
+            }
+
+            // Budget
+            const amountRaw = document.getElementById('budget-amount').value.trim();
+            const currency  = document.getElementById('budget-currency').value;
+            const symbol    = CURRENCY_SYMBOLS[currency] || '';
+            let budgetSummary = null;
+            if (amountRaw) budgetSummary = `${symbol}${amountRaw}`;
+
+            // Combined header summary
+            const headerParts = [travellerSummary];
+            if (dateSummary)   headerParts.push(dateSummary);
+            if (budgetSummary) headerParts.push(budgetSummary);
+            document.getElementById('trip-summary').textContent = headerParts.join(' · ');
+        }
+
+        function renderTravellers() {
+            const list  = document.getElementById('travellers-list');
+            const empty = document.getElementById('travellers-empty');
+            const savedNames = (savedTripDetails && savedTripDetails.selected_traveller_names) || [];
+
+            if (!travellers.length) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+            } else {
+                empty.style.display = 'none';
+                list.innerHTML = travellers.map((m, idx) => {
+                    const age = calcAge(m.dob);
+                    const name = m.name || `Member ${idx + 1}`;
+                    const isChecked = savedNames.includes(m.name || '');
+                    return `
+                    <label style="display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer">
+                        <input type="checkbox" class="traveller-checkbox" data-idx="${idx}" ${isChecked ? 'checked' : ''} style="width:16px;height:16px;accent-color:#2563eb;flex-shrink:0" onchange="updateTripSummary();saveTripDetails()">
+                        <span style="font-size:14px;font-weight:600;color:#111827">${name}</span>
+                        <span style="font-size:13px;color:#6b7280">${age !== null ? `(${age} yrs)` : '(age unknown)'}</span>
+                    </label>`;
+                }).join('');
+            }
+            updateTripSummary();
+        }
+
+        // ── Loading saved state from MongoDB ────────────────────────────────
+        async function loadTripDetails() {
+            try {
+                const res  = await fetch('/api/trip-details');
+                const data = await res.json();
+                savedTripDetails = data.trip_details || null;
+            } catch (err) {
+                console.error('Error loading trip details:', err);
+                savedTripDetails = null;
+            }
+        }
+
+        function applySavedTripDetails() {
+            if (!savedTripDetails) return;
+            const d = savedTripDetails;
+
+            if (d.starting_location) {
+                document.getElementById('travel-start-location').value = d.starting_location;
+            }
+            const fromEl = document.getElementById('travel-date-from');
+            const toEl   = document.getElementById('travel-date-to');
+            if (d.date_from) { fromEl.value = d.date_from; toEl.min = d.date_from; }
+            if (d.date_to)   toEl.value = d.date_to;
+            if (d.flexible_days !== undefined && d.flexible_days !== null && d.flexible_days !== '') {
+                document.getElementById('travel-date-flex').value = d.flexible_days;
+            }
+
+            if (Array.isArray(d.trip_types) && d.trip_types.length) {
+                document.querySelectorAll('.trip-type-checkbox').forEach(cb => {
+                    cb.checked = d.trip_types.includes(cb.dataset.value);
+                });
+            }
+
+            if (d.hotel_preference) {
+                document.querySelectorAll('.hotel-pref-checkbox').forEach(cb => {
+                    cb.checked = (cb.dataset.value === d.hotel_preference);
+                });
+            }
+
+            if (d.flight_preference) {
+                document.querySelectorAll('.flight-pref-checkbox').forEach(cb => {
+                    cb.checked = (cb.dataset.value === d.flight_preference);
+                });
+            }
+
+            if (d.budget_currency) {
+                document.getElementById('budget-currency').value = d.budget_currency;
+                document.getElementById('budget-currency-symbol').textContent = CURRENCY_SYMBOLS[d.budget_currency] || '₹';
+            }
+
+            if (typeof d.budget_amount_is_default === 'boolean') {
+                budgetAmountIsDefault = d.budget_amount_is_default;
+            }
+            if (d.budget_amount) {
+                document.getElementById('budget-amount').value = d.budget_amount;
+                document.getElementById('budget-amount').style.color = budgetAmountIsDefault ? '#9ca3af' : '#111827';
+            }
+            if (d.budget_flex_pct !== undefined && d.budget_flex_pct !== null && d.budget_flex_pct !== '') {
+                document.getElementById('budget-flex-pct').value = d.budget_flex_pct;
+            }
+
+            updateTripSummary();
+        }
+
+        async function loadTravellers() {
+            try {
+                const res  = await fetch('/api/profile');
+                const data = await res.json();
+                travellers = (data.profile && data.profile.family_members) || [];
+
+                // Starting Location defaults to the city saved on the Profile page
+                // (overridden below if a value was already saved in trip_details)
+                const city = data.profile && data.profile.city;
+                if (city) {
+                    document.getElementById('travel-start-location').value = city;
+                }
+            } catch (err) {
+                console.error('Error loading travellers:', err);
+                travellers = [];
+            }
+            renderTravellers();
+        }
+
+        function updateCountriesSummary() {
+            const summaryEl = document.getElementById('countries-summary');
+            if (!summaryEl) return;
+
+            const checkedKeys = Array.from(document.querySelectorAll('.country-checkbox:checked'))
+                .map(cb => cb.dataset.key);
+
+            if (!checkedKeys.length) {
+                summaryEl.textContent = 'No countries selected';
+                return;
+            }
+
+            if (checkedKeys.length > 7) {
+                summaryEl.textContent = `${checkedKeys.length} countries selected`;
+                return;
+            }
+
+            const nameByKey = Object.fromEntries(allCountries.map(c => [c.key, c.name]));
+            const names = checkedKeys.map(k => nameByKey[k] || k);
+            summaryEl.textContent = names.join(', ');
+        }
+
+        function onCountryCheckboxChange() {
+            updateCountriesSummary();
+            renderCountryCitiesRows();
+            refreshPanelHeightIfOpen('countries-panel-det');
+            saveTripDetails();
+        }
+
+        function renderCountries(continents) {
+            const container = document.getElementById('countries-container');
+            const savedKeys = (savedTripDetails && savedTripDetails.interested_countries) || [];
+            const continentNames = Object.keys(continents || {});
+
+            allCountries = continentNames.flatMap(continent => continents[continent]);
+            countryDataByKey = Object.fromEntries(
+                allCountries.map(c => [c.key, { name: c.name, cities: c.cities || [] }])
+            );
+
+            if (!continentNames.length) {
+                container.innerHTML = '<p style="font-size:13px;color:#9ca3af;font-style:italic">No countries found.</p>';
+                updateCountriesSummary();
+                return;
+            }
+
+            container.innerHTML = continentNames.map(continent => {
+                const countries = continents[continent];
+                const rows = countries.map(c => {
+                    const isChecked = savedKeys.includes(c.key);
+                    return `
+                    <label style="display:flex;align-items:center;gap:6px;min-width:130px;cursor:pointer">
+                        <input type="checkbox" class="country-checkbox" data-key="${c.key}" ${isChecked ? 'checked' : ''} style="width:15px;height:15px;accent-color:#2563eb;flex-shrink:0" onchange="onCountryCheckboxChange()">
+                        <span style="font-size:13px;font-weight:600;color:#374151">${c.name}</span>
+                    </label>`;
+                }).join('');
+                return `
+                <div style="margin-bottom:16px">
+                    <div style="font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">${continent} (${countries.length})</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px 20px">${rows}</div>
+                </div>`;
+            }).join('');
+
+            updateCountriesSummary();
+
+            // Seed selectedCitiesByCountry from the saved trip, then render the
+            // "Cities To Visit" rows for whichever countries are already checked.
+            const savedCities = (savedTripDetails && savedTripDetails.selected_cities) || {};
+            selectedCitiesByCountry = Object.fromEntries(
+                Object.entries(savedCities).map(([key, codes]) => [key, new Set(codes)])
+            );
+            renderCountryCitiesRows();
+        }
+
+        function onCityCheckboxChange(countryKey, code, checked) {
+            if (!selectedCitiesByCountry[countryKey]) selectedCitiesByCountry[countryKey] = new Set();
+            if (checked) selectedCitiesByCountry[countryKey].add(code);
+            else selectedCitiesByCountry[countryKey].delete(code);
+            saveTripDetails();
+        }
+
+        function renderCountryCitiesRows() {
+            const section   = document.getElementById('country-cities-section');
+            const container = document.getElementById('country-cities-container');
+
+            // Checked countries, in the order they appear in the list above.
+            const checkedKeys = Array.from(document.querySelectorAll('.country-checkbox:checked'))
+                .map(cb => cb.dataset.key);
+
+            if (!checkedKeys.length) {
+                section.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+
+            section.style.display = 'block';
+            container.innerHTML = checkedKeys.map(key => {
+                const country = countryDataByKey[key];
+                if (!country) return '';
+                const checkedCodes = selectedCitiesByCountry[key] || new Set();
+                const cityLabels = (country.cities.length ? country.cities : []).map(city => {
+                    const isChecked = checkedCodes.has(city.code);
+                    return `
+                    <label style="display:flex;align-items:center;gap:6px;min-width:130px;cursor:pointer">
+                        <input type="checkbox" class="city-checkbox" data-country="${key}" data-code="${city.code}" ${isChecked ? 'checked' : ''} style="width:14px;height:14px;accent-color:#2563eb;flex-shrink:0" onchange="onCityCheckboxChange('${key}','${city.code}',this.checked)">
+                        <span style="font-size:13px;color:#374151">${city.city}</span>
+                    </label>`;
+                }).join('') || '<span style="font-size:12px;color:#9ca3af;font-style:italic">No cities on record</span>';
+
+                return `
+                <div style="border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px">
+                    <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:8px">${country.name}</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px 20px">${cityLabels}</div>
+                </div>`;
+            }).join('');
+        }
+
+        async function loadCountries() {
+            try {
+                const res  = await fetch('/api/countries');
+                const data = await res.json();
+                renderCountries(data.continents || {});
+            } catch (err) {
+                console.error('Error loading countries:', err);
+                document.getElementById('countries-container').innerHTML =
+                    '<p style="font-size:13px;color:#9ca3af;font-style:italic">Could not load countries.</p>';
+            }
+        }
+
+        // ── Find Flights ───────────────────────────────────────────────────
+        // Pricing scrapes a real browser one leg at a time (~20-40s each), so
+        // the button only queues the job; everything below polls for progress
+        // and renders the ranked itineraries when they land.
+        let flightPoll = null;
+        let openItineraries = new Set();   // survives re-renders while polling
+        let logOpen = false;               // progress section open?
+        let logTouchedByUser = false;      // once clicked, stop auto-opening/closing it
+
+        function setFlightLogOpen(open) {
+            const body = document.getElementById('flight-log-body');
+            const chev = document.getElementById('flight-log-chev');
+            if (!body) return;
+            logOpen = open;
+            body.style.maxHeight = open ? body.scrollHeight + 'px' : '0';
+            if (chev) chev.style.transform = open ? 'rotate(90deg)' : '';
+        }
+
+        function toggleFlightLog() {
+            logTouchedByUser = true;
+            setFlightLogOpen(!logOpen);
+        }
+
+        const CUR = { INR:'₹', USD:'$', EUR:'€', GBP:'£', AED:'د.إ' };
+        const money = (amt, cur) => (CUR[cur] || (cur ? cur + ' ' : '')) + Number(amt || 0).toLocaleString('en-IN');
+        const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c =>
+            ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+        function hoursMins(minutes) {
+            const m = Number(minutes || 0);
+            if (!m) return '';
+            return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+        }
+
+        function prettyDate(iso) {
+            if (!iso) return '';
+            const d = new Date(iso + 'T00:00:00');
+            return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+        }
+
+        async function startFlightSearch() {
+            const btn = document.getElementById('find-flights-btn');
+            btn.disabled = true;
+            logTouchedByUser = false;   // a new run controls the panel again
+            document.getElementById('flight-status').textContent = 'Queuing search…';
+            try {
+                const res  = await fetch('/api/flight-plan', { method:'POST' });
+                const data = await res.json();
+                if (data.error) {
+                    document.getElementById('flight-status').innerHTML =
+                        `<span style="color:#b91c1c">${esc(data.error)}</span>`;
+                    btn.disabled = false;
+                    return;
+                }
+                pollFlightPlan();
+            } catch (err) {
+                console.error('Error starting flight search:', err);
+                document.getElementById('flight-status').innerHTML =
+                    '<span style="color:#b91c1c">Could not start the search.</span>';
+                btn.disabled = false;
+            }
+        }
+
+        async function cancelFlightSearch() {
+            try { await fetch('/api/flight-plan/cancel', { method:'POST' }); }
+            catch (err) { console.error('Error cancelling flight search:', err); }
+            loadFlightPlan();
+        }
+
+        function pollFlightPlan() {
+            clearInterval(flightPoll);
+            loadFlightPlan();
+            flightPoll = setInterval(loadFlightPlan, 4000);
+        }
+
+        async function loadFlightPlan() {
+            try {
+                const res  = await fetch('/api/flight-plan');
+                const doc  = await res.json();
+                renderFlightPlan(doc);
+                if (!['queued', 'running'].includes(doc.status)) clearInterval(flightPoll);
+                else if (!flightPoll) pollFlightPlan();
+            } catch (err) {
+                console.error('Error loading flight plan:', err);
+            }
+        }
+
+        function renderFlightPlan(doc) {
+            const status  = doc.status || 'none';
+            const running = status === 'queued' || status === 'running';
+            const btn     = document.getElementById('find-flights-btn');
+            const statusEl = document.getElementById('flight-status');
+
+            btn.disabled = running;
+            btn.textContent = running ? 'Searching…'
+                            : (doc.plan ? 'Search Again' : 'Find Flights');
+            document.getElementById('cancel-flights-btn').style.display = running ? '' : 'none';
+
+            const lines = doc.log || [];
+            document.getElementById('flight-log-wrap').style.display = lines.length ? '' : 'none';
+            if (lines.length) {
+                const log = document.getElementById('flight-log');
+                const pinned = log.scrollTop + log.clientHeight >= log.scrollHeight - 20;
+                log.textContent = lines.join('\n');
+                if (pinned) log.scrollTop = log.scrollHeight;
+                document.getElementById('flight-log-count').textContent =
+                    `${lines.length} line${lines.length === 1 ? '' : 's'}`;
+                // Open while it is working (the progress is the only thing to
+                // watch), then fold away once the results themselves arrive.
+                // Left alone after the user has clicked it either way.
+                if (!logTouchedByUser) setFlightLogOpen(running);
+                else if (logOpen) setFlightLogOpen(true);   // regrow for new lines
+            }
+
+            if (status === 'none') {
+                statusEl.textContent = 'Pick your countries above, then find the routes and roughly what they cost.';
+            } else if (status === 'queued') {
+                statusEl.textContent = 'Queued — waiting for a worker to pick it up.';
+            } else if (status === 'running') {
+                statusEl.textContent = doc.searches_planned
+                    ? `Pricing ${doc.searches_planned} flight legs live — about ${doc.eta_minutes} min.`
+                    : 'Working out which routes to price…';
+            } else if (status === 'error') {
+                statusEl.innerHTML = `<span style="color:#b91c1c">${esc(doc.error || 'Search failed.')}</span>`;
+            } else if (status === 'cancelled') {
+                statusEl.textContent = 'Search cancelled.';
+            } else if (doc.plan) {
+                const p = doc.plan;
+                const priced = (p.options || []).filter(o => o.complete).length;
+                statusEl.textContent = `${priced} itinerary option${priced === 1 ? '' : 's'} priced · ${p.searches_used} flight search${p.searches_used === 1 ? '' : 'es'}.`;
+            }
+
+            renderFlightOptions(doc.plan);
+        }
+
+        const PREFER_LABEL = { cheapest:'Cheapest first', fastest:'Fastest first', non_stop:'Non-stop first' };
+
+        function renderFlightOptions(plan) {
+            const meta    = document.getElementById('flight-meta');
+            const results = document.getElementById('flight-results');
+            const notes   = document.getElementById('flight-notes');
+
+            if (!plan) { meta.style.display = 'none'; results.innerHTML = ''; notes.innerHTML = ''; return; }
+
+            meta.style.display = '';
+            meta.innerHTML = [
+                `From ${esc(plan.source)}`,
+                `${plan.travellers} traveller${plan.travellers === 1 ? '' : 's'}`,
+                `${prettyDate(plan.start_date)} – ${prettyDate(plan.end_date)}`,
+                esc(PREFER_LABEL[plan.prefer] || plan.prefer),
+                `searched ${new Date(plan.generated_at).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}`,
+            ].join(' · ') +
+            '<div style="margin-top:4px">One route per option on these exact dates — indicative fares. Use Optimize to flex the dates and hunt the cheapest combination.</div>';
+
+            const options = plan.options || [];
+            results.innerHTML = options.length
+                ? options.map(o => itineraryHtml(o, plan)).join('')
+                : '<p style="font-size:13px;color:#9ca3af;font-style:italic">No itineraries could be priced.</p>';
+
+            // Re-apply whichever sections were open before this poll redrew them.
+            options.forEach(o => { if (openItineraries.has(o.label)) setItineraryOpen(o.rank, true); });
+
+            const bits = [];
+            (plan.not_priced || []).forEach(n =>
+                bits.push(`<div style="font-size:12px;color:#c2410c">${esc(n.what)} — ${esc(n.why)}</div>`));
+            (plan.dead_routes || []).forEach(r =>
+                bits.push(`<div style="font-size:12px;color:#6b7280">${esc(r)} — MakeMyTrip operates no flights on this route; it will be skipped from now on.</div>`));
+            if (plan.rate_limited)
+                bits.push('<div style="font-size:12px;color:#c2410c">MakeMyTrip rate-limited this run, so it stopped early. Search again in a few minutes.</div>');
+            notes.innerHTML = bits.join('');
+        }
+
+        function itineraryHtml(o, plan) {
+            const cur  = o.currency || plan.currency;
+            const best = o.rank === 1 && o.complete;
+            const sub  = o.complete
+                ? [`${o.nights} nights`,
+                   `${prettyDate(o.start_date)} – ${prettyDate(o.end_date)}`,
+                   `${o.legs.length} flights`,
+                   o.total_stops === 0 ? 'all non-stop' : `${o.total_stops} stop${o.total_stops === 1 ? '' : 's'} total`,
+                   hoursMins(o.total_duration_minutes) + ' in the air',
+                  ].filter(Boolean).join(' · ')
+                : (o.reason || 'Could not be priced');
+
+            // Where the trip is actually spent belongs on the collapsed row - it
+            // is what distinguishes two options at a glance, so it should not
+            // be hidden behind an expand.
+            const cities = (o.stops || []).map(st =>
+                `<span class="pill grey">${esc(st.city)} · ${st.nights}n</span>`).join(' ');
+
+            return `
+            <div class="fl-item${best ? ' best' : ''}" id="fl-item-${o.rank}">
+                <div class="fl-head" onclick="toggleItinerary(${o.rank}, '${esc(o.label).replace(/'/g, "\\'")}')">
+                    <span class="fl-rank">${o.complete ? o.rank : '—'}</span>
+                    <svg class="fl-chev" width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l4 4-4 4z"/></svg>
+                    <div style="flex:1;min-width:0">
+                        <div class="fl-title">${esc(o.label).replace(/-&gt;/g, '→')}${best ? ' <span class="pill">Best</span>' : ''}${o.complete ? '' : ' <span class="pill warn">Incomplete</span>'}${cities ? ' ' + cities : ''}</div>
+                        <div class="fl-sub">${esc(sub)}</div>
+                    </div>
+                    ${o.complete ? `<div class="fl-price">${money(o.total, cur)}<small>${money(o.per_adult, cur)} × ${plan.travellers}</small></div>` : ''}
+                </div>
+                <div class="fl-body" id="fl-body-${o.rank}">
+                    <div class="fl-body-inner">
+                        ${(o.legs || []).map(l => legHtml(l, cur, plan)).join('')}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // "20 KGS/Adult" is fine; "0 KGS/Adult" means the fare carries no bag at
+        // all, which is a real cost the traveller has to notice.
+        function noBaggage(v) {
+            return /(^|[^\d.])0(\.0+)?\s*(kg|kgs|kilo)/i.test(String(v || ''));
+        }
+
+        function airportLabel(code, plan) {
+            const name = (plan && plan.airports) ? plan.airports[String(code || '').toUpperCase()] : '';
+            return name ? `${name} (${code})` : String(code || '');
+        }
+
+        function legHtml(l, cur, plan) {
+            const route = `${esc(airportLabel(l.from, plan))} → ${esc(airportLabel(l.to, plan))}`;
+            if (!l.found) {
+                return `<div class="leg missing">
+                    <div class="leg-top"><span class="leg-route">${route}</span>
+                    <span class="leg-date">${prettyDate(l.date)}</span></div>
+                    <div class="leg-f" style="color:#b91c1c">No flight found on this date.</div>
+                </div>`;
+            }
+
+            const viaNamed = (l.stop_via || '').split(',').map(c => c.trim())
+                .filter(Boolean).map(c => airportLabel(c, plan)).join(', ');
+            const stopsText = l.stops === 0 ? 'Non-stop'
+                : `${l.stops} stop${l.stops === 1 ? '' : 's'}${viaNamed ? ' via ' + viaNamed : ''}`;
+
+            const fields = [
+                ['Flight',      l.flight_number],
+                ['Airline',     l.airline],
+                ['Departs',     l.depart_time],
+                ['Arrives',     l.arrive_time + (l.arrives_next_day ? ` (+${l.arrives_next_day}d)` : '')],
+                ['Duration',    l.duration || hoursMins(l.duration_minutes)],
+                ['Stops',       stopsText],
+                ['Cabin bag',   l.cabin_baggage, noBaggage(l.cabin_baggage)],
+                ['Check-in bag', l.checkin_baggage, noBaggage(l.checkin_baggage)],
+                ['Fare type',   l.refundable],
+                ['Fare basis',  l.price_basis],
+                ['Layover',     l.layover_minutes ? hoursMins(l.layover_minutes) : ''],
+            ].filter(([, v]) => v).map(([k, v, alert]) =>
+                `<div class="leg-f"><b>${k}</b><span${alert ? ' class="no-bag"' : ''}>${esc(v)}</span></div>`).join('');
+
+            // A connecting flight prints each hop and the layover between them,
+            // interleaved so the order matches the way the journey is flown.
+            const segs = l.segments || [], lays = l.layovers || [];
+            let itin = '';
+            segs.forEach((sg, i) => {
+                const parts = [
+                    [airportLabel(sg.from, plan), airportLabel(sg.to, plan)].filter(Boolean).join(' → '),
+                    [sg.depart_time, sg.arrive_time].filter(Boolean).join(' – '),
+                    sg.duration || hoursMins(sg.duration_minutes),
+                    sg.flight_number || '',
+                    sg.aircraft || '',
+                ].filter(Boolean);
+                const bag = sg.checkin_baggage
+                    ? `  ·  <span${noBaggage(sg.checkin_baggage) ? ' class="no-bag"' : ''}>check-in ${esc(sg.checkin_baggage)}</span>`
+                    : '';
+                itin += `<div class="seg">${esc(parts.join('  ·  '))}${bag}</div>`;
+                const lo = lays[i];
+                if (lo && i < segs.length - 1) {
+                    const where = lo.airport || (lo.code ? airportLabel(lo.code, plan) : '');
+                    itin += `<div class="seg" style="color:#c2410c">Layover ${esc(lo.duration || hoursMins(lo.duration_minutes))}${where ? ' at ' + esc(where) : ''}</div>`;
+                }
+            });
+            const segments = itin, layovers = '';
+
+            return `<div class="leg">
+                <div class="leg-top">
+                    <span class="leg-route">${route}</span>
+                    <span class="leg-date">${prettyDate(l.date)}</span>
+                    <span class="pill${l.stops === 0 ? '' : ' grey'}">${esc(stopsText)}</span>
+                    <span class="leg-fare">${money(l.price, l.currency || cur)}</span>
+                </div>
+                <div class="leg-grid">${fields}</div>
+                ${segments}${layovers}
+                ${l.search_url ? `<div style="margin-top:8px"><a class="book" href="${esc(l.search_url)}" target="_blank" rel="noopener">Open on MakeMyTrip →</a></div>` : ''}
+            </div>`;
+        }
+
+        function setItineraryOpen(rank, open) {
+            const item = document.getElementById(`fl-item-${rank}`);
+            const body = document.getElementById(`fl-body-${rank}`);
+            if (!item || !body) return;
+            item.classList.toggle('open', open);
+            body.style.maxHeight = open ? body.scrollHeight + 'px' : '0';
+        }
+
+        function toggleItinerary(rank, label) {
+            const item = document.getElementById(`fl-item-${rank}`);
+            if (!item) return;
+            const open = !item.classList.contains('open');
+            setItineraryOpen(rank, open);
+            if (open) openItineraries.add(label); else openItineraries.delete(label);
+        }
+
+        async function init() {
+            applyBudgetDefault();
+            await loadTripDetails();
+            await loadTravellers();   // renders travellers using savedTripDetails for checked state
+            await loadCountries();    // renders countries using savedTripDetails for checked state
+            applySavedTripDetails();  // fills in dates/budget/trip-type/hotel-preference from saved data
+            loadFlightPlan();         // shows the last flight search, and resumes polling if one is running
+        }
+
+        init();
+    </script>
+</body>
+</html>

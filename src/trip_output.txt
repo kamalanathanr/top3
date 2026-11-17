@@ -1,0 +1,84 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-18 15:27:58
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+1  Cambodia only (1 city)            2       2026-10-17 - 2026-10-19 INR  233,844
+2  Vietnam only (2 cities)           6       2026-10-16 - 2026-10-22 INR  240,252
+3  Cambodia -> Vietnam               7       2026-10-18 - 2026-10-25 INR  312,776
+4  Vietnam -> Cambodia               7       2026-10-18 - 2026-10-25 INR  331,428
+
+CHEAPEST: Cambodia only (1 city) - INR 233,844 for 4 travellers, 2 nights
+Adding a second country costs INR 78,932 more than the best single-country trip (Cambodia -> Vietnam vs Cambodia only (1 city)).
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Cambodia only (1 city)
+   Days: Siem Reap (SAI) 2n
+   2026-10-17  BLR -> SAI   Air India, Bangkok A  19:40-12:15 15h 05m  2 stops via DEL,BKK  INR 41,185
+        flight AI 2665, AI 2336
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SAI-17/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  SAI -> BLR   IndiGo                07:20-23:20 17h 30m  1 stop via CCU       INR 17,276
+        flight 6E 1656, 6E 6314
+        book: https://www.makemytrip.com/flight/search?itinerary=SAI-BLR-19/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 58,461   x 4 = INR 233,844
+
+2. Vietnam only (2 cities)
+   Days: Phu Quoc (PQC) 3n, Ho Chi Minh City (SGN) 3n
+   2026-10-16  BLR -> PQC   AirAsia Berhad        23:25-15:30 14h 35m  1 stop via KUL       INR 28,714
+        flight AK 52, AK 547
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  PQC -> SGN   VietJet Air           13:00-14:00 1h 00m   non-stop             INR 2,839
+        flight VJ 338
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-SGN-19/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-22  SGN -> BLR   Thai Airways          10:05-23:55 15h 20m  1 stop via BKK       INR 28,510
+        flight TG 551, TG 325
+        book: https://www.makemytrip.com/flight/search?itinerary=SGN-BLR-22/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 60,063   x 4 = INR 240,252
+
+3. Cambodia -> Vietnam
+   Days: Siem Reap (SAI) 1n, Phu Quoc (PQC) 3n, Ho Chi Minh City (SGN) 3n
+   2026-10-18  BLR -> SAI   IndiGo                20:20-06:20 8h 30m   1 stop via CCU       INR 26,353
+        flight 6E 975, 6E 1655
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SAI-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  SAI -> PQC   VietJet Air           19:05-15:05 20h 00m  1 stop via HAN       INR 11,137
+        flight VJ 914, VJ 453
+        book: https://www.makemytrip.com/flight/search?itinerary=SAI-PQC-19/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-22  PQC -> SGN   VietJet Air           08:00-09:00 1h 00m   non-stop             INR 2,353
+        flight VJ 1328
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-SGN-22/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-25  SGN -> BLR   Thai Airways          10:15-00:05 15h 20m  1 stop via BKK       INR 38,351
+        flight TG 551, TG 325
+        book: https://www.makemytrip.com/flight/search?itinerary=SGN-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 78,194   x 4 = INR 312,776
+
+4. Vietnam -> Cambodia
+   Days: Phu Quoc (PQC) 3n, Ho Chi Minh City (SGN) 3n, Siem Reap (SAI) 1n
+   2026-10-18  BLR -> PQC   VietJet Air           23:35-12:20 11h 15m  1 stop via SGN       INR 24,996
+        flight VJ 1802, VJ 335 | cabin 1 PCS/Adult | check-in 0 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-21  PQC -> SGN   VietJet Air           18:20-19:20 1h 00m   non-stop             INR 2,839
+        flight VJ 338
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-SGN-21/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-24  SGN -> SAI   Air Cambodia          20:25-21:55 1h 30m   non-stop             INR 12,593
+        flight K6 829
+        book: https://www.makemytrip.com/flight/search?itinerary=SGN-SAI-24/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-25  SAI -> BLR   Bangkok Airways, Air  13:20-09:40 21h 50m  2 stops via BKK,BOM  INR 42,429
+        flight PG 906, AI 2338 | cabin 7 KGS/Adult | check-in 30 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=SAI-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 82,857   x 4 = INR 331,428
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

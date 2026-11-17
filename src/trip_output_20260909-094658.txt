@@ -1,0 +1,19 @@
+==============================================================================
+TRIP PLAN - country comparison
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-0d
+Nights allowed  : 5 to 7
+Round trip      : yes
+Generated       : 2026-09-09 09:46:58
+
+------------------------------------------------------------------------------
+NOT PRICED
+------------------------------------------------------------------------------
+  Vietnam (Ho Chi Minh City) no flights found on any searched date
+  Cambodia (Siem Reap) no flights found on any searched date
+
+No priced options. Either every search failed or the search
+budget ran out before any country was costed. Re-run to
+continue - completed searches are cached.

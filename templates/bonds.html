@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Bonds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+        .card { @apply bg-white rounded-lg shadow-sm border border-gray-200; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .data-table { border-collapse: collapse; min-width: 960px; width: 100%; }
+        .data-table th, .data-table td {
+            padding: 9px 12px; text-align: left;
+            border-bottom: 1px solid #e5e7eb; white-space: nowrap;
+        }
+        .data-table td { font-size: 12px; color: #374151; }
+        .data-table td.wrap { white-space: normal; min-width: 160px; max-width: 240px; }
+        .col-header { background: #eff6ff; color: #1e40af; font-size: 11px; font-weight: 600;
+                      text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 10; }
+        .data-table tbody tr:nth-child(even) { background: #f0f9ff; }
+        .data-table tbody tr:hover { background: #dbeafe; cursor: pointer; }
+
+        .table-scroll { overflow-x: auto; overflow-y: auto; max-height: 60vh; }
+        .table-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .table-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+        .table-scroll::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 3px; }
+
+        /* Zone badges */
+        .zone-green    { background:#dcfce7; color:#15803d; }
+        .zone-yellow   { background:#fef9c3; color:#854d0e; }
+        .zone-orange   { background:#ffedd5; color:#9a3412; }
+        .zone-red      { background:#fee2e2; color:#991b1b; }
+        .zone-dark_red { background:#fecaca; color:#7f1d1d; }
+        .zone-unrated  { background:#f3f4f6; color:#6b7280; }
+        .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; white-space:nowrap; }
+
+        /* Filter row */
+        .filter-select { padding:8px 12px; border:1px solid #bfdbfe; border-radius:8px; background:#eff6ff;
+                         font-size:13px; color:#1e293b; outline:none; cursor:pointer; }
+        .filter-select:focus { border-color:#3b82f6; }
+
+        @media print {
+            nav, .no-print { display: none !important; }
+            .table-scroll { max-height: none; overflow: visible; }
+        }
+
+        .btn-valuation {
+            padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer;
+            background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe;
+            display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; transition: background .15s, color .15s;
+        }
+        .btn-valuation:hover { background: #1e40af; color: #fff; border-color: #1e40af; }
+        .btn-valuation:disabled { opacity: .6; cursor: not-allowed; }
+
+        @keyframes spin-sm { to { transform: rotate(360deg); } }
+        .spinner-sm {
+            width: 10px; height: 10px; border: 2px solid currentColor;
+            border-top-color: transparent; border-radius: 50%;
+            display: inline-block; animation: spin-sm .7s linear infinite;
+        }
+
+        .pdf-icon-btn {
+            background: none; border: 1px solid transparent; cursor: pointer; padding: 4px 6px;
+            border-radius: 6px; display: inline-flex; align-items: center; transition: background .15s, border-color .15s;
+        }
+        .pdf-icon-btn.verdict-yes  { color: #16a34a; }
+        .pdf-icon-btn.verdict-no   { color: #dc2626; }
+        .pdf-icon-btn.verdict-caution { color: #d97706; }
+        .pdf-icon-btn.verdict-yes:hover  { background: #dcfce7; border-color: #15803d; }
+        .pdf-icon-btn.verdict-no:hover   { background: #fee2e2; border-color: #b91c1c; }
+        .pdf-icon-btn.verdict-caution:hover { background: #fef3c7; border-color: #b45309; }
+
+        /* Selected bonds panel */
+        .sel-table { width:100%; border-collapse:collapse; font-size:13px; }
+        .sel-table th { padding:8px 12px; font-weight:700; color:#15803d; background:#dcfce7; border-bottom:2px solid #86efac; }
+        .sel-table td { padding:8px 12px; border-bottom:1px solid #bbf7d0; }
+        .sel-table tr:last-child td { border-bottom:none; }
+        .alloc-input {
+            width:56px; padding:3px 6px; border:1px solid #86efac; border-radius:6px;
+            font-size:12px; font-weight:700; text-align:center; outline:none; background:white;
+        }
+        .alloc-input:focus { border-color:#15803d; }
+        .invest-input-wrap {
+            display:flex; align-items:center; gap:4px;
+            background:white; border:1px solid #bbf7d0; border-radius:6px; padding:4px 8px;
+        }
+        .invest-input {
+            border:none; outline:none; width:130px; font-size:13px; font-weight:700; color:#1e293b;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+        input[type=number] { -moz-appearance:textfield; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <!-- Page header -->
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-blue-700 mb-1">India Bonds</h2>
+                <p class="text-gray-500 text-sm">Bonds from IndiaBonds.com — scored and filtered</p>
+            </div>
+
+            <!-- ── Recommendation Highlighter ── -->
+            <div id="recommendationCard" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px 22px;margin-bottom:14px">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+                    <div>
+                        <span style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em">Recommendation</span>
+                        <p id="recommendText" style="font-size:14px;color:#374151;margin:4px 0 0;line-height:1.5">Loading recommendation…</p>
+                    </div>
+                    <div id="debtGapStats" style="display:flex;gap:10px;flex-wrap:wrap;flex-shrink:0"></div>
+                </div>
+            </div>
+
+            <!-- ── Selected Bonds Panel (hidden until bonds are selected) ── -->
+            <div id="selectedBondsPanel" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 22px;margin-bottom:14px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+                    <div>
+                        <span style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em">Selected Bonds</span>
+                        <span id="selectedCount" style="font-size:12px;color:#6b7280;font-weight:500;margin-left:6px"></span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <label style="font-size:12px;font-weight:600;color:#374151">Investment Amount</label>
+                        <div class="invest-input-wrap">
+                            <span style="color:#6b7280;font-size:13px;flex-shrink:0">₹</span>
+                            <input id="investAmountInput" type="text" inputmode="numeric" class="invest-input"
+                                oninput="updateSelectedValues()" onblur="formatInvestInput()" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="sel-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left">Bond Name</th>
+                                <th style="text-align:center">Rating</th>
+                                <th style="text-align:center">YTM %</th>
+                                <th style="text-align:center">Allocation %</th>
+                                <th style="text-align:right">Investment Value</th>
+                                <th style="text-align:right">Monthly Return</th>
+                            </tr>
+                        </thead>
+                        <tbody id="selectedBondsBody"></tbody>
+                    </table>
+                </div>
+                <div id="selectedBondsSummary" style="margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;justify-content:flex-end;background:#dcfce7;border-radius:8px;padding:12px 16px"></div>
+            </div>
+
+            <!-- ── Main card: Filters + Table ── -->
+            <div class="card mb-3">
+                <!-- Toolbar -->
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between gap-4 flex-wrap no-print">
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <label style="font-size:12px;font-weight:600;color:#374151">Min Rating</label>
+                            <select class="filter-select" id="filterRating" onchange="applyFilters()">
+                                <option value="">All Ratings</option>
+                                <option value="AAA">AAA</option>
+                                <option value="AA+">AA+</option>
+                                <option value="AA">AA</option>
+                                <option value="AA-">AA-</option>
+                                <option value="A+">A+</option>
+                                <option value="A">A</option>
+                                <option value="A-">A-</option>
+                                <option value="BBB+">BBB+</option>
+                                <option value="BBB">BBB</option>
+                                <option value="BBB-">BBB-</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <label style="font-size:12px;font-weight:600;color:#374151">Maturity</label>
+                            <select class="filter-select" id="filterMaturity" onchange="applyFilters()">
+                                <option value="">Any tenure</option>
+                                <option value="1">Up to 1 year</option>
+                                <option value="2">Up to 2 years</option>
+                                <option value="3">Up to 3 years</option>
+                                <option value="5">Up to 5 years</option>
+                                <option value="10">Up to 10 years</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <label style="font-size:12px;font-weight:600;color:#374151">Frequency</label>
+                            <select class="filter-select" id="filterFrequency" onchange="applyFilters()">
+                                <option value="">All frequencies</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Semi-annually">Semi-annually</option>
+                                <option value="Annually">Annually</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="downloadPDF()"
+                            style="padding:8px 16px;background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
+                            ⬇ Download PDF
+                        </button>
+                        <a href="/bonds-progress"
+                            style="padding:8px 16px;background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none">
+                            📡 Scrap Progress
+                        </a>
+                        <span id="scrapeStatus" class="text-sm font-medium hidden"></span>
+                        <button id="scrapeBtn" onclick="triggerScrape()"
+                            style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(37,99,235,.2)">
+                            <span id="scrapeIcon">⟳</span>
+                            <span id="scrapeLabel">Refresh Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="table-scroll">
+                    <table class="data-table" id="bondsTable">
+                        <thead>
+                            <tr>
+                                <th class="col-header" style="width:44px;text-align:center">Select</th>
+                                <th class="col-header" style="min-width:200px">Issuer</th>
+                                <th class="col-header" style="min-width:120px">ISIN</th>
+                                <th class="col-header" style="min-width:80px">Rating</th>
+                                <th class="col-header" style="min-width:90px">Coupon %</th>
+                                <th class="col-header" style="min-width:80px">YTM %</th>
+                                <th class="col-header" style="min-width:90px">Maturity</th>
+                                <th class="col-header" style="min-width:110px">Frequency</th>
+                                <th class="col-header" style="min-width:70px">Score</th>
+                                <th class="col-header" style="min-width:80px">Zone</th>
+                                <th class="col-header" style="min-width:140px">Report</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="11" class="text-center text-gray-400 py-12">Loading bonds…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Showing X/Y bonds -->
+            <div style="text-align:right;padding:4px 2px">
+                <span id="filterCount" style="font-size:12px;color:#6b7280"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    let allBonds = [];
+    let totalBondsInDB = 0;
+    let scrapePollInterval = null;
+    const valuationPollers = {};   // isin → intervalId
+
+    // Selected bonds state
+    let selectedBondIsins = [];   // ISINs from/to MongoDB
+    let bondDetailsCache = {};    // isin → scored bond object
+    let debtGapData = null;
+    let investmentAmount = 0;
+    let bondAllocations = {};     // isin → allocation pct (user-editable)
+
+    // ── Investment amount input helpers ────────────────────────────────────────
+    function parseInvestInput() {
+        const raw = (document.getElementById('investAmountInput')?.value || '').replace(/,/g, '');
+        return parseFloat(raw) || 0;
+    }
+    function setInvestInput(v) {
+        const el = document.getElementById('investAmountInput');
+        if (el) el.value = v > 0 ? Math.round(v).toLocaleString('en-IN') : '';
+    }
+    function formatInvestInput() {
+        const v = parseInvestInput();
+        setInvestInput(v);
+    }
+
+    // ── Money formatter ────────────────────────────────────────────────────────
+    function fmtMoneyShort(v) {
+        if (v == null || !isFinite(v)) return '—';
+        if (v === 0) return '₹0';
+        const abs = Math.abs(v);
+        const sign = v < 0 ? '−' : '';
+        if (abs >= 1e7) return sign + '₹' + (abs / 1e7).toFixed(2) + ' Cr';
+        if (abs >= 1e5) return sign + '₹' + (abs / 1e5).toFixed(2) + ' L';
+        return sign + '₹' + Math.round(abs).toLocaleString('en-IN');
+    }
+
+    // ── Stats (used only for totalBondsInDB) ──────────────────────────────────
+    async function loadStats() {
+        try {
+            const r = await fetch('/api/bonds/stats');
+            const d = await r.json();
+            totalBondsInDB = d.total_bonds ?? 0;
+        } catch (e) { /* non-critical */ }
+    }
+
+    // ── Debt Gap ───────────────────────────────────────────────────────────────
+    async function loadDebtGap() {
+        try {
+            const r = await fetch('/api/bonds/debt-gap');
+            const d = await r.json();
+            debtGapData = d;
+
+            const recEl  = document.getElementById('recommendText');
+            const statsEl = document.getElementById('debtGapStats');
+
+            if (d.gap == null) {
+                recEl.innerHTML = 'Add your existing assets in <a href="/profile-page" style="color:#2563eb;text-decoration:underline">Profile</a> to see a personalised Debt allocation recommendation.';
+                statsEl.innerHTML = '';
+                return;
+            }
+
+            const gap    = d.gap;
+            const invest = d.invest_recommended || 0;
+            investmentAmount = invest;
+
+            if (gap >= 0) {
+                recEl.innerHTML = 'Your Debt allocation is <span style="color:#15803d;font-weight:700">on track</span>. Explore bonds below to further optimise your portfolio.';
+            } else {
+                recEl.innerHTML =
+                    'Choose a few bonds to invest <span style="font-weight:800;color:#1e40af;font-size:15px">' +
+                    fmtMoneyShort(invest) + '</span> and fill your Debt allocation shortfall.';
+            }
+
+            // Update investment input if not yet touched
+            if (!document.getElementById('investAmountInput')?.value) setInvestInput(invest);
+
+            statsEl.innerHTML = `
+                <div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:8px 14px;text-align:center;min-width:90px">
+                    <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:2px">Current Bonds</div>
+                    <div style="font-size:13px;font-weight:800;color:#374151">${fmtMoneyShort(d.current_debt)}</div>
+                </div>
+                <div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:8px 14px;text-align:center;min-width:90px">
+                    <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:2px">Target Value</div>
+                    <div style="font-size:13px;font-weight:800;color:#1e40af">${fmtMoneyShort(d.target_debt)} <span style="font-size:11px;font-weight:500">(${d.target_pct}%)</span></div>
+                </div>
+                <div style="background:${gap < 0 ? '#fef2f2' : '#f0fdf4'};border:1px solid ${gap < 0 ? '#fca5a5' : '#86efac'};border-radius:8px;padding:8px 14px;text-align:center;min-width:90px">
+                    <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:2px">To be invested</div>
+                    <div style="font-size:13px;font-weight:800;color:${gap < 0 ? '#dc2626' : '#15803d'}">${gap < 0 ? fmtMoneyShort(Math.abs(gap)) : '—'}</div>
+                </div>`;
+        } catch (e) {
+            document.getElementById('recommendText').textContent = 'Unable to load recommendation.';
+        }
+    }
+
+    // ── Selected Bonds ─────────────────────────────────────────────────────────
+    async function loadSelectedBonds() {
+        try {
+            const r = await fetch('/api/bonds/selected');
+            const d = await r.json();
+            selectedBondIsins = d.selected_bond_isins || [];
+            (d.bonds || []).forEach(b => { bondDetailsCache[b.isin] = b; });
+            bondAllocations = {};
+            renderSelectedPanel();
+        } catch (e) {
+            selectedBondIsins = [];
+        }
+    }
+
+    async function toggleBondSelection(isin, checkboxEl) {
+        const wasSelected = selectedBondIsins.includes(isin);
+
+        // Optimistic update
+        if (wasSelected) {
+            selectedBondIsins = selectedBondIsins.filter(i => i !== isin);
+        } else {
+            selectedBondIsins = [...selectedBondIsins, isin];
+            const bond = allBonds.find(b => b.isin === isin);
+            if (bond) bondDetailsCache[isin] = bond;
+        }
+        bondAllocations = {};   // reset to auto-computed defaults
+        renderSelectedPanel();
+
+        // Persist
+        try {
+            await fetch('/api/bonds/selected/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isin }),
+            });
+        } catch (e) {
+            // Roll back on failure
+            if (wasSelected) {
+                selectedBondIsins = [...selectedBondIsins, isin];
+            } else {
+                selectedBondIsins = selectedBondIsins.filter(i => i !== isin);
+            }
+            bondAllocations = {};
+            renderSelectedPanel();
+            if (checkboxEl) checkboxEl.checked = wasSelected;
+        }
+    }
+
+    function computeAllocations(bonds) {
+        if (bonds.length === 0) return {};
+        if (bonds.length === 1) return { [bonds[0].isin]: 100 };
+
+        const pts = bonds.map(b => Math.max(1, b.credit_pts || 1));
+        const total = pts.reduce((s, p) => s + p, 0);
+
+        const allocs = {};
+        let remaining = 100;
+        bonds.forEach((b, i) => {
+            if (i === bonds.length - 1) {
+                allocs[b.isin] = Math.max(0, remaining);
+            } else {
+                const pct = Math.round((pts[i] / total) * 100);
+                allocs[b.isin] = pct;
+                remaining -= pct;
+            }
+        });
+        return allocs;
+    }
+
+    function renderSelectedPanel() {
+        const panel = document.getElementById('selectedBondsPanel');
+
+        if (selectedBondIsins.length === 0) {
+            panel.style.display = 'none';
+            return;
+        }
+
+        panel.style.display = 'block';
+        document.getElementById('selectedCount').textContent = `(${selectedBondIsins.length} selected)`;
+
+        const bonds = selectedBondIsins.map(isin => bondDetailsCache[isin]).filter(Boolean);
+
+        // Initialise allocations from ratings if not yet set by user
+        if (Object.keys(bondAllocations).length === 0) {
+            bondAllocations = computeAllocations(bonds);
+        }
+
+        // Pre-fill invest amount input once
+        if (!document.getElementById('investAmountInput')?.value && investmentAmount > 0) {
+            setInvestInput(investmentAmount);
+        }
+
+        const safeId = isin => isin.replace(/[^a-zA-Z0-9]/g, '_');
+
+        document.getElementById('selectedBondsBody').innerHTML = bonds.map(b => {
+            const alloc = bondAllocations[b.isin] !== undefined ? bondAllocations[b.isin] : 0;
+            const sid = safeId(b.isin);
+            return `<tr>
+                <td style="white-space:normal;max-width:220px;font-weight:600;color:#1e293b">${b.issuer_name || b.isin}</td>
+                <td style="text-align:center"><span class="badge" style="background:#eff6ff;color:#1e40af">${b.rating || '—'}</span></td>
+                <td style="text-align:center;font-weight:600;color:#1e40af">${b.ytm != null ? b.ytm.toFixed(2) + '%' : '—'}</td>
+                <td style="text-align:center">
+                    <input type="number" min="0" max="100" value="${alloc}" class="alloc-input"
+                        oninput="onAllocChange('${b.isin}',this.value)">
+                    <span style="font-size:11px;color:#6b7280">%</span>
+                </td>
+                <td style="text-align:right;font-weight:700;color:#1e293b" id="selinvest_${sid}">—</td>
+                <td style="text-align:right;font-weight:700;color:#15803d" id="selmonthly_${sid}">—</td>
+            </tr>`;
+        }).join('');
+
+        updateSelectedValues();
+    }
+
+    function updateSelectedValues() {
+        const totalInvest = parseInvestInput();
+
+        const bonds = selectedBondIsins.map(isin => bondDetailsCache[isin]).filter(Boolean);
+        let totalMonthly = 0;
+        let totalYearly  = 0;
+
+        bonds.forEach(b => {
+            const safeId = b.isin.replace(/[^a-zA-Z0-9]/g, '_');
+            const alloc  = bondAllocations[b.isin] !== undefined ? bondAllocations[b.isin] : 0;
+            const investVal  = totalInvest * (alloc / 100);
+            const ytm        = b.ytm || 0;
+            const monthlyRet = investVal * (ytm / 100) / 12;
+            const yearlyRet  = investVal * (ytm / 100);
+            totalMonthly += monthlyRet;
+            totalYearly  += yearlyRet;
+
+            const invEl = document.getElementById(`selinvest_${safeId}`);
+            if (invEl) invEl.textContent = fmtMoneyShort(investVal);
+            const monEl = document.getElementById(`selmonthly_${safeId}`);
+            if (monEl) monEl.textContent = fmtMoneyShort(monthlyRet);
+        });
+
+        // Allocation-weighted average YTM
+        const totalAlloc    = bonds.reduce((s, b) => s + (bondAllocations[b.isin] || 0), 0);
+        const weightedReturn = totalAlloc > 0
+            ? bonds.reduce((s, b) => s + (bondAllocations[b.isin] || 0) * (b.ytm || 0), 0) / totalAlloc
+            : 0;
+
+        document.getElementById('selectedBondsSummary').innerHTML = `
+            <div style="text-align:right">
+                <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:3px">Average Return %</div>
+                <div style="font-size:22px;font-weight:800;color:#374151">${weightedReturn.toFixed(2)}%</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:3px">Yearly Income Total</div>
+                <div style="font-size:22px;font-weight:800;color:#1e40af">${fmtMoneyShort(totalYearly)}</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:3px">Monthly Income Total</div>
+                <div style="font-size:22px;font-weight:800;color:#15803d">${fmtMoneyShort(totalMonthly)}</div>
+            </div>`;
+    }
+
+    function onAllocChange(isin, value) {
+        bondAllocations[isin] = parseFloat(value) || 0;
+        updateSelectedValues();
+    }
+
+    // ── Table ──────────────────────────────────────────────────────────────────
+    async function loadBonds() {
+        const rating    = document.getElementById('filterRating').value;
+        const maturity  = document.getElementById('filterMaturity').value;
+        const frequency = document.getElementById('filterFrequency').value;
+
+        let url = '/api/bonds?sort=score&order=desc';
+        if (rating)    url += `&min_rating_level=${encodeURIComponent(rating)}`;
+        if (maturity)  url += `&mat_max_years=${maturity}`;
+        if (frequency) url += `&frequency=${encodeURIComponent(frequency)}`;
+
+        try {
+            const r  = await fetch(url);
+            const d  = await r.json();
+            allBonds = d.bonds || [];
+            renderTable(allBonds);
+
+            const total    = totalBondsInDB || d.total || allBonds.length;
+            const filtered = allBonds.length;
+            document.getElementById('filterCount').textContent =
+                filtered === total
+                    ? `Showing ${filtered} bond${filtered !== 1 ? 's' : ''}`
+                    : `Showing ${filtered}/${total} bonds`;
+        } catch (e) {
+            document.getElementById('tableBody').innerHTML =
+                '<tr><td colspan="11" class="text-center text-red-500 py-8">Error loading bonds</td></tr>';
+        }
+    }
+
+    function applyFilters() { loadBonds().then(checkActiveValuations); }
+
+    function zoneBadge(zone) {
+        const labels = { green:'Green', yellow:'Yellow', orange:'Orange', red:'Red', dark_red:'Dark Red', unrated:'Unrated' };
+        const cls    = zone ? `zone-${zone}` : 'zone-unrated';
+        return `<span class="badge ${cls}">${labels[zone] || zone || '—'}</span>`;
+    }
+
+    function reportCell(b) {
+        if (!b.isin) return '<td></td>';
+        const isin   = b.isin;
+        const safeId = isin.replace(/[^a-zA-Z0-9]/g, '_');
+        if (b.report_generated_at) {
+            const dt = new Date(b.report_generated_at).toLocaleString('en-IN', {
+                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+            const verdict      = (b.verdict_rating || '').toUpperCase();
+            const verdictClass = verdict === 'YES' ? 'verdict-yes' : verdict === 'NO' ? 'verdict-no' : 'verdict-caution';
+            const verdictLabel = verdict || 'CAUTION';
+            return `<td>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <button id="vbtn_${safeId}" class="btn-valuation" onclick="event.stopPropagation();startValuation('${isin}',this)">Bond Valuation</button>
+                    <button class="pdf-icon-btn ${verdictClass}" onclick="event.stopPropagation();downloadReport('${isin}')" title="${verdictLabel} — Download Report (${dt})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="14 2 14 8 20 8"/><rect x="3.5" y="11.5" width="12" height="5.5" rx="0.8" fill="currentColor"/><text x="9.5" y="15.6" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="4.2" font-weight="bold" fill="white" stroke="none" letter-spacing="0.3">PDF</text></svg>
+                    </button>
+                </div>
+            </td>`;
+        }
+        return `<td>
+            <button id="vbtn_${safeId}" class="btn-valuation" onclick="event.stopPropagation();startValuation('${isin}',this)">Bond Valuation</button>
+        </td>`;
+    }
+
+    function renderTable(bonds) {
+        if (!bonds.length) {
+            document.getElementById('tableBody').innerHTML =
+                '<tr><td colspan="11" class="text-center text-gray-400 py-8">No bonds match the current filters</td></tr>';
+            return;
+        }
+        document.getElementById('tableBody').innerHTML = bonds.map(b => {
+            const isSelected = b.isin ? selectedBondIsins.includes(b.isin) : false;
+            const safeId     = b.isin ? b.isin.replace(/[^a-zA-Z0-9]/g, '_') : '';
+            return `
+            <tr ${b.url ? `onclick="window.open('${b.url}','_blank')"` : ''}>
+                <td onclick="event.stopPropagation()" style="text-align:center;padding:6px 8px">
+                    <input type="checkbox" id="chk_${safeId}" ${isSelected ? 'checked' : ''}
+                        onchange="toggleBondSelection('${b.isin}',this)"
+                        style="width:15px;height:15px;cursor:pointer;accent-color:#2563eb">
+                </td>
+                <td class="wrap font-medium text-gray-900">${b.issuer_name || '—'}</td>
+                <td style="font-size:11px;color:#6b7280;font-family:monospace">${b.isin || '—'}</td>
+                <td><span class="badge" style="background:#eff6ff;color:#1e40af">${b.rating || '—'}</span></td>
+                <td class="font-semibold">${b.coupon_rate != null ? b.coupon_rate.toFixed(2) + '%' : '—'}</td>
+                <td class="font-semibold text-blue-700">${b.ytm != null ? b.ytm.toFixed(2) + '%' : '—'}</td>
+                <td>${b.maturity_tenure || '—'}</td>
+                <td style="font-size:11px;color:#6b7280">${b.payment_frequency_norm || b.payment_frequency || '—'}</td>
+                <td class="font-bold text-blue-800">${b.total_score != null ? b.total_score.toFixed(1) : '—'}</td>
+                <td>${zoneBadge(b.zone)}</td>
+                ${reportCell(b)}
+            </tr>`;
+        }).join('');
+    }
+
+    // ── Bond Valuation ─────────────────────────────────────────────────────────
+    async function checkActiveValuations() {
+        try {
+            const r      = await fetch('/api/bonds/active-valuations');
+            const active = await r.json();   // { isin: task_id }
+            for (const [isin, taskId] of Object.entries(active)) {
+                const safeId = isin.replace(/[^a-zA-Z0-9]/g, '_');
+                const btn    = document.getElementById(`vbtn_${safeId}`);
+                if (btn && !btn.disabled) {
+                    btn.disabled = true;
+                    btn.innerHTML = `<span class="spinner-sm"></span> Generating report…`;
+                    pollValuationTask(isin, taskId, btn);
+                }
+            }
+        } catch (e) { /* non-critical */ }
+    }
+
+    async function startValuation(isin, btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-sm"></span> Generating report…`;
+        try {
+            const r = await fetch(`/api/bonds/${encodeURIComponent(isin)}/valuation`, { method: 'POST' });
+            const d = await r.json();
+            if (d.error) { resetValuationBtn(btn); alert(d.error); return; }
+            pollValuationTask(isin, d.task_id, btn);
+        } catch (e) { resetValuationBtn(btn); }
+    }
+
+    function pollValuationTask(isin, taskId, btn) {
+        if (valuationPollers[isin]) clearInterval(valuationPollers[isin]);
+        valuationPollers[isin] = setInterval(async () => {
+            try {
+                const r = await fetch(`/api/bonds/valuation/task-status/${taskId}`);
+                const d = await r.json();
+                if (d.state === 'SUCCESS') {
+                    clearInterval(valuationPollers[isin]);
+                    delete valuationPollers[isin];
+                    resetValuationBtn(btn);
+                    await loadBonds();
+                    await checkActiveValuations();
+                } else if (d.state === 'FAILURE') {
+                    clearInterval(valuationPollers[isin]);
+                    delete valuationPollers[isin];
+                    resetValuationBtn(btn);
+                }
+            } catch (e) { /* keep polling */ }
+        }, 3000);
+    }
+
+    function resetValuationBtn(btn) {
+        btn.disabled = false;
+        btn.innerHTML = 'Bond Valuation';
+    }
+
+    async function downloadReport(isin) {
+        const a = document.createElement('a');
+        a.href = `/api/bonds/${encodeURIComponent(isin)}/report/download`;
+        a.download = `bond_report_${isin}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // ── Scrape trigger ─────────────────────────────────────────────────────────
+    async function triggerScrape() {
+        const btn      = document.getElementById('scrapeBtn');
+        const icon     = document.getElementById('scrapeIcon');
+        const lbl      = document.getElementById('scrapeLabel');
+        const statusEl = document.getElementById('scrapeStatus');
+
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor  = 'not-allowed';
+        lbl.textContent = 'Queuing…';
+
+        try {
+            const r = await fetch('/api/bonds/scrape?resume=false', { method: 'POST' });
+            const d = await r.json();
+            if (d.error) {
+                statusEl.textContent = '⚠ ' + d.error;
+                statusEl.className   = 'text-sm font-medium text-red-600';
+                statusEl.classList.remove('hidden');
+                resetScrapeBtn();
+                return;
+            }
+            lbl.textContent = 'Running…';
+            statusEl.textContent = '⏳ Scrap running in background…';
+            statusEl.className   = 'text-sm font-medium text-blue-600';
+            statusEl.classList.remove('hidden');
+            pollScrapeTask(d.task_id);
+        } catch (e) {
+            statusEl.textContent = '⚠ Error starting scrape';
+            statusEl.className   = 'text-sm font-medium text-red-600';
+            statusEl.classList.remove('hidden');
+            resetScrapeBtn();
+        }
+    }
+
+    function pollScrapeTask(taskId) {
+        clearInterval(scrapePollInterval);
+        scrapePollInterval = setInterval(async () => {
+            try {
+                const r = await fetch(`/api/bonds/scrape-task-status/${taskId}`);
+                const d = await r.json();
+                if (d.state === 'SUCCESS') {
+                    clearInterval(scrapePollInterval);
+                    const res = d.result || {};
+                    document.getElementById('scrapeStatus').textContent =
+                        `✓ Scraped ${res.bonds_scraped || 0} bonds (${res.success || 0} ok, ${res.skipped || 0} skipped)`;
+                    document.getElementById('scrapeStatus').className = 'text-sm font-medium text-green-600';
+                    resetScrapeBtn();
+                    await loadStats();
+                    await loadBonds();
+                    setTimeout(() => document.getElementById('scrapeStatus').classList.add('hidden'), 12000);
+                } else if (d.state === 'FAILURE') {
+                    clearInterval(scrapePollInterval);
+                    document.getElementById('scrapeStatus').textContent = '⚠ Scrap failed — check progress page';
+                    document.getElementById('scrapeStatus').className = 'text-sm font-medium text-red-600';
+                    resetScrapeBtn();
+                }
+            } catch (e) { /* keep polling */ }
+        }, 5000);
+    }
+
+    function resetScrapeBtn() {
+        const btn = document.getElementById('scrapeBtn');
+        btn.disabled = false;
+        btn.style.opacity = '';
+        btn.style.cursor  = '';
+        document.getElementById('scrapeIcon').textContent  = '⟳';
+        document.getElementById('scrapeLabel').textContent = 'Refresh Data';
+    }
+
+    // ── PDF download ───────────────────────────────────────────────────────────
+    function downloadPDF() { window.print(); }
+
+    // ── Init ───────────────────────────────────────────────────────────────────
+    (async () => {
+        await Promise.all([loadStats(), loadSelectedBonds(), loadDebtGap()]);
+        updateSelectedValues();   // recalc now that invest amount is set
+        await loadBonds();
+        await checkActiveValuations();
+    })();
+    </script>
+</body>
+</html>

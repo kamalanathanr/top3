@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economy Indicators Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .data-timestamp {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .indicators-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .indicators-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #34495e;
+        }
+
+        .indicators-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .indicators-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .indicators-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Column styling */
+        .indicator-name {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 150px;
+        }
+
+        .description {
+            color: #7f8c8d;
+            font-size: 13px;
+            line-height: 1.4;
+            min-width: 200px;
+        }
+
+        .value {
+            font-weight: 500;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .value.normal {
+            color: #2c3e50;
+        }
+
+        .value.red {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .value.green {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .indicates {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.4;
+            min-width: 220px;
+        }
+
+        .indicates.red {
+            color: #c0392b;
+            background: #fadbd8;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .indicates.green {
+            color: #186a3b;
+            background: #d5f4e6;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .indicates.gray {
+            color: #555;
+            background: #ecf0f1;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Indian Economic Indicators</h1>
+    <div class="data-timestamp">Last Updated: <strong>May 2026</strong></div>
+
+    <table class="indicators-table">
+        <thead>
+            <tr>
+                <th>Indicator</th>
+                <th>What It Means</th>
+                <th>Value</th>
+                <th>Market Interpretation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example rows with different color scenarios -->
+
+            <!-- Green scenario: Good indicators -->
+            <tr>
+                <td class="indicator-name">Repo Rate</td>
+                <td class="description">Rate at which RBI lends to banks overnight</td>
+                <td class="value normal">4.25%</td>
+                <td class="indicates green">✓ Low repo rate - RBI is supportive, good for borrowing</td>
+            </tr>
+
+            <!-- Red scenario: Caution indicators -->
+            <tr>
+                <td class="indicator-name">NIFTY PE</td>
+                <td class="description">Price-to-Earnings ratio of NIFTY 50 stocks</td>
+                <td class="value normal">26.8x</td>
+                <td class="indicates red">⚠ Overvalued - caution advised</td>
+            </tr>
+
+            <!-- Gray scenario: Neutral indicators -->
+            <tr>
+                <td class="indicator-name">India VIX</td>
+                <td class="description">Volatility index measuring market fear/uncertainty</td>
+                <td class="value normal">18.5</td>
+                <td class="indicates gray">Moderate volatility - normal trading conditions</td>
+            </tr>
+
+            <!-- Error scenario: Data not available -->
+            <tr>
+                <td class="indicator-name">CPI Inflation</td>
+                <td class="description">Rate of increase in general price levels</td>
+                <td class="value red">⚠️ Data not available</td>
+                <td class="indicates gray">Unable to fetch data from source</td>
+            </tr>
+
+            <tr>
+                <td class="indicator-name">USD/INR</td>
+                <td class="description">Indian Rupee value relative to US Dollar</td>
+                <td class="value normal">83.45</td>
+                <td class="indicates gray">Rupee stable - normal conditions</td>
+            </tr>
+
+            <tr>
+                <td class="indicator-name">Gold 22K (per gram)</td>
+                <td class="description">Gold price in Indian Rupees per gram</td>
+                <td class="value normal">₹68,500</td>
+                <td class="indicates green">Normal gold prices - moderate valuation</td>
+            </tr>
+
+            <tr>
+                <td class="indicator-name">Crude Oil (Brent)</td>
+                <td class="description">Price of global crude oil benchmark</td>
+                <td class="value normal">USD 82 per barrel</td>
+                <td class="indicates green">Oil prices moderate - lower fuel costs</td>
+            </tr>
+
+            <tr>
+                <td class="indicator-name">10Y Bond Yield</td>
+                <td class="description">Interest rate on 10-year government bonds</td>
+                <td class="value normal">6.95%</td>
+                <td class="indicates gray">Moderate yield - balanced borrowing cost</td>
+            </tr>
+
+            <tr>
+                <td class="indicator-name">Gold Price Trend</td>
+                <td class="description">Safe-haven asset price movement direction</td>
+                <td class="value normal">Bullish</td>
+                <td class="indicates green">Gold rising - safe-haven demand increasing</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // JavaScript to dynamically populate table from API
+        // Example:
+        /*
+        fetch('/api/economy-indicators')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.querySelector('.indicators-table tbody');
+                tbody.innerHTML = '';
+
+                data.indicators.forEach(ind => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="indicator-name">${ind.indicator}</td>
+                        <td class="description">${ind.description}</td>
+                        <td class="value ${ind.value_color}">${ind.value}</td>
+                        <td class="indicates ${ind.indicates_color}">${ind.indicates}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+        */
+    </script>
+</body>
+</html>

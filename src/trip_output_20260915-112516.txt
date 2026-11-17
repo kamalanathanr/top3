@@ -1,0 +1,66 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-15 11:25:16
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+1  Singapore only (1 city)           3       2026-10-16 - 2026-10-19 INR  146,392
+2  Indonesia only (1 city)           5       2026-10-18 - 2026-10-23 INR  276,260
+
+CHEAPEST: Singapore only (1 city) - INR 146,392 for 4 travellers, 3 nights
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Singapore only (1 city)
+   Days: Singapore (SIN) 3n
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  SIN -> BLR   IndiGo                04:40-20:10 18h 00m  1 stop via MAA       INR 18,844
+        flight 6E 1002, 6E 189
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-19/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 36,598   x 4 = INR 146,392
+
+2. Indonesia only (1 city)
+   Days: Denpasar (Bali) (DPS) 5n
+   2026-10-18  BLR -> DPS   Batik Air Malaysia    23:20-12:00 10h 10m  1 stop via KUL       INR 30,586
+        flight OD 242, OD 306 | cabin 7 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-23  DPS -> BLR   AirAsia Berhad        15:25-22:45 9h 50m   1 stop via KUL       INR 38,479
+        flight AK 377, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 69,065   x 4 = INR 276,260
+
+3. Indonesia -> Singapore   [INCOMPLETE]
+   Days: Denpasar (Bali) (DPS) 5n, Singapore (SIN) 2n
+   ! no flights for: DPS->SIN 2026-10-21, SIN->BLR 2026-10-23
+   2026-10-16  BLR -> DPS   IndiGo                21:15-12:30 12h 45m  1 stop via SIN       INR 44,330
+        flight 6E 1247, 6E 3656
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-21  DPS -> SIN   NO FLIGHT FOUND
+   2026-10-23  SIN -> BLR   NO FLIGHT FOUND
+
+4. Singapore -> Indonesia   [INCOMPLETE]
+   Days: Singapore (SIN) 2n, Denpasar (Bali) (DPS) 5n
+   ! no flights for: SIN->DPS 2026-10-18
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  SIN -> DPS   NO FLIGHT FOUND
+   2026-10-23  DPS -> BLR   AirAsia Berhad        15:25-22:45 9h 50m   1 stop via KUL       INR 38,479
+        flight AK 377, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

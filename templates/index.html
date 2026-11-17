@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover — Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+        .card { @apply bg-white rounded-xl shadow-sm border border-gray-200; }
+        .section-header { @apply px-8 py-5 border-b border-blue-100 bg-blue-50 rounded-t-xl; }
+        .section-body { @apply p-8; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-12">
+        <div class="max-w-5xl mx-auto px-6">
+
+            <div class="mb-8">
+                <h2 class="text-4xl font-bold text-blue-700 mb-2">Portfolio Overview</h2>
+                <p class="text-gray-500">Your wealth snapshot — today and in the future</p>
+            </div>
+
+            <!-- ══ Current Portfolio ══ -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 id="currentTitle" class="text-lg font-bold text-blue-800">Loading…</h3>
+                    <p id="currentSubtitle" class="text-sm text-blue-600 mt-0.5">Current asset allocation from your profile</p>
+                </div>
+                <div class="section-body">
+                    <div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap">
+                        <!-- Chart -->
+                        <div style="position:relative;width:220px;height:220px;flex-shrink:0">
+                            <canvas id="currentPie"></canvas>
+                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none">
+                                <div style="font-size:10px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Net Worth</div>
+                                <div id="currentPieCenterVal" style="font-size:16px;font-weight:800;color:#1e40af;line-height:1.2;margin-top:2px">—</div>
+                            </div>
+                        </div>
+                        <!-- Breakdown table -->
+                        <div style="flex:1;min-width:260px">
+                            <table style="width:100%;border-collapse:collapse;font-size:14px">
+                                <thead>
+                                    <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb">
+                                        <th style="text-align:left;padding:10px 12px;font-weight:700;color:#374151">Asset</th>
+                                        <th style="text-align:right;padding:10px 12px;font-weight:700;color:#374151">Value</th>
+                                        <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Allocation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="currentTableBody">
+                                    <tr><td colspan="3" style="padding:24px;text-align:center;color:#9ca3af;font-style:italic">Loading…</td></tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="background:#eff6ff;border-top:2px solid #bfdbfe">
+                                        <td style="padding:12px;font-weight:700;color:#1e40af">Total Net Worth</td>
+                                        <td id="currentTotal" style="padding:12px;text-align:right;font-weight:800;font-size:15px;color:#1e40af">—</td>
+                                        <td style="padding:12px;text-align:center;font-weight:700;color:#1e40af">100%</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ Future Portfolio ══ -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 id="futureTitle" class="text-lg font-bold text-blue-800">Loading…</h3>
+                    <p id="futureSubtitle" class="text-sm text-blue-600 mt-0.5">Projected allocation from Base Asset Allocation and Future Wealth Projection</p>
+                </div>
+                <div class="section-body">
+                    <div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap">
+                        <!-- Chart -->
+                        <div style="position:relative;width:220px;height:220px;flex-shrink:0">
+                            <canvas id="futurePie"></canvas>
+                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none">
+                                <div style="font-size:10px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Projected</div>
+                                <div id="futurePieCenterVal" style="font-size:16px;font-weight:800;color:#1e40af;line-height:1.2;margin-top:2px">—</div>
+                            </div>
+                        </div>
+                        <!-- Breakdown table -->
+                        <div style="flex:1;min-width:360px;overflow-x:auto">
+                            <table style="width:100%;border-collapse:collapse;font-size:14px">
+                                <thead>
+                                    <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb">
+                                        <th style="text-align:left;padding:10px 12px;font-weight:700;color:#374151">Asset Class</th>
+                                        <th style="text-align:right;padding:10px 12px;font-weight:700;color:#374151">Value</th>
+                                        <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Allocation</th>
+                                        <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Exp. Return %</th>
+                                        <th style="text-align:right;padding:10px 12px;font-weight:700;color:#374151">Exp. Return Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="futureTableBody">
+                                    <tr><td colspan="5" style="padding:24px;text-align:center;color:#9ca3af;font-style:italic">Loading…</td></tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="background:#eff6ff;border-top:2px solid #bfdbfe">
+                                        <td style="padding:12px;font-weight:700;color:#1e40af">Total Future Net Worth</td>
+                                        <td id="futureTotal" style="padding:12px;text-align:right;font-weight:800;font-size:15px;color:#1e40af">—</td>
+                                        <td style="padding:12px;text-align:center;font-weight:700;color:#1e40af">100%</td>
+                                        <td></td>
+                                        <td id="futureTotalReturn" style="padding:12px;text-align:right;font-weight:800;font-size:15px;color:#15803d">—</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    let currentPieChart = null;
+    let futurePieChart  = null;
+
+    // ── Mirror BASE_ALLOCATIONS from planning.html ────────────────────────
+    const BASE_ALLOCATIONS = {
+        Conservative: [
+            { asset:'Equity',     pct:20, color:'#3b82f6' },
+            { asset:'Debt',       pct:40, color:'#22c55e' },
+            { asset:'FD / Bonds', pct:25, color:'#14b8a6' },
+            { asset:'Gold',       pct:10, color:'#f59e0b' },
+            { asset:'Cash',       pct: 5, color:'#94a3b8' },
+        ],
+        Moderate: [
+            { asset:'Equity', pct:50, color:'#3b82f6' },
+            { asset:'Debt',   pct:25, color:'#22c55e' },
+            { asset:'Gold',   pct:15, color:'#f59e0b' },
+            { asset:'Cash',   pct:10, color:'#94a3b8' },
+        ],
+        Aggressive: [
+            { asset:'Equity', pct:70, color:'#3b82f6' },
+            { asset:'Debt',   pct:15, color:'#22c55e' },
+            { asset:'Gold',   pct:10, color:'#f59e0b' },
+            { asset:'Cash',   pct: 5, color:'#94a3b8' },
+        ],
+    };
+
+    const DEFAULT_RETURNS = { equity:12, debt:7, fd:7, gold:8, cash:4, real_estate:8 };
+    const RETURN_KEYS = { 'Equity':'equity', 'Debt':'debt', 'FD / Bonds':'fd', 'Gold':'gold', 'Cash':'cash' };
+
+    function calcAge(dobStr) {
+        if (!dobStr) return 0;
+        const today = new Date(), dob = new Date(dobStr);
+        let age = today.getFullYear() - dob.getFullYear();
+        const mo = today.getMonth() - dob.getMonth();
+        if (mo < 0 || (mo === 0 && today.getDate() < dob.getDate())) age--;
+        return Math.max(0, age);
+    }
+
+    function fmtCr(val) {
+        if (!isFinite(val) || val == null) return '—';
+        if (Math.abs(val) >= 1e7) return '₹' + (val / 1e7).toFixed(2) + ' Cr';
+        if (Math.abs(val) >= 1e5) return '₹' + (val / 1e5).toFixed(2) + ' L';
+        return '₹' + Math.round(val).toLocaleString('en-IN');
+    }
+
+    function parseReturnPct(str) {
+        if (!str) return null;
+        const range = str.match(/(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)\s*%/);
+        if (range) return (parseFloat(range[1]) + parseFloat(range[2])) / 2;
+        const single = str.match(/~?(\d+\.?\d*)\s*%/);
+        if (single) return parseFloat(single[1]);
+        return null;
+    }
+
+    function getExpectedReturns(instruments) {
+        const buckets = {};
+        instruments.forEach(inst => {
+            const cat = inst.category || '';
+            const sub = (inst.sub_type || '').toLowerCase();
+            let key = null;
+            if (cat === 'Stock' || cat === 'ETF') key = 'equity';
+            else if (cat === 'MF') key = (sub.includes('debt') || sub.includes('bond') || sub.includes('liquid') || sub.includes('money market')) ? 'debt' : 'equity';
+            else if (cat === 'Bond') key = 'debt';
+            else if (cat === 'FD')   key = 'fd';
+            else if (cat === 'Gold') key = 'gold';
+            else if (cat === 'Real Estate') key = 'real_estate';
+            if (!key) return;
+            const ret = parseReturnPct(inst.return_profile?.expected_annual_return);
+            if (ret !== null && ret > 0 && ret < 50) {
+                if (!buckets[key]) buckets[key] = [];
+                buckets[key].push(ret);
+            }
+        });
+        const result = { ...DEFAULT_RETURNS };
+        Object.keys(buckets).forEach(key => {
+            const arr = buckets[key];
+            if (arr.length) result[key] = parseFloat((arr.reduce((s, v) => s + v, 0) / arr.length).toFixed(1));
+        });
+        return result;
+    }
+
+    function parseMacroAdj(indicators) {
+        const allocAdj = {};
+        const find = (kws) => indicators.find(ind => kws.some(k => (ind.indicator || '').toLowerCase().includes(k.toLowerCase())));
+        const parseN = (str) => { const m = String(str || '').match(/([\d.]+)/); return m ? parseFloat(m[1]) : null; };
+        const adj = (asset, d) => { allocAdj[asset] = (allocAdj[asset] || 0) + d; };
+
+        const cpiInd = find(['CPI', 'Inflation', 'inflation rate', 'consumer price']);
+        if (cpiInd) { const v = parseN(cpiInd.value); if (v !== null && v > 6) { adj('Gold', 5); adj('Debt', -5); } }
+
+        const peInd = find(['NIFTY PE', 'Nifty PE', 'P/E', 'PE Ratio', 'nifty 50 pe', 'price to earnings']);
+        if (peInd) { const v = parseN(peInd.value); if (v !== null && v > 22) { adj('Equity', -10); adj('Debt', 5); adj('Cash', 5); } }
+
+        const vixInd = find(['VIX', 'India VIX', 'volatility index', 'fear index']);
+        if (vixInd) { const v = parseN(vixInd.value); if (v !== null && v > 20) { adj('Equity', -5); adj('Debt', 5); } }
+
+        return allocAdj;
+    }
+
+    function applyAndNormalize(base, allocAdj) {
+        const result = base.map(a => {
+            const delta = allocAdj[a.asset] || 0;
+            return { ...a, finalPct: Math.max(0, a.pct + delta) };
+        });
+        const total = result.reduce((s, a) => s + a.finalPct, 0);
+        if (total > 0 && Math.abs(total - 100) > 0.01)
+            result.forEach(a => { a.finalPct = Math.round((a.finalPct / total) * 1000) / 10; });
+        return result;
+    }
+
+    function computePortfolioReturn(alloc, returns) {
+        let total = 0;
+        alloc.forEach(a => {
+            const key = RETURN_KEYS[a.asset] || 'equity';
+            total += (a.finalPct / 100) * (returns[key] ?? DEFAULT_RETURNS[key] ?? 0);
+        });
+        return parseFloat(total.toFixed(2));
+    }
+
+    function computeProjection(corpus, monthlySip, annualReturnPct, years) {
+        const r = annualReturnPct / 100 / 12;
+        const n = years * 12;
+        return r > 0
+            ? corpus * Math.pow(1 + r, n) + monthlySip * ((Math.pow(1 + r, n) - 1) / r)
+            : corpus + monthlySip * n;
+    }
+
+    function getGoldPricePerGram(indicators) {
+        const goldInd = indicators.find(ind => (ind.indicator || '').toLowerCase().includes('gold'));
+        if (goldInd) {
+            const m = String(goldInd.value || '').match(/([\d,]+\.?\d*)/);
+            if (m) {
+                const val = parseFloat(m[1].replace(/,/g, ''));
+                if (val > 50000) return val / 10;
+                if (val > 1000)  return val;
+            }
+        }
+        return 9500;
+    }
+
+    function renderDoughnut(canvasId, existing, labels, values, colors) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return null;
+        if (existing) existing.destroy();
+        const total = values.reduce((s, v) => s + v, 0);
+        return new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                    hoverOffset: 10,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '62%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                const pct = total > 0 ? (ctx.parsed / total * 100).toFixed(1) : '0.0';
+                                return ` ${ctx.label}: ${fmtCr(ctx.parsed)} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    async function init() {
+        const [profileRes, econRes, investRes] = await Promise.allSettled([
+            fetch('/api/profile').then(r => r.json()),
+            fetch('/api/investment-overview/economy-indicators').then(r => r.json()),
+            fetch('/api/investment-overview').then(r => r.json()),
+        ]);
+
+        const profile     = profileRes.status  === 'fulfilled' ? (profileRes.value.profile      || {}) : {};
+        const indicators  = econRes.status      === 'fulfilled' ? (econRes.value.indicators       || []) : [];
+        const instruments = investRes.status    === 'fulfilled' ? (investRes.value.instruments    || []) : [];
+
+        // ── User identity ────────────────────────────────────────────────────
+        const head        = (profile.family_members || []).find(m => m.is_head);
+        const firstName   = head?.name ? head.name.trim().split(/\s+/)[0] : 'Your';
+        const age         = head?.dob ? calcAge(head.dob) : 0;
+        const currentYear = new Date().getFullYear();
+        const horizon     = profile.investment_planning_horizon || 10;
+        const futureAge   = age > 0 ? age + horizon : 0;
+        const futureYear  = currentYear + horizon;
+
+        // ── Derive all financial values from existing_assets + family_members ──
+        const goldPricePerGram = getGoldPricePerGram(indicators);
+        const INVESTABLE_TYPES = new Set(['Stocks', 'MF', 'ETFs', 'Bonds', 'FDs']);
+        const ASSET_TYPE_COLORS = { Stocks:'#ef4444', MF:'#8b5cf6', ETFs:'#06b6d4', Bonds:'#64748b', FDs:'#0891b2' };
+        const assetTypeOrder    = ['Stocks', 'MF', 'ETFs', 'Bonds', 'FDs'];
+
+        let corpus = 0, totalGoldValue = 0, totalRealEstate = 0;
+        const assetTypeGroups = {};
+        (profile.existing_assets || []).filter(a => a.market_value > 0).forEach(a => {
+            const t = a.asset_type || 'Stocks';
+            if (t === 'Gold')             totalGoldValue  += a.market_value;
+            else if (t === 'Real Estate') totalRealEstate += a.market_value;
+            else {
+                assetTypeGroups[t] = (assetTypeGroups[t] || 0) + a.market_value;
+                if (INVESTABLE_TYPES.has(t)) corpus       += a.market_value;
+            }
+        });
+
+        // Monthly income from family members
+        const income = (profile.family_members || []).reduce((s, m) => s + (m.income || 0), 0);
+
+        const existingAssets = assetTypeOrder
+            .filter(t => assetTypeGroups[t] > 0)
+            .map(t => ({ asset: t, value: assetTypeGroups[t], color: ASSET_TYPE_COLORS[t] || '#9ca3af' }))
+            .concat(
+                Object.keys(assetTypeGroups)
+                    .filter(t => !assetTypeOrder.includes(t) && assetTypeGroups[t] > 0)
+                    .map(t => ({ asset: t, value: assetTypeGroups[t], color: '#9ca3af' }))
+            );
+
+        // ── Section A — Current Portfolio ────────────────────────────────────
+        const currentAssets = [
+            { asset: 'Real Estate', value: totalRealEstate, color: '#8b5cf6' },
+            { asset: 'Gold',        value: totalGoldValue,  color: '#f59e0b' },
+            ...existingAssets,
+        ].filter(a => a.value > 0);
+
+        const currentNetWorth = currentAssets.reduce((s, a) => s + a.value, 0);
+        const ageLabel = age > 0 ? `Age ${age}` : '';
+
+        document.getElementById('currentTitle').textContent =
+            [firstName + "'s Portfolio", ageLabel, String(currentYear), fmtCr(currentNetWorth)]
+                .filter(Boolean).join(' · ');
+        document.getElementById('currentSubtitle').textContent = 'Current asset allocation from your profile';
+        document.getElementById('currentPieCenterVal').textContent = fmtCr(currentNetWorth);
+
+        if (currentAssets.length > 0) {
+            currentPieChart = renderDoughnut(
+                'currentPie', currentPieChart,
+                currentAssets.map(a => a.asset),
+                currentAssets.map(a => a.value),
+                currentAssets.map(a => a.color)
+            );
+            document.getElementById('currentTableBody').innerHTML = currentAssets.map((a, i) => {
+                const pct = currentNetWorth > 0 ? (a.value / currentNetWorth * 100).toFixed(1) : '0.0';
+                return `<tr style="border-bottom:1px solid #f1f5f9;background:${i % 2 === 0 ? '#fff' : '#f8fafc'}">
+                    <td style="padding:11px 12px">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <div style="width:10px;height:10px;border-radius:2px;background:${a.color};flex-shrink:0"></div>
+                            <span style="font-weight:600;color:#1e293b">${a.asset}</span>
+                        </div>
+                    </td>
+                    <td style="padding:11px 12px;text-align:right;font-weight:600;color:#1e293b">${fmtCr(a.value)}</td>
+                    <td style="padding:11px 12px;text-align:center;color:#6b7280">${pct}%</td>
+                </tr>`;
+            }).join('');
+            document.getElementById('currentTotal').textContent = fmtCr(currentNetWorth);
+        } else {
+            document.getElementById('currentTableBody').innerHTML =
+                '<tr><td colspan="3" style="padding:24px;text-align:center;color:#9ca3af;font-style:italic">No asset data — complete your profile to see allocation</td></tr>';
+        }
+
+        // ── Risk profile → asset allocation (mirrors planning.html) ─────────
+        const profileMap   = { Beginner: 'Conservative', Moderate: 'Moderate', Aggressive: 'Aggressive' };
+        const allocProfile = profileMap[profile.risk_profile] || 'Moderate';
+        const base         = BASE_ALLOCATIONS[allocProfile];
+        const allocAdj     = parseMacroAdj(indicators);
+        const finalAlloc   = applyAndNormalize(base, allocAdj);
+        const returns      = getExpectedReturns(instruments);
+        const portfolioReturn = computePortfolioReturn(finalAlloc, returns);
+
+        // ── Monthly SIP (same computation as planning.html) ──────────────────
+        let annualGoalExp = 0;
+        (profile.financial_goals || []).forEach(g => {
+            const amt = g.amount || 0;
+            if (g.recurring) {
+                const mul = { monthly: 12, quarterly: 4, '4_months': 3, '6_months': 2, annually: 1 };
+                annualGoalExp += amt * (mul[g.frequency] || 1);
+            } else {
+                annualGoalExp += amt;
+            }
+        });
+        const monthlyExpenses = annualGoalExp / 12;
+        const sip     = Math.max(0, income - monthlyExpenses);
+        const sipTotal = sip * 12 * horizon;
+
+        // ── Section B — Future Portfolio ─────────────────────────────────────
+        const retPct         = portfolioReturn > 0 ? portfolioReturn : 10;
+        const projectedCorpus = computeProjection(corpus, sip, retPct, horizon);
+
+        // Corpus sub-allocations: apply BASE_ALLOCATIONS % to projected corpus.
+        // Expected return value = futureVal − proportional share of total invested (corpus + SIP).
+        const corpusRows = finalAlloc.map(a => {
+            const key        = RETURN_KEYS[a.asset] || 'equity';
+            const annualRet  = returns[key] ?? DEFAULT_RETURNS[key] ?? 0;
+            const futureVal  = projectedCorpus * a.finalPct / 100;
+            const initialInv = (corpus + sipTotal) * a.finalPct / 100;
+            return { asset: a.asset, color: a.color, finalPct: a.finalPct, futureVal, annualRet, returnVal: futureVal - initialInv };
+        });
+
+        // Other physical assets projected at their own return rates.
+        const realEstateRet = returns['real_estate'] ?? DEFAULT_RETURNS.real_estate;
+        const goldRet       = returns['gold']         ?? DEFAULT_RETURNS.gold;
+        const cashRet       = returns['cash']         ?? DEFAULT_RETURNS.cash;
+
+        const otherRows = [];
+        if (totalRealEstate > 0) {
+            const fv = totalRealEstate * Math.pow(1 + realEstateRet / 100, horizon);
+            otherRows.push({ asset: 'Real Estate',     color: '#8b5cf6', futureVal: fv, annualRet: realEstateRet, returnVal: fv - totalRealEstate });
+        }
+        if (totalGoldValue > 0) {
+            const fv = totalGoldValue * Math.pow(1 + goldRet / 100, horizon);
+            otherRows.push({ asset: 'Gold (Physical)', color: '#d97706', futureVal: fv, annualRet: goldRet,        returnVal: fv - totalGoldValue });
+        }
+
+        const allFutureRows    = [...corpusRows, ...otherRows];
+        const totalFutureNW    = allFutureRows.reduce((s, r) => s + r.futureVal, 0);
+        const totalFutureReturn = allFutureRows.reduce((s, r) => s + r.returnVal, 0);
+
+        // Allocation % = each asset's share of total future net worth
+        allFutureRows.forEach(r => {
+            r.allocPct = totalFutureNW > 0 ? parseFloat((r.futureVal / totalFutureNW * 100).toFixed(1)) : 0;
+        });
+
+        // Section B heading uses total future net worth (corpus + all projected assets)
+        const futureAgeLabel = futureAge > 0 ? `Age ${futureAge}` : '';
+        document.getElementById('futureTitle').textContent =
+            [firstName + "'s Portfolio", futureAgeLabel, String(futureYear), fmtCr(totalFutureNW)]
+                .filter(Boolean).join(' · ');
+        document.getElementById('futureSubtitle').textContent =
+            `Projected allocation · ${allocProfile} profile · ${retPct.toFixed(1)}% p.a. · ${horizon}yr horizon`;
+        document.getElementById('futurePieCenterVal').textContent = fmtCr(totalFutureNW);
+
+        futurePieChart = renderDoughnut(
+            'futurePie', futurePieChart,
+            allFutureRows.map(r => r.asset),
+            allFutureRows.map(r => r.futureVal),
+            allFutureRows.map(r => r.color)
+        );
+
+        document.getElementById('futureTableBody').innerHTML = allFutureRows.map((r, i) => `
+            <tr style="border-bottom:1px solid #f1f5f9;background:${i % 2 === 0 ? '#fff' : '#f8fafc'}">
+                <td style="padding:11px 12px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <div style="width:10px;height:10px;border-radius:2px;background:${r.color};flex-shrink:0"></div>
+                        <span style="font-weight:600;color:#1e293b">${r.asset}</span>
+                    </div>
+                </td>
+                <td style="padding:11px 12px;text-align:right;font-weight:600;color:#1e293b">${fmtCr(r.futureVal)}</td>
+                <td style="padding:11px 12px;text-align:center;color:#6b7280">${r.allocPct}%</td>
+                <td style="padding:11px 12px;text-align:center;color:#6b7280">${r.annualRet.toFixed(1)}%</td>
+                <td style="padding:11px 12px;text-align:right;font-weight:600;color:#15803d">${fmtCr(r.returnVal)}</td>
+            </tr>
+        `).join('');
+
+        document.getElementById('futureTotal').textContent = fmtCr(totalFutureNW);
+        document.getElementById('futureTotalReturn').textContent = fmtCr(totalFutureReturn);
+    }
+
+    init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-15 17:47:05
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+1  Egypt only (2 cities)             7       2026-10-18 - 2026-10-25 INR  437,524
+
+CHEAPEST: Egypt only (2 cities) - INR 437,524 for 4 travellers, 7 nights
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Egypt only (2 cities)
+   Days: Cairo (CAI) 4n, Hurghada (HRG) 3n
+   2026-10-18  BLR -> CAI   Oman Air              09:55-18:00 10h 35m  1 stop via MCT       INR 29,348
+        flight WY 282, WY 405 | cabin 1 PCS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-22  CAI -> HRG   EgyptAir              07:20-08:20 1h 00m   non-stop             INR 19,837
+        flight MS 44
+        book: https://www.makemytrip.com/flight/search?itinerary=CAI-HRG-22/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-25  HRG -> BLR   EgyptAir, Emirates    04:30-02:40 19h 40m  2 stops via CAI,DXB  INR 60,196
+        flight MS 143, EK 928 | cabin 1 PCS/Adult | check-in 2 PCS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=HRG-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 109,381   x 4 = INR 437,524
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

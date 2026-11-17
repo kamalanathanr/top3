@@ -1,0 +1,339 @@
+<title>TRIP PLAN - country comparison</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#fff; --ink:#1a1d21; --muted:#606a76;
+  --line:#e3e7ec; --accent:#2563eb; --accent-soft:#eff4ff;
+  --good:#0f7b3f; --good-soft:#e8f6ee; --warn:#a2510a; --warn-soft:#fdf0e3;
+  --bad:#b0202c; --bad-soft:#fdecee; --chip:#eef1f5;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151a; --card:#1a1f26; --ink:#e8ebef; --muted:#9aa5b1;
+    --line:#2a313a; --accent:#6da2ff; --accent-soft:#1b2740;
+    --good:#5ed69b; --good-soft:#14301f; --warn:#e0a35f; --warn-soft:#33240f;
+    --bad:#ff8a94; --bad-soft:#341418; --chip:#242b34;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151a; --card:#1a1f26; --ink:#e8ebef; --muted:#9aa5b1;
+  --line:#2a313a; --accent:#6da2ff; --accent-soft:#1b2740;
+  --good:#5ed69b; --good-soft:#14301f; --warn:#e0a35f; --warn-soft:#33240f;
+  --bad:#ff8a94; --bad-soft:#341418; --chip:#242b34;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:16px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);margin:34px 0 12px;font-weight:600}
+.sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px;margin-bottom:14px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px 22px;margin:0}
+.meta div{min-width:0}
+.meta dt{font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);margin-bottom:2px}
+.meta dd{margin:0;font-weight:600;font-size:14px;word-break:break-word}
+.callout{background:var(--good-soft);border-left:3px solid var(--good);
+  border-radius:6px;padding:11px 14px;margin:0 0 10px;font-size:14px}
+.callout.warn{background:var(--warn-soft);border-color:var(--warn)}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);font-weight:600;
+  padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rank td{font-weight:600}
+.rank.best{background:var(--accent-soft)}
+.badge{display:inline-block;background:var(--accent);color:#fff;
+  border-radius:20px;padding:1px 9px;font-size:11px;font-weight:700;
+  margin-left:7px;vertical-align:1px}
+.itin{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  margin-bottom:16px;overflow:hidden}
+.itin > header{padding:15px 20px;border-bottom:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.itin h3{margin:0;font-size:17px;flex:1 1 260px;min-width:0}
+.itin .price{font-weight:700;font-size:17px;white-space:nowrap}
+.itin .per{color:var(--muted);font-size:12px;white-space:nowrap}
+.chips{padding:11px 20px 0;display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--chip);border-radius:20px;padding:3px 11px;font-size:12px}
+.legs{padding:11px 8px 14px}
+.extras{color:var(--muted);font-size:12px;margin-top:3px}
+.book{font-size:12px;white-space:nowrap}
+a{color:var(--accent)}
+.missing{color:var(--bad);font-weight:600}
+.chosen{background:var(--good-soft)}
+.tick{color:var(--good);font-weight:700}
+details{background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:0 20px;margin-bottom:14px}
+details[open]{padding-bottom:16px}
+summary{cursor:pointer;padding:15px 0;font-weight:600;font-size:15px}
+.group{margin-top:14px}
+.group h4{margin:0 0 6px;font-size:14px}
+.note{background:var(--warn-soft);border-left:3px solid var(--warn);
+  border-radius:6px;padding:11px 14px;margin-bottom:10px;font-size:13.5px}
+.note h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;
+  letter-spacing:.05em}
+.note div{color:var(--ink);opacity:.9}
+footer{color:var(--muted);font-size:12.5px;margin-top:34px;
+  border-top:1px solid var(--line);padding-top:14px}
+@media print{
+  body{background:#fff}
+  .card,.itin,details{border-color:#ccc;break-inside:avoid}
+  details{padding-bottom:12px}
+  details:not([open]) > *:not(summary){display:revert}
+  .book{display:none}
+}
+@media (max-width:640px){
+  .wrap{padding:18px 12px 40px}
+  h1{font-size:20px}
+  table{font-size:13px}
+}
+</style>
+<div class="wrap">
+<h1>TRIP PLAN - country comparison</h1>
+<p class="sub">from trip_output_20260909-095900.txt</p>
+<div class="card"><dl class="meta">
+<div><dt>From</dt><dd>BLR</dd></div>
+<div><dt>Travellers</dt><dd>4</dd></div>
+<div><dt>Window</dt><dd>2026-10-17 to 2026-10-25 (8 nights), flex +/-1d</dd></div>
+<div><dt>Nights allowed</dt><dd>5 to 7</dd></div>
+<div><dt>Round trip</dt><dd>yes</dd></div>
+<div><dt>Generated</dt><dd>2026-09-09 09:59:00</dd></div>
+</dl></div>
+<h2>Ranked by total cost</h2>
+<div class="card"><div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Itinerary</th><th>Nights</th><th>Depart</th><th>Return</th><th class='num'>Total</th></tr></thead><tbody>
+<tr class="rank best"><td>1</td><td>Vietnam — Ho Chi Minh City<span class="badge">best</span></td><td>7</td><td>2026-10-18</td><td>2026-10-25</td><td class='num'>INR 154,984</td></tr>
+<tr class="rank"><td>2</td><td>Vietnam — Hanoi</td><td>7</td><td>2026-10-17</td><td>2026-10-24</td><td class='num'>INR 187,184</td></tr>
+<tr class="rank"><td>3</td><td>Egypt — Cairo</td><td>7</td><td>2026-10-17</td><td>2026-10-24</td><td class='num'>INR 188,348</td></tr>
+<tr class="rank"><td>4</td><td>Cambodia — Siem Reap</td><td>7</td><td>2026-10-18</td><td>2026-10-25</td><td class='num'>INR 243,012</td></tr>
+<tr class="rank"><td>5</td><td>Egypt — Hurghada</td><td>6</td><td>2026-10-18</td><td>2026-10-24</td><td class='num'>INR 347,116</td></tr>
+<tr class="rank"><td>6</td><td>Australia — Melbourne</td><td>7</td><td>2026-10-18</td><td>2026-10-25</td><td class='num'>INR 348,224</td></tr>
+<tr class="rank"><td>7</td><td>Australia — Sydney</td><td>7</td><td>2026-10-17</td><td>2026-10-24</td><td class='num'>INR 410,044</td></tr>
+</tbody></table></div></div>
+<h2>Itinerary detail</h2>
+<section class="itin"><header>
+<h3>1. Vietnam - Ho Chi Minh City (SGN)</h3>
+<div><div class='price'>INR 154,984</div>
+<div class='per'>INR 38,746 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Main southern hub, best connected from India</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-18 (outbound)</td><td><strong>outbound</strong></td><td>VietJet Air</td><td>23:35–06:00</td><td>4h 55m</td><td>non-stop</td><td class='num'>INR 18,619</td><td class='book'></td></tr>
+<tr><td>2026-10-25 (return)</td><td><strong>return</strong></td><td>VietJet Air, Batik</td><td>07:35–22:20</td><td>16h 15m</td><td>1 stop via KUL</td><td class='num'>INR 20,127</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">7 nights, 2026-10-18 to 2026-10-25</div></div>
+</section>
+<section class="itin"><header>
+<h3>2. Vietnam - Hanoi (HAN)</h3>
+<div><div class='price'>INR 187,184</div>
+<div class='per'>INR 46,796 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Capital, gateway to Ha Long Bay and the north</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-17 (outbound)</td><td><strong>outbound</strong></td><td>Air India Express,</td><td>06:10–05:55</td><td>22h 15m</td><td>1 stop via AMD</td><td class='num'>INR 21,241</td><td class='book'></td></tr>
+<tr><td>2026-10-24 (return)</td><td><strong>return</strong></td><td>Akasa Air</td><td>13:30–23:35</td><td>11h 35m</td><td>1 stop via BOM</td><td class='num'>INR 25,555</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">7 nights, 2026-10-17 to 2026-10-24</div></div>
+</section>
+<section class="itin"><header>
+<h3>3. Egypt - Cairo (CAI)</h3>
+<div><div class='price'>INR 188,348</div>
+<div class='per'>INR 47,087 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Pyramids, Egyptian Museum, main hub</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-17 (outbound)</td><td><strong>outbound</strong></td><td>Air Arabia</td><td>04:25–10:45</td><td>8h 50m</td><td>1 stop via SHJ</td><td class='num'>INR 27,748</td><td class='book'></td></tr>
+<tr><td>2026-10-24 (return)</td><td><strong>return</strong></td><td>Saudia, IndiGo</td><td>18:10–22:05</td><td>25h 25m</td><td>3 stops via JED,BOM,GOI</td><td class='num'>INR 19,339</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">7 nights, 2026-10-17 to 2026-10-24</div></div>
+</section>
+<section class="itin"><header>
+<h3>4. Cambodia - Siem Reap (SAI)</h3>
+<div><div class='price'>INR 243,012</div>
+<div class='per'>INR 60,753 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Angkor Wat</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-18 (outbound)</td><td><strong>outbound</strong></td><td>Thai AirAsia</td><td>23:20–16:10</td><td>15h 20m</td><td>1 stop via DMK</td><td class='num'>INR 30,772</td><td class='book'></td></tr>
+<tr><td>2026-10-25 (return)</td><td><strong>return</strong></td><td>Bangkok Airways, A</td><td>19:25–15:50</td><td>21h 55m</td><td>2 stops via BKK,DEL</td><td class='num'>INR 29,981</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">7 nights, 2026-10-18 to 2026-10-25</div></div>
+</section>
+<section class="itin"><header>
+<h3>5. Egypt - Hurghada (HRG)</h3>
+<div><div class='price'>INR 347,116</div>
+<div class='per'>INR 86,779 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Red Sea diving and resorts</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-18 (outbound)</td><td><strong>outbound</strong></td><td>Gulf Air, EgyptAir</td><td>22:20–09:25</td><td>13h 35m</td><td>2 stops via BAH,CAI</td><td class='num'>INR 45,027</td><td class='book'></td></tr>
+<tr><td>2026-10-24 (return)</td><td><strong>return</strong></td><td>EgyptAir, Gulf Air</td><td>22:30–04:15</td><td>27h 15m</td><td>3 stops via CAI,RUH,BAH</td><td class='num'>INR 41,752</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">6 nights, 2026-10-18 to 2026-10-24</div></div>
+</section>
+<section class="itin"><header>
+<h3>6. Australia - Melbourne (MEL)</h3>
+<div><div class='price'>INR 348,224</div>
+<div class='per'>INR 87,056 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Culture, coffee, Great Ocean Road</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-18 (outbound)</td><td><strong>outbound</strong></td><td>VietJet Air</td><td>23:35–23:35</td><td>18h 30m</td><td>1 stop via SGN</td><td class='num'>INR 44,654</td><td class='book'></td></tr>
+<tr><td>2026-10-25 (return)</td><td><strong>return</strong></td><td>IndiGo</td><td>16:55–06:25</td><td>19h 00m</td><td>1 stop via SIN</td><td class='num'>INR 42,402</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">7 nights, 2026-10-18 to 2026-10-25</div></div>
+</section>
+<section class="itin"><header>
+<h3>7. Australia - Sydney (SYD)</h3>
+<div><div class='price'>INR 410,044</div>
+<div class='per'>INR 102,511 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Main gateway, harbour and beaches</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-17 (outbound)</td><td><strong>outbound</strong></td><td>Air India</td><td>20:00–20:05</td><td>18h 35m</td><td>1 stop via DEL</td><td class='num'>INR 57,418</td><td class='book'></td></tr>
+<tr><td>2026-10-24 (return)</td><td><strong>return</strong></td><td>Scoot, Batik Air M</td><td>14:00–22:20</td><td>37h 50m</td><td>2 stops via SIN,KUL</td><td class='num'>INR 45,093</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">7 nights, 2026-10-17 to 2026-10-24</div></div>
+</section>
+<section class="itin"><header>
+<h3>8. Cambodia - Phnom Penh (PNH) <span class='missing'>OUTBOUND ONLY</span></h3>
+<div><div class='price'>INR 100,492</div>
+<div class='per'>INR 25,123 per adult × 4</div></div>
+</header>
+<div class="chips">
+<span class="chip">Capital</span>
+</div>
+<div class="legs"><div class="tablewrap"><table>
+<thead><tr><th>When</th><th>Route</th><th>Airline</th><th>Times</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Book</th></tr></thead><tbody>
+<tr><td>2026-10-18 (outbound)</td><td><strong>outbound</strong></td><td>Thai AirAsia</td><td>23:20–17:45</td><td>16h 55m</td><td>1 stop via DMK</td><td class='num'>INR 25,123</td><td class='book'></td></tr>
+</tbody></table></div></div>
+<div style="padding:0 20px 14px"><div class="note">8 nights, 2026-10-18 to n/a</div></div>
+<div style="padding:0 20px 14px"><div class="note">No return flights found; outbound cost only.</div></div>
+</section>
+<h2>Everything searched</h2>
+<details><summary>All options priced (48 legs across 8 destinations)</summary>
+<p class="sub" style="margin:0 0 6px">Every date priced for each destination. &#x27;&lt;&lt;&#x27; marks the combination</p>
+<p class="sub" style="margin:0 0 6px">chosen above. Blank fare = no flight found for that date.</p>
+<p class="sub" style="margin:0 0 6px">A cheaper fare may go unpicked if the pairing breaks the 5-7 night limit.</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT</p>
+<p class="sub" style="margin:0 0 6px">48 legs priced across 8 destinations (48 live searches, 0 from cache).</p>
+<div class="group"><h4>Vietnam - Ho Chi Minh City (SGN)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Srilankan Airlines, V</td><td>23h 25m</td><td>2 stops</td><td class='num'>INR 26,754</td><td></td></tr>
+<tr><td>outbound</td><td>2026-10-17</td><td>Air India Express, Vi</td><td>15h 45m</td><td>2 stops</td><td class='num'>INR 26,193</td><td></td></tr>
+<tr class="chosen"><td>outbound</td><td>2026-10-18</td><td>VietJet Air</td><td>4h 55m</td><td>non-stop</td><td class='num'>INR 18,619</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-24</td><td>VietJet Air, Thai Air</td><td>39h 10m</td><td>2 stops</td><td class='num'>INR 40,491</td><td></td></tr>
+<tr class="chosen"><td>return</td><td>2026-10-25</td><td>VietJet Air, Batik Ai</td><td>16h 15m</td><td>1 stop</td><td class='num'>INR 20,127</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>VietJet Air</td><td>4h 50m</td><td>non-stop</td><td class='num'>INR 17,919</td><td></td></tr>
+</tbody></table></div></div>
+<div class="group"><h4>Vietnam - Hanoi (HAN)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Air India Express, Vi</td><td>8h 55m</td><td>1 stop</td><td class='num'>INR 25,311</td><td></td></tr>
+<tr class="chosen"><td>outbound</td><td>2026-10-17</td><td>Air India Express, Vi</td><td>22h 15m</td><td>1 stop</td><td class='num'>INR 21,241</td><td><span class="tick">✓</span></td></tr>
+<tr><td>outbound</td><td>2026-10-18</td><td>IndiGo</td><td>11h 20m</td><td>1 stop</td><td class='num'>INR 22,266</td><td></td></tr>
+<tr class="chosen"><td>return</td><td>2026-10-24</td><td>Akasa Air</td><td>11h 35m</td><td>1 stop</td><td class='num'>INR 25,555</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-25</td><td>IndiGo</td><td>10h 30m</td><td>1 stop</td><td class='num'>INR 24,594</td><td></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>VietJet Air, Air Indi</td><td>17h 50m</td><td>1 stop</td><td class='num'>INR 15,975</td><td></td></tr>
+</tbody></table></div></div>
+<div class="group"><h4>Australia - Sydney (SYD)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Air India</td><td>23h 05m</td><td>1 stop</td><td class='num'>INR 56,316</td><td></td></tr>
+<tr class="chosen"><td>outbound</td><td>2026-10-17</td><td>Air India</td><td>18h 35m</td><td>1 stop</td><td class='num'>INR 57,418</td><td><span class="tick">✓</span></td></tr>
+<tr><td>outbound</td><td>2026-10-18</td><td>IndiGo</td><td>14h 20m</td><td>1 stop</td><td class='num'>INR 62,427</td><td></td></tr>
+<tr class="chosen"><td>return</td><td>2026-10-24</td><td>Scoot, Batik Air Mala</td><td>37h 50m</td><td>2 stops</td><td class='num'>INR 45,093</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-25</td><td>Scoot, IndiGo</td><td>20h 50m</td><td>2 stops</td><td class='num'>INR 49,669</td><td></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>Thai Airways</td><td>14h 10m</td><td>1 stop</td><td class='num'>INR 52,379</td><td></td></tr>
+</tbody></table></div></div>
+<div class="group"><h4>Australia - Melbourne (MEL)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Air India</td><td>19h 30m</td><td>1 stop</td><td class='num'>INR 56,503</td><td></td></tr>
+<tr><td>outbound</td><td>2026-10-17</td><td>Air India</td><td>16h 40m</td><td>1 stop</td><td class='num'>INR 57,605</td><td></td></tr>
+<tr class="chosen"><td>outbound</td><td>2026-10-18</td><td>VietJet Air</td><td>18h 30m</td><td>1 stop</td><td class='num'>INR 44,654</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-24</td><td>IndiGo</td><td>19h 00m</td><td>1 stop</td><td class='num'>INR 46,210</td><td></td></tr>
+<tr class="chosen"><td>return</td><td>2026-10-25</td><td>IndiGo</td><td>19h 00m</td><td>1 stop</td><td class='num'>INR 42,402</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>AirAsia X, AirAsia Be</td><td>22h 00m</td><td>1 stop</td><td class='num'>INR 31,614</td><td></td></tr>
+</tbody></table></div></div>
+<div class="group"><h4>Egypt - Cairo (CAI)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Oman Air</td><td>10h 35m</td><td>1 stop</td><td class='num'>INR 26,972</td><td></td></tr>
+<tr class="chosen"><td>outbound</td><td>2026-10-17</td><td>Air Arabia</td><td>8h 50m</td><td>1 stop</td><td class='num'>INR 27,748</td><td><span class="tick">✓</span></td></tr>
+<tr><td>outbound</td><td>2026-10-18</td><td>Air Arabia</td><td>8h 50m</td><td>1 stop</td><td class='num'>INR 27,748</td><td></td></tr>
+<tr class="chosen"><td>return</td><td>2026-10-24</td><td>Saudia, IndiGo</td><td>25h 25m</td><td>3 stops</td><td class='num'>INR 19,339</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-25</td><td>Kuwait Airways</td><td>12h 05m</td><td>1 stop</td><td class='num'>INR 19,436</td><td></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>Kuwait Airways</td><td>12h 05m</td><td>1 stop</td><td class='num'>INR 19,436</td><td></td></tr>
+</tbody></table></div></div>
+<div class="group"><h4>Egypt - Hurghada (HRG)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Gulf Air, EgyptAir</td><td>14h 25m</td><td>2 stops</td><td class='num'>INR 45,505</td><td></td></tr>
+<tr><td>outbound</td><td>2026-10-17</td><td>Lufthansa</td><td>27h 15m</td><td>2 stops</td><td class='num'>INR 117,246</td><td></td></tr>
+<tr class="chosen"><td>outbound</td><td>2026-10-18</td><td>Gulf Air, EgyptAir</td><td>13h 35m</td><td>2 stops</td><td class='num'>INR 45,027</td><td><span class="tick">✓</span></td></tr>
+<tr class="chosen"><td>return</td><td>2026-10-24</td><td>EgyptAir, Gulf Air</td><td>27h 15m</td><td>3 stops</td><td class='num'>INR 41,752</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-25</td><td>EgyptAir, Emirates</td><td>17h 05m</td><td>2 stops</td><td class='num'>INR 58,556</td><td></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>EgyptAir, Gulf Air</td><td>19h 45m</td><td>3 stops</td><td class='num'>INR 48,826</td><td></td></tr>
+</tbody></table></div></div>
+<div class="group"><h4>Cambodia - Siem Reap (SAI)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Thai AirAsia</td><td>10h 20m</td><td>1 stop</td><td class='num'>INR 37,379</td><td></td></tr>
+<tr><td>outbound</td><td>2026-10-17</td><td>Air India, Bangkok Ai</td><td>15h 05m</td><td>2 stops</td><td class='num'>INR 37,091</td><td></td></tr>
+<tr class="chosen"><td>outbound</td><td>2026-10-18</td><td>Thai AirAsia</td><td>15h 20m</td><td>1 stop</td><td class='num'>INR 30,772</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-24</td><td>Bangkok Airways, Air</td><td>13h 40m</td><td>2 stops</td><td class='num'>INR 41,399</td><td></td></tr>
+<tr class="chosen"><td>return</td><td>2026-10-25</td><td>Bangkok Airways, Air</td><td>21h 55m</td><td>2 stops</td><td class='num'>INR 29,981</td><td><span class="tick">✓</span></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>Bangkok Airways, Air</td><td>13h 50m</td><td>2 stops</td><td class='num'>INR 29,631</td><td></td></tr>
+</tbody></table></div></div>
+<div class="group"><h4>PNH (PNH)</h4><div class="tablewrap"><table>
+<thead><tr><th>Direction</th><th>Date</th><th>Airline</th><th>Duration</th><th>Stops</th><th class='num'>Fare/adult</th><th>Picked</th></tr></thead><tbody>
+<tr><td>outbound</td><td>2026-10-16</td><td>Thai AirAsia</td><td>16h 55m</td><td>1 stop</td><td class='num'>INR 32,116</td><td></td></tr>
+<tr><td>outbound</td><td>2026-10-17</td><td>no flights found</td><td></td><td></td><td class='num'></td><td></td></tr>
+<tr><td>outbound</td><td>2026-10-18</td><td>Thai AirAsia</td><td>16h 55m</td><td>1 stop</td><td class='num'>INR 25,123</td><td></td></tr>
+<tr><td>return</td><td>2026-10-24</td><td>no flights found</td><td></td><td></td><td class='num'></td><td></td></tr>
+<tr><td>return</td><td>2026-10-25</td><td>no flights found</td><td></td><td></td><td class='num'></td><td></td></tr>
+<tr><td>return</td><td>2026-10-26</td><td>no flights found</td><td></td><td></td><td class='num'></td><td></td></tr>
+</tbody></table></div></div>
+</details>
+<h2>Notes</h2>
+<div class="note"><h4>INCOMPLETE - NOT COMPARABLE WITH THE ABOVE</h4>
+<div>These have no return leg priced, so the total is outbound only and</div>
+<div>understates the real trip cost. Re-run with a higher max_searches.</div>
+<div>Cambodia    Phnom Penh          2026-10-18 outbound only    INR  100,492</div>
+<div>BEST VALUE: Vietnam (Ho Chi Minh City) - INR 154,984 for 4 travellers</div>
+<div>That is INR 255,060 less than the most expensive option priced.</div>
+</div>
+<footer>
+<div>Prices are what MakeMyTrip listed at generation time and move daily.</div>
+<div>Rendered 2026-09-10 12:01 by trip_report_html.py</div>
+</footer>
+</div>

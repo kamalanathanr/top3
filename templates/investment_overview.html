@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+        .card { @apply bg-white rounded-lg shadow-sm border border-gray-200; }
+        /* Table */
+        .data-table { border-collapse: collapse; min-width: 1400px; width: 100%; }
+        .data-table th, .data-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+        .data-table td { font-size: 12px; color: #374151; }
+        .data-table td.wrap { white-space: normal; min-width: 160px; max-width: 220px; }
+        .data-table td.wrap-sm { white-space: normal; min-width: 120px; max-width: 160px; }
+
+        /* Category section header */
+        .cat-header td {
+            background: #1d4ed8;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 12px;
+            letter-spacing: 0.04em;
+        }
+
+        /* Column group headers */
+        .col-header { background: #eff6ff; color: #1e40af; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .col-header-returns { background: #eef2ff; color: #3730a3; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* Alternating rows */
+        .data-table tbody tr:not(.cat-header):nth-child(even) { background: #f0f9ff; }
+        .data-table tbody tr:not(.cat-header):hover { background: #dbeafe; }
+
+        /* Risk badges */
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .risk-low { background: #dcfce7; color: #15803d; }
+        .risk-low-medium { background: #fef9c3; color: #854d0e; }
+        .risk-medium { background: #fef3c7; color: #92400e; }
+        .risk-medium-high { background: #fee2e2; color: #b91c1c; }
+        .risk-high { background: #fecaca; color: #991b1b; }
+
+        /* Returns section columns */
+        .returns-col { background: #f5f3ff !important; }
+
+        /* Scrollable table wrapper */
+        .table-scroll { overflow-x: auto; overflow-y: auto; max-height: 62vh; }
+        .table-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .table-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+        .table-scroll::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 3px; }
+
+        /* Sticky column header */
+        .data-table thead th { position: sticky; top: 0; z-index: 10; }
+
+        /* Economy indicators table */
+        .econ-table { border-collapse: collapse; width: 100%; }
+        .econ-table th, .econ-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        .econ-table th { background: #eff6ff; color: #1e40af; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .econ-table td { font-size: 13px; color: #374151; }
+        .econ-table tbody tr:nth-child(odd) { background: #ffffff; }
+        .econ-table tbody tr:nth-child(even) { background: #f0f9ff; }
+        .econ-table tbody tr:hover { background: #dbeafe; }
+
+        /* Color classes for values and indicators */
+        .text-green { color: #15803d; font-weight: 600; }
+        .text-red { color: #991b1b; font-weight: 600; }
+        .text-gray { color: #6b7280; }
+
+        .bg-green { background-color: #dcfce7; color: #15803d; padding: 6px 10px; border-radius: 4px; font-weight: 500; }
+        .bg-red { background-color: #fee2e2; color: #991b1b; padding: 6px 10px; border-radius: 4px; font-weight: 500; }
+        .bg-gray { background-color: #f3f4f6; color: #6b7280; padding: 6px 10px; border-radius: 4px; font-weight: 500; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <!-- Navigation -->
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <!-- Page Header -->
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-blue-700 mb-1">MarketPulse</h2>
+                <p class="text-gray-500 text-sm">India market snapshot — FDs, Bonds, Mutual Funds, ETFs, Gold, Stocks, Real Estate</p>
+            </div>
+
+            <!-- ── Section 1: Economy Indicators ── -->
+            <div class="card mb-6">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between gap-4 flex-wrap">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Economy Indicators</h3>
+                        <p id="econ-last-updated" class="text-sm text-gray-400 mt-1">Loading…</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="econ-refresh-status" class="text-sm font-medium hidden"></span>
+                        <button id="econ-refresh-btn" onclick="triggerEconomyRefresh()"
+                            style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(37,99,235,.2)">
+                            <span id="econ-refresh-icon">↻</span>
+                            <span id="econ-refresh-label">Refresh Economy Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="econ-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:180px">Indicator</th>
+                                <th style="min-width:240px">What It Means</th>
+                                <th style="min-width:140px">Value</th>
+                                <th style="min-width:260px">Market Interpretation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="econ-table-body">
+                            <tr><td colspan="4" class="text-center text-gray-400 py-8">Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Section 2: Investment Overview ── -->
+            <div class="card mb-6">
+                <!-- Table Toolbar -->
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between gap-4 flex-wrap">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Investment Overview</h3>
+                        <div id="meta-info" class="text-sm text-gray-600 mt-1">
+                            <span id="last-updated-label">Loading data…</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="refresh-status" class="text-sm font-medium hidden"></span>
+                        <button id="refresh-btn" onclick="triggerRefresh()"
+                            style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(37,99,235,.2)">
+                            <span id="refresh-icon">↻</span>
+                            <span id="refresh-label">Refresh Market Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scrollable Table -->
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <!-- Info group -->
+                                <th class="col-header" style="min-width:200px">Investment Name</th>
+                                <th class="col-header" style="min-width:160px">Sub-type</th>
+                                <th class="col-header" style="min-width:190px">Expected Annual Return</th>
+                                <th class="col-header" style="min-width:90px">Risk</th>
+                                <th class="col-header" style="min-width:150px">Capital Safety</th>
+                                <th class="col-header" style="min-width:90px">Exit</th>
+                                <th class="col-header" style="min-width:120px">Min Investment</th>
+                                <th class="col-header" style="min-width:120px">Mode</th>
+                                <!-- Returns group -->
+                                <th class="col-header-returns" style="min-width:150px">Best Case</th>
+                                <th class="col-header-returns" style="min-width:150px">Avg Return</th>
+                                <th class="col-header-returns" style="min-width:200px">Worst Case</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <tr><td colspan="11" class="text-center text-gray-400 py-12">Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const CATEGORY_ORDER = ['FD', 'Bond', 'MF', 'ETF', 'Gold', 'Stock', 'Real Estate'];
+        const CATEGORY_ICONS = {
+            'FD': '🏦', 'Bond': '📋', 'MF': '📊', 'ETF': '📈',
+            'Gold': '🥇', 'Stock': '📉', 'Real Estate': '🏠'
+        };
+
+        let refreshPollInterval = null;
+        let econRefreshPollInterval = null;
+
+        function riskBadge(level) {
+            if (!level) return '—';
+            const l = level.toUpperCase();
+            let cls = 'risk-medium';
+            if (l === 'LOW') cls = 'risk-low';
+            else if (l.includes('LOW') && l.includes('MEDIUM')) cls = 'risk-low-medium';
+            else if (l === 'MEDIUM') cls = 'risk-medium';
+            else if (l.includes('MEDIUM') && l.includes('HIGH')) cls = 'risk-medium-high';
+            else if (l === 'HIGH') cls = 'risk-high';
+            return `<span class="badge ${cls}">${level}</span>`;
+        }
+
+        function trunc(str, len = 60) {
+            if (!str) return '—';
+            return str.length > len ? str.substring(0, len) + '…' : str;
+        }
+
+        function formatDate(iso) {
+            if (!iso) return 'Unknown';
+            const d = new Date(iso);
+            return d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+        }
+
+        // ── Market Data (Section 1) ──
+
+        async function loadMeta() {
+            try {
+                const res = await fetch('/api/investment-overview/meta');
+                const data = await res.json();
+                const label = document.getElementById('last-updated-label');
+                const lastUpdated = data.last_updated ? formatDate(data.last_updated) : 'Not available';
+                const timeTaken = data.time_taken_sec != null ? `${parseFloat(data.time_taken_sec).toFixed(1)}s` : '—';
+                label.innerHTML = `<span class="font-medium text-gray-700">Last updated:</span> ${lastUpdated}
+                    &nbsp;|&nbsp; <span class="font-medium text-gray-700">Time taken:</span> ${timeTaken}`;
+            } catch (e) {
+                document.getElementById('last-updated-label').textContent = 'Unable to load metadata';
+            }
+        }
+
+        async function loadTable() {
+            try {
+                const res = await fetch('/api/investment-overview');
+                const data = await res.json();
+                const instruments = data.instruments || [];
+                renderTable(instruments);
+            } catch (e) {
+                document.getElementById('table-body').innerHTML =
+                    '<tr><td colspan="11" class="text-center text-red-500 py-8">Error loading data</td></tr>';
+            }
+        }
+
+        function renderTable(instruments) {
+            const grouped = {};
+            instruments.forEach(i => {
+                const cat = i.category || 'Other';
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(i);
+            });
+
+            let html = '';
+            const order = [...CATEGORY_ORDER, ...Object.keys(grouped).filter(k => !CATEGORY_ORDER.includes(k))];
+
+            order.forEach(cat => {
+                const rows = grouped[cat];
+                if (!rows || rows.length === 0) return;
+
+                const icon = CATEGORY_ICONS[cat] || '📌';
+                html += `<tr class="cat-header"><td colspan="11">${icon} ${cat}</td></tr>`;
+
+                rows.forEach(inst => {
+                    const rp = inst.return_profile || {};
+                    const rs = inst.risk_safety || {};
+                    const liq = inst.liquidity || {};
+                    const entry = inst.entry_details || {};
+                    const exp = inst.realistic_expectation_summary || {};
+
+                    html += `<tr>
+                        <td class="wrap font-medium text-gray-900">${inst.investment_name || '—'}</td>
+                        <td class="wrap-sm text-gray-600">${inst.sub_type || '—'}</td>
+                        <td class="wrap">${trunc(rp.expected_annual_return, 70)}</td>
+                        <td>${riskBadge(rs.risk_level)}</td>
+                        <td class="wrap-sm">${trunc(rs.capital_safety, 50)}</td>
+                        <td>${trunc(liq.exit_ease, 30)}</td>
+                        <td>${entry.minimum_investment || '—'}</td>
+                        <td>${entry.mode || '—'}</td>
+                        <td class="wrap returns-col">${trunc(exp.best_case_scenario_return, 50)}</td>
+                        <td class="wrap returns-col">${trunc(exp.average_expected_return, 50)}</td>
+                        <td class="wrap returns-col">${trunc(exp.worst_case_scenario, 70)}</td>
+                    </tr>`;
+                });
+            });
+
+            document.getElementById('table-body').innerHTML = html ||
+                '<tr><td colspan="11" class="text-center text-gray-400 py-8">No data found</td></tr>';
+        }
+
+        async function triggerRefresh() {
+            const btn = document.getElementById('refresh-btn');
+            const icon = document.getElementById('refresh-icon');
+            const lbl = document.getElementById('refresh-label');
+            const statusEl = document.getElementById('refresh-status');
+
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.style.cursor  = 'not-allowed';
+            icon.style.display = 'inline-block';
+            icon.style.animation = 'spin 1s linear infinite';
+            lbl.textContent = 'Scheduling…';
+
+            try {
+                const res = await fetch('/api/investment-overview/refresh', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.error) {
+                    statusEl.textContent = '⚠ ' + data.error;
+                    statusEl.className = 'text-sm font-medium text-red-600';
+                    statusEl.classList.remove('hidden');
+                    resetRefreshBtn();
+                    return;
+                }
+
+                lbl.textContent = 'Running…';
+                statusEl.textContent = '⏳ Claude is fetching latest data…';
+                statusEl.className = 'text-sm font-medium text-blue-600';
+                statusEl.classList.remove('hidden');
+
+                pollRefreshStatus(data.task_id);
+            } catch (e) {
+                statusEl.textContent = '⚠ Error scheduling refresh';
+                statusEl.className = 'text-sm font-medium text-red-600';
+                statusEl.classList.remove('hidden');
+                resetRefreshBtn();
+            }
+        }
+
+        function pollRefreshStatus(taskId) {
+            clearInterval(refreshPollInterval);
+            refreshPollInterval = setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/investment-overview/refresh-status/${taskId}`);
+                    const data = await res.json();
+
+                    if (data.state === 'SUCCESS') {
+                        clearInterval(refreshPollInterval);
+                        const result = data.result || {};
+                        const statusEl = document.getElementById('refresh-status');
+                        statusEl.textContent = `✓ Updated ${result.instruments_updated || 0} instruments in ${(result.time_taken_sec || 0).toFixed(1)}s`;
+                        statusEl.className = 'text-sm font-medium text-green-600';
+                        resetRefreshBtn();
+                        loadTable();
+                        loadMeta();
+                        setTimeout(() => statusEl.classList.add('hidden'), 8000);
+                    } else if (data.state === 'FAILURE') {
+                        clearInterval(refreshPollInterval);
+                        document.getElementById('refresh-status').textContent = '⚠ Refresh failed';
+                        document.getElementById('refresh-status').className = 'text-sm font-medium text-red-600';
+                        resetRefreshBtn();
+                    }
+                } catch (e) { /* keep polling */ }
+            }, 4000);
+        }
+
+        function resetRefreshBtn() {
+            const btn = document.getElementById('refresh-btn');
+            const icon = document.getElementById('refresh-icon');
+            const lbl = document.getElementById('refresh-label');
+            btn.disabled = false;
+            btn.style.opacity = '';
+            btn.style.cursor  = '';
+            icon.style.animation = '';
+            lbl.textContent = 'Refresh Market Data';
+        }
+
+        // ── Economy Indicators (Section 2) ──
+
+        let econMeta = { status: 'none' };
+
+        async function loadEconomyMeta() {
+            try {
+                const res = await fetch('/api/investment-overview/economy-indicators/meta');
+                const data = await res.json();
+                econMeta = data;
+                const el = document.getElementById('econ-last-updated');
+                if (data.last_updated) {
+                    el.textContent = 'Last retrieved: ' + formatDate(data.last_updated);
+                } else {
+                    el.textContent = 'Not yet retrieved';
+                }
+            } catch (e) {
+                document.getElementById('econ-last-updated').textContent = 'Unable to load metadata';
+            }
+        }
+
+        async function loadEconomyTable() {
+            try {
+                const res = await fetch('/api/investment-overview/economy-indicators');
+                const data = await res.json();
+                renderEconomyTable(data.indicators || []);
+            } catch (e) {
+                document.getElementById('econ-table-body').innerHTML =
+                    '<tr><td colspan="4" class="text-center text-red-500 py-8">Error loading data</td></tr>';
+            }
+        }
+
+        function renderEconomyTable(indicators) {
+            // Check if last refresh failed
+            if (econMeta && econMeta.status === 'error') {
+                document.getElementById('econ-table-body').innerHTML =
+                    '<tr><td colspan="4" class="text-center text-red-600 font-semibold py-8">Unable to fetch the data</td></tr>';
+                return;
+            }
+
+            if (!indicators || indicators.length === 0) {
+                document.getElementById('econ-table-body').innerHTML =
+                    '<tr><td colspan="4" class="text-center text-gray-400 py-8">No data yet — click Refresh Economy Data to fetch</td></tr>';
+                return;
+            }
+
+            let html = '';
+            indicators.forEach(ind => {
+                const valueColor = ind.value_color === 'red' ? 'text-red' : ind.value_color === 'green' ? 'text-green' : '';
+                const indicatesClass = ind.indicates_color === 'red' ? 'bg-red' : ind.indicates_color === 'green' ? 'bg-green' : 'bg-gray';
+
+                html += `<tr>
+                    <td class="font-semibold text-gray-800">${ind.indicator || '—'}</td>
+                    <td class="text-gray-600 text-sm">${ind.description || '—'}</td>
+                    <td class="${valueColor}">${ind.value || '—'}</td>
+                    <td><span class="${indicatesClass}">${ind.indicates || '—'}</span></td>
+                </tr>`;
+            });
+            document.getElementById('econ-table-body').innerHTML = html;
+        }
+
+        async function triggerEconomyRefresh() {
+            const btn = document.getElementById('econ-refresh-btn');
+            const icon = document.getElementById('econ-refresh-icon');
+            const lbl = document.getElementById('econ-refresh-label');
+            const statusEl = document.getElementById('econ-refresh-status');
+
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.style.cursor  = 'not-allowed';
+            icon.style.display = 'inline-block';
+            icon.style.animation = 'spin 1s linear infinite';
+            lbl.textContent = 'Scheduling…';
+
+            try {
+                const res = await fetch('/api/investment-overview/economy-indicators/refresh', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.error) {
+                    statusEl.textContent = '⚠ ' + data.error;
+                    statusEl.className = 'text-sm font-medium text-red-600';
+                    statusEl.classList.remove('hidden');
+                    resetEconomyRefreshBtn();
+                    return;
+                }
+
+                lbl.textContent = 'Running…';
+                statusEl.textContent = '⏳ Claude is fetching economy indicators…';
+                statusEl.className = 'text-sm font-medium text-blue-600';
+                statusEl.classList.remove('hidden');
+
+                pollEconomyRefreshStatus(data.task_id);
+            } catch (e) {
+                statusEl.textContent = '⚠ Error scheduling refresh';
+                statusEl.className = 'text-sm font-medium text-red-600';
+                statusEl.classList.remove('hidden');
+                resetEconomyRefreshBtn();
+            }
+        }
+
+        function pollEconomyRefreshStatus(taskId) {
+            clearInterval(econRefreshPollInterval);
+            econRefreshPollInterval = setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/investment-overview/economy-indicators/refresh-status/${taskId}`);
+                    const data = await res.json();
+
+                    if (data.state === 'SUCCESS') {
+                        clearInterval(econRefreshPollInterval);
+                        const result = data.result || {};
+                        const statusEl = document.getElementById('econ-refresh-status');
+                        statusEl.textContent = `✓ Updated ${result.indicators_updated || 0} indicators in ${(result.time_taken_sec || 0).toFixed(1)}s`;
+                        statusEl.className = 'text-sm font-medium text-green-600';
+                        resetEconomyRefreshBtn();
+                        await loadEconomyMeta();
+                        await loadEconomyTable();
+                        setTimeout(() => statusEl.classList.add('hidden'), 8000);
+                    } else if (data.state === 'FAILURE') {
+                        clearInterval(econRefreshPollInterval);
+                        document.getElementById('econ-refresh-status').textContent = '⚠ Refresh failed';
+                        document.getElementById('econ-refresh-status').className = 'text-sm font-medium text-red-600';
+                        resetEconomyRefreshBtn();
+                    }
+                } catch (e) { /* keep polling */ }
+            }, 4000);
+        }
+
+        function resetEconomyRefreshBtn() {
+            const btn = document.getElementById('econ-refresh-btn');
+            const icon = document.getElementById('econ-refresh-icon');
+            const lbl = document.getElementById('econ-refresh-label');
+            btn.disabled = false;
+            btn.style.opacity = '';
+            btn.style.cursor  = '';
+            icon.style.animation = '';
+            lbl.textContent = 'Refresh Economy Data';
+        }
+
+        // Init
+        (async () => {
+            await Promise.all([loadMeta(), loadTable(), loadEconomyMeta(), loadEconomyTable()]);
+        })();
+    </script>
+</body>
+</html>

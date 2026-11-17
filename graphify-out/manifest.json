@@ -1,0 +1,542 @@
+{
+  "/Users/kamalnathan/Documents/projects/top3/check_interests.py": {
+    "mtime": 1778004131.0655851,
+    "ast_hash": "7a34897ee5b37d2d5dbae4ed5196db60",
+    "semantic_hash": "7a34897ee5b37d2d5dbae4ed5196db60"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/check_tasks.py": {
+    "mtime": 1778003965.7826707,
+    "ast_hash": "d6b99d8a47fcf395daef53de0d77b3b1",
+    "semantic_hash": "d6b99d8a47fcf395daef53de0d77b3b1"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/executor_bkp.py": {
+    "mtime": 1777992825.6661456,
+    "ast_hash": "aff38b1a7b7c6b3e6a0050b9b27d819c",
+    "semantic_hash": "aff38b1a7b7c6b3e6a0050b9b27d819c"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/seed_investment_data.py": {
+    "mtime": 1778087565.159759,
+    "ast_hash": "f561515eebadc1e1156c3b8338a1bd7d",
+    "semantic_hash": "f561515eebadc1e1156c3b8338a1bd7d"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/app.py": {
+    "mtime": 1790839677.4941554,
+    "ast_hash": "5a3bd37758affccf3fe1459ed6d192f3",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/interests.json": {
+    "mtime": 1777734601.5460024,
+    "ast_hash": "1b92a1e53c0b712184117e4637718c3c",
+    "semantic_hash": "1b92a1e53c0b712184117e4637718c3c"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/.trip_cache.json": {
+    "mtime": 1790936649.129782,
+    "ast_hash": "843e1afa4de45daf002817df257a70ac",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/investment_overview.json": {
+    "mtime": 1778087479.4177365,
+    "ast_hash": "8a1ec4797f38c18b07861318801325df",
+    "semantic_hash": "8a1ec4797f38c18b07861318801325df"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/executor.py": {
+    "mtime": 1778001790.0767703,
+    "ast_hash": "cfafb2e691adff64225915473b56471a",
+    "semantic_hash": "cfafb2e691adff64225915473b56471a"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/.claude/settings.json": {
+    "mtime": 1778863679.35279,
+    "ast_hash": "9276b535256dc065bd7b8b84e15abd95",
+    "semantic_hash": "9276b535256dc065bd7b8b84e15abd95"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/static/nav.js": {
+    "mtime": 1790782356.257315,
+    "ast_hash": "c131dd96556d2872e30676eced26aa7d",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/claude_executor.py": {
+    "mtime": 1778843540.1545446,
+    "ast_hash": "4f29a868a0ce782dc54578c28397d104",
+    "semantic_hash": "4f29a868a0ce782dc54578c28397d104"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/travel_agent.py": {
+    "mtime": 1788887560.335672,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/timezone_utils.py": {
+    "mtime": 1778127401.6500502,
+    "ast_hash": "9b5e20cde7095cc47a204e672495833e",
+    "semantic_hash": "9b5e20cde7095cc47a204e672495833e"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_planner.py": {
+    "mtime": 1789796961.240851,
+    "ast_hash": "9916aa6ae2a5c3c57e45fc814a48b997",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/news_images.py": {
+    "mtime": 1791218920.18454,
+    "ast_hash": "2d1efe63ddafd304008803c2dd291684",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/tasks.py": {
+    "mtime": 1791187761.7279181,
+    "ast_hash": "01213856e658b5d72e32c587339ae5b0",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_report_html.py": {
+    "mtime": 1789021914.5939581,
+    "ast_hash": "12a3c74cb24fd94d672acebe67f5b96d",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/models.py": {
+    "mtime": 1778661409.8485684,
+    "ast_hash": "1ce287d38011aedf6bbc51987cd37cd4",
+    "semantic_hash": "1ce287d38011aedf6bbc51987cd37cd4"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/whatsapp.py": {
+    "mtime": 1789661976.4001758,
+    "ast_hash": "7191eb8ed66ee9712d9b794651febe2e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/flights.py": {
+    "mtime": 1789017447.2151666,
+    "ast_hash": "31a11a025305052805292205f8545046",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_country_city_planner.py": {
+    "mtime": 1789796954.7818828,
+    "ast_hash": "8a1e8c5752f8e586dabdd534c0f0397d",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/country_city_seed.py": {
+    "mtime": 1789753988.8877106,
+    "ast_hash": "3341f39bccf64001e12ca6845ac80acc",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/news_service.py": {
+    "mtime": 1791357692.6790757,
+    "ast_hash": "732b7511cdb8cae46a410332ae40f5b4",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/search_engine.py": {
+    "mtime": 1777999610.2677212,
+    "ast_hash": "693912258bb938b108c942fff7fafec7",
+    "semantic_hash": "693912258bb938b108c942fff7fafec7"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/database.py": {
+    "mtime": 1791211227.3817523,
+    "ast_hash": "c7727053c18c031cdf9cda0e8bc53e84",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/interest_service.py": {
+    "mtime": 1778127379.265774,
+    "ast_hash": "6895a35afd1a4d780ae85a544404e37d",
+    "semantic_hash": "6895a35afd1a4d780ae85a544404e37d"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/__init__.py": {
+    "mtime": 1777999486.6293385,
+    "ast_hash": "a8fb7aae48ad2b2b7ed79bb5f7a51cc1",
+    "semantic_hash": "a8fb7aae48ad2b2b7ed79bb5f7a51cc1"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/celery_config.py": {
+    "mtime": 1790957761.371754,
+    "ast_hash": "34d384d8bf1c980d56291b0c601faeaa",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/economy_data_fetcher.py": {
+    "mtime": 1778690569.3880656,
+    "ast_hash": "8ff1c7d3975baeac141f0f3ec844a979",
+    "semantic_hash": "8ff1c7d3975baeac141f0f3ec844a979"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/utils.py": {
+    "mtime": 1778955475.3649888,
+    "ast_hash": "ec37e1c37d948076f19f44eedc8bd423",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/youtube_search.py": {
+    "mtime": 1777999512.6683366,
+    "ast_hash": "00d92a3a015abe345235c190bb4f1601",
+    "semantic_hash": "00d92a3a015abe345235c190bb4f1601"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/news_pdf.py": {
+    "mtime": 1791208093.4107003,
+    "ast_hash": "3578a1fe47a08cafcd8f9129c1dfd94e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/template_matcher.py": {
+    "mtime": 1778004410.0261936,
+    "ast_hash": "833e56e15cd049397e911befff7ca0ba",
+    "semantic_hash": "833e56e15cd049397e911befff7ca0ba"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/flight_plan_service.py": {
+    "mtime": 1789795790.3430736,
+    "ast_hash": "7aff0c0a0d0d7ff9ead4d3c045574d57",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/news_events.py": {
+    "mtime": 1791209933.3065248,
+    "ast_hash": "ed3eaf0a47d266317e888c0afd3a5f6a",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_country_city_bkp.py": {
+    "mtime": 1789019732.552807,
+    "ast_hash": "d67435ddc9574e7e5c1c0c3216f8e5ed",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/profile_handler.py": {
+    "mtime": 1778002190.6751423,
+    "ast_hash": "3ff28839ece7b8bbff30b6d62e6b1473",
+    "semantic_hash": "3ff28839ece7b8bbff30b6d62e6b1473"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/bonds_scraper.py": {
+    "mtime": 1788259538.83875,
+    "ast_hash": "4d482fe68be71cfaa0d2e202a54451a4",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/news_refresh.py": {
+    "mtime": 1791213467.1031742,
+    "ast_hash": "53c2bb9f47f496c00e4934758148b743",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/investment_overview.py": {
+    "mtime": 1778158622.5813677,
+    "ast_hash": "9011964f55396d9ce116c27a7d5e9352",
+    "semantic_hash": "9011964f55396d9ce116c27a7d5e9352"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/countries.py": {
+    "mtime": 1789755598.9980476,
+    "ast_hash": "0493958d08273770286127ddd811dd27",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/interests.py": {
+    "mtime": 1778127379.301331,
+    "ast_hash": "5f540be99d70a16c378e0a3ff1dc1ad3",
+    "semantic_hash": "5f540be99d70a16c378e0a3ff1dc1ad3"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/results.py": {
+    "mtime": 1778127379.3329673,
+    "ast_hash": "fc14f9e4e9edae6495cb43d9b8f448c2",
+    "semantic_hash": "fc14f9e4e9edae6495cb43d9b8f448c2"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/profile.py": {
+    "mtime": 1778955263.2706954,
+    "ast_hash": "9061bf630535669297bdb480e7bb7931",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/__init__.py": {
+    "mtime": 1777999542.957969,
+    "ast_hash": "17d29ef2b1b928947a4ea1ab482b206f",
+    "semantic_hash": "17d29ef2b1b928947a4ea1ab482b206f"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/templates.py": {
+    "mtime": 1778127379.317802,
+    "ast_hash": "5742ba53778062a9a7ae613d02aa5084",
+    "semantic_hash": "5742ba53778062a9a7ae613d02aa5084"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/trip_details.py": {
+    "mtime": 1789752319.179121,
+    "ast_hash": "ac788d254544940dced78010d1969d75",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/pages.py": {
+    "mtime": 1790782356.2562337,
+    "ast_hash": "b322bc22012b6b00324b6820ca2c425e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/bonds.py": {
+    "mtime": 1779130706.7499902,
+    "ast_hash": "2ee4bebf1932358f093d6b6a7205eddd",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/flight_plans.py": {
+    "mtime": 1789795623.5384214,
+    "ast_hash": "53606ffb8060375bf60a3f867b40dac8",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/whatsapp_webhook.py": {
+    "mtime": 1789662046.7290792,
+    "ast_hash": "2a160cd0f85a3c96155032075205b50d",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/queries.py": {
+    "mtime": 1778127379.3089545,
+    "ast_hash": "ddba970c36a053eb5985ef20feca4660",
+    "semantic_hash": "ddba970c36a053eb5985ef20feca4660"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/video.py": {
+    "mtime": 1778127379.3257732,
+    "ast_hash": "ffedde5d210c24c8ba851912e737248b",
+    "semantic_hash": "ffedde5d210c24c8ba851912e737248b"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/routes/news.py": {
+    "mtime": 1791211227.3813334,
+    "ast_hash": "ad4f1ff8ed11a4018bf34368c26a125a",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/ARCHITECTURE.md": {
+    "mtime": 1777999768.3552346,
+    "ast_hash": "19c23971f171cff206d52604752c3d86",
+    "semantic_hash": "19c23971f171cff206d52604752c3d86"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/requirements.txt": {
+    "mtime": 1788872345.5314345,
+    "ast_hash": "79bfc9da30ec23ebc044326c78251ec6",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/REFACTORING_SUMMARY.md": {
+    "mtime": 1777999809.2616494,
+    "ast_hash": "c801f7fe462518acd9e87b12b5616069",
+    "semantic_hash": "c801f7fe462518acd9e87b12b5616069"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/README.md": {
+    "mtime": 1788929796.5073452,
+    "ast_hash": "85ca504b1cddbec7ac337a8966a4db04",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/TEMPLATE_USAGE_GUIDE.md": {
+    "mtime": 1778004896.206794,
+    "ast_hash": "c1bce923e02fc07155a47286955ad3d9",
+    "semantic_hash": "c1bce923e02fc07155a47286955ad3d9"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/MIGRATION_GUIDE.md": {
+    "mtime": 1777999695.829704,
+    "ast_hash": "e1ac3372ef44a8c086478c5a00a0a8e2",
+    "semantic_hash": "e1ac3372ef44a8c086478c5a00a0a8e2"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/docker-compose.yml": {
+    "mtime": 1777784859.3683817,
+    "ast_hash": "8a703110e94d4de2178a24ed67bd609a",
+    "semantic_hash": "8a703110e94d4de2178a24ed67bd609a"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/economy_indicator_display_example.html": {
+    "mtime": 1778173340.86176,
+    "ast_hash": "0fe4d5a53cc90e037cdb13b4dd08b0e0",
+    "semantic_hash": "0fe4d5a53cc90e037cdb13b4dd08b0e0"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/Project requirements.txt": {
+    "mtime": 1777784458.195017,
+    "ast_hash": "7a975ad0d5a7f7442fb4867a1dba3b9f",
+    "semantic_hash": "7a975ad0d5a7f7442fb4867a1dba3b9f"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/MODULAR_STRUCTURE.md": {
+    "mtime": 1777999661.0602286,
+    "ast_hash": "295a557586b36a20509364722fd63d94",
+    "semantic_hash": "295a557586b36a20509364722fd63d94"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/TEMPLATE_MAPPING.md": {
+    "mtime": 1778004441.1979773,
+    "ast_hash": "4dedef55749dad0babadd8467b067500",
+    "semantic_hash": "4dedef55749dad0babadd8467b067500"
+  },
+  "/Users/kamalnathan/Documents/projects/top3/CLAUDE.md": {
+    "mtime": 1790957761.3724983,
+    "ast_hash": "ec1eb0156f4b69256b2d66e8e1ee74ec",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/business-site/index.html": {
+    "mtime": 1789580681.7903824,
+    "ast_hash": "90a951048f6e5145d5edc6e52e72051d",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/business-site/terms.html": {
+    "mtime": 1789580681.792334,
+    "ast_hash": "f761fc7b688badea81fc56b9873e136e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/business-site/README.md": {
+    "mtime": 1789580553.1176116,
+    "ast_hash": "5a99bcac4fa495eddbc2271924708593",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/business-site/privacy.html": {
+    "mtime": 1789580681.7913756,
+    "ast_hash": "47ac49d0ec9bab85549f8db4f026def3",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/investment_overview.html": {
+    "mtime": 1790784051.5977716,
+    "ast_hash": "3e4025f1a9bddb7abe1f0b4fd051ae8e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/profile.html": {
+    "mtime": 1790784051.6026375,
+    "ast_hash": "187a7f0f3ce133534ec11e2af053ef24",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/query_templates.html": {
+    "mtime": 1790784051.603442,
+    "ast_hash": "e603e1f79b4aee6cfdd86072d96f4e6f",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/index.html": {
+    "mtime": 1790784051.5970995,
+    "ast_hash": "b9f76b7bfef9a0bf31ce4534c209570a",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/cashflow.html": {
+    "mtime": 1790784051.59473,
+    "ast_hash": "be5d1b9624defdeeea160fc6d4d8264e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/planning.html": {
+    "mtime": 1790784051.6007242,
+    "ast_hash": "51481b1603a39364f1ad2e666f7ebbc4",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/bonds_progress.html": {
+    "mtime": 1790784051.5936816,
+    "ast_hash": "f85d9514cb5655c432dc4f4b3d7c65cf",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/bonds.html": {
+    "mtime": 1790784051.5922468,
+    "ast_hash": "36e559caf6d58c78b4ccfe0a983d0a1b",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/news.html": {
+    "mtime": 1791220858.0070763,
+    "ast_hash": "87b8ec7a473b3b283ee1bf235951e637",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/results.html": {
+    "mtime": 1791189308.2457283,
+    "ast_hash": "1fbdc2da20f2522fae3229bb143d969d",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/trips.html": {
+    "mtime": 1790784051.6054323,
+    "ast_hash": "219059f6033d90ccd18c7ad94f8f50b6",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/monitor.html": {
+    "mtime": 1790784051.5982156,
+    "ast_hash": "17815be1514cdbd88ba73c0a15bfd185",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/templates/experiences.html": {
+    "mtime": 1790784051.5960524,
+    "ast_hash": "159adcf009a7abb1086f005cabc5a265",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260915-174009.txt": {
+    "mtime": 1789474209.1726623,
+    "ast_hash": "b68ba7096728042b5ed649e88ca99237",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260909-094658.txt": {
+    "mtime": 1788927418.0469346,
+    "ast_hash": "ce227c95682a0f84e9e0f13d6320cbac",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_input_bkp.txt": {
+    "mtime": 1789723984.7662966,
+    "ast_hash": "15b6aae5ae9ddd7ad0c1b18a78c57bcb",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260915-174341.txt": {
+    "mtime": 1789474421.4372663,
+    "ast_hash": "e5eadd13f48bc9484fa23789aa556f47",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260910-110310.txt": {
+    "mtime": 1789018390.8709512,
+    "ast_hash": "8cea40994bcbba47f533abfffc3f2cac",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260909-095900.html": {
+    "mtime": 1789021914.6720297,
+    "ast_hash": "ff7258ab7d94c5333cc1f751fe721d25",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260915-112516.txt": {
+    "mtime": 1789451716.42281,
+    "ast_hash": "81c807dfc8ef6fcb2f58fbae17ef94ba",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260909-095900.txt": {
+    "mtime": 1788928140.3073819,
+    "ast_hash": "45419b3768d600c082111569f5deca22",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260909-101636.txt": {
+    "mtime": 1788929196.285281,
+    "ast_hash": "7d8f3673a8c6b7cef91a2b2636ff363d",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260910-111209.txt": {
+    "mtime": 1789018929.4373548,
+    "ast_hash": "ab0bb4c989a92acfcc2c776f192a472f",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260910-114518.html": {
+    "mtime": 1789022011.6189666,
+    "ast_hash": "34acc1db46ab30f8af17d51e7edb40a2",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260915-174705.txt": {
+    "mtime": 1789474625.6169446,
+    "ast_hash": "dcdba4d7bc76be499c7d76d1ca6f2b6f",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260915-112859.txt": {
+    "mtime": 1789451939.2566102,
+    "ast_hash": "6c7bfc2c1550eed1e5714a54d12e9fce",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/facebook.txt": {
+    "mtime": 1789653502.2251167,
+    "ast_hash": "326d7fa93034b8fe9bdd34242461a27e",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260916-163700.txt": {
+    "mtime": 1789556820.230432,
+    "ast_hash": "4aab8b3bb1cdf5beee78b813790a0b2a",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260915-174310.txt": {
+    "mtime": 1789474390.172699,
+    "ast_hash": "755670edcd7a99f9a86f57766448da49",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_readme.txt": {
+    "mtime": 1789219812.308529,
+    "ast_hash": "30809410132b496e0a4127d88945d3ef",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260910-114518.txt": {
+    "mtime": 1789020918.7493372,
+    "ast_hash": "807d9f2925cd2dac9cd2064380032e6a",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260910-191712.txt": {
+    "mtime": 1789048032.531376,
+    "ast_hash": "efd6f05f9e5708c0f65399fd7ba9a227",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output copy.txt": {
+    "mtime": 1788926247.6501544,
+    "ast_hash": "050478191d8e01628d5443877344ec32",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260909-094723.txt": {
+    "mtime": 1788927443.6450214,
+    "ast_hash": "9e7577f626b29f09f507413f84895f2f",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output.txt": {
+    "mtime": 1789725478.8086824,
+    "ast_hash": "8749d08233d76ed6c9ba77dc04861c82",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260909-102145.txt": {
+    "mtime": 1788929505.9155457,
+    "ast_hash": "e9968cca8772ddfd3611e5d363e9c158",
+    "semantic_hash": ""
+  },
+  "/Users/kamalnathan/Documents/projects/top3/src/trip_output_20260918-152758.txt": {
+    "mtime": 1789725478.8084185,
+    "ast_hash": "8749d08233d76ed6c9ba77dc04861c82",
+    "semantic_hash": ""
+  }
+}

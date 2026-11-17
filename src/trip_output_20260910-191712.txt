@@ -1,0 +1,35 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-10 19:17:12
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+1  Mauritius only (1 city)           6       2026-10-18 - 2026-10-24 INR  239,244
+
+CHEAPEST: Mauritius only (1 city) - INR 239,244 for 4 travellers, 6 nights
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Mauritius only (1 city)
+   Days: Port Louis (MRU) 6n
+   2026-10-18  BLR -> MRU   Air India             20:30-06:30 11h 30m  1 stop via BOM       INR 27,252
+        flight AI 2850, AI 2241 | cabin 7 KGS/Adult | check-in 25 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-MRU-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-24  MRU -> BLR   IndiGo                09:30-17:05 6h 05m   non-stop             INR 32,559
+        flight 6E 1862 | cabin 7 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=MRU-BLR-24/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 59,811   x 4 = INR 239,244
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

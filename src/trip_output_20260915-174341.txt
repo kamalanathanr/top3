@@ -1,0 +1,26 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-15 17:43:41
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+  (none priced completely)
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Egypt only   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

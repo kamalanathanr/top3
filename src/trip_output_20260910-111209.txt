@@ -1,0 +1,84 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-10 11:12:09
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+1  Vietnam only (2 cities)           6       2026-10-18 - 2026-10-24 INR  198,312
+2  Cambodia only (1 city)            2       2026-10-18 - 2026-10-20 INR  242,164
+3  Vietnam -> Cambodia               7       2026-10-18 - 2026-10-25 INR  248,668
+4  Cambodia -> Vietnam               7       2026-10-18 - 2026-10-25 INR  275,028
+
+CHEAPEST: Vietnam only (2 cities) - INR 198,312 for 4 travellers, 6 nights
+Adding a second country costs INR 50,356 more than the best single-country trip (Vietnam -> Cambodia vs Vietnam only (2 cities)).
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Vietnam only (2 cities)
+   Days: Ho Chi Minh City (SGN) 3n, Hanoi (HAN) 3n
+   2026-10-18  BLR -> SGN   VietJet Air           23:35-06:00 4h 55m   non-stop             INR 18,939
+        flight VJ 1802 | cabin 7 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SGN-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&intl=false&cabinClass=E
+   2026-10-21  SGN -> HAN   VietJet Air           05:00-07:10 2h 10m   non-stop             INR 4,373
+        flight VJ 120 | cabin 0 PCS/Adult | check-in 0 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=SGN-HAN-21/10/2026&tripType=O&paxType=A-4_C-0_I-0&intl=false&cabinClass=E
+   2026-10-24  HAN -> BLR   Akasa Air             13:30-23:35 11h 35m  1 stop via BOM       INR 26,266
+        flight QP 626, QP 1518 | cabin 7 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=HAN-BLR-24/10/2026&tripType=O&paxType=A-4_C-0_I-0&intl=false&cabinClass=E
+   per adult: INR 49,578   x 4 = INR 198,312
+
+2. Cambodia only (1 city)
+   Days: Siem Reap (SAI) 2n
+   2026-10-18  BLR -> SAI   Thai AirAsia          23:20-11:10 10h 20m  1 stop via DMK       INR 27,323
+        flight FD 138, FD 610
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SAI-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-20  SAI -> BLR   Bangkok Airways, Air  19:35-15:55 21h 50m  2 stops via BKK,DEL  INR 33,218
+        flight PG 908, AI 2333
+        book: https://www.makemytrip.com/flight/search?itinerary=SAI-BLR-20/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 60,541   x 4 = INR 242,164
+
+3. Vietnam -> Cambodia
+   Days: Ho Chi Minh City (SGN) 3n, Hanoi (HAN) 3n, Siem Reap (SAI) 1n
+   2026-10-18  BLR -> SGN   VietJet Air           23:35-06:00 4h 55m   non-stop             INR 18,939
+        flight VJ 1802 | cabin 7 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SGN-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&intl=false&cabinClass=E
+   2026-10-21  SGN -> HAN   VietJet Air           05:00-07:10 2h 10m   non-stop             INR 4,373
+        flight VJ 120 | cabin 0 PCS/Adult | check-in 0 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=SGN-HAN-21/10/2026&tripType=O&paxType=A-4_C-0_I-0&intl=false&cabinClass=E
+   2026-10-24  HAN -> SAI   VietJet Air           16:20-18:05 1h 45m   non-stop             INR 8,102
+        flight VJ 913 | cabin 7 KGS/Adult | check-in 0 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=HAN-SAI-24/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-25  SAI -> BLR   Bangkok Airways, Air  19:25-15:50 21h 55m  2 stops via BKK,DEL  INR 30,753
+        flight PG 908, AI 2333
+        book: https://www.makemytrip.com/flight/search?itinerary=SAI-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 62,167   x 4 = INR 248,668
+
+4. Cambodia -> Vietnam
+   Days: Siem Reap (SAI) 1n, Ho Chi Minh City (SGN) 3n, Hanoi (HAN) 3n
+   2026-10-18  BLR -> SAI   Thai AirAsia          23:20-11:10 10h 20m  1 stop via DMK       INR 27,323
+        flight FD 138, FD 610
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SAI-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  SAI -> SGN   Vietnam Airlines      19:10-20:25 1h 15m   non-stop             INR 13,180
+        flight VN 812 | cabin 1 PCS/Adult | check-in 1 PCS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=SAI-SGN-19/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-22  SGN -> HAN   VietJet Air           05:30-18:55 13h 25m  1 stop via HUI       INR 3,660
+        flight VJ 302, VJ 568 | cabin 0 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=SGN-HAN-22/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-25  HAN -> BLR   IndiGo                19:05-04:05 10h 30m  1 stop via BOM       INR 24,594
+        flight 6E 1638, 6E 6284 | cabin 7 KGS/Adult | check-in 30 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=HAN-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 68,757   x 4 = INR 275,028
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

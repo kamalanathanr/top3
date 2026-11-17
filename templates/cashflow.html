@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+        .card { @apply bg-white rounded-xl shadow-sm border border-gray-200; }
+        .section-header { @apply px-8 py-5 border-b border-blue-100 bg-blue-50 rounded-t-xl; }
+        .section-body { @apply p-8; }
+        .yr-row { cursor:pointer; transition:background .12s; }
+        .yr-row:hover { background:rgba(37,99,235,.04); }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+        input[type=number] { -moz-appearance:textfield; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-12">
+        <div class="max-w-6xl mx-auto px-6">
+
+            <div class="mb-8">
+                <h2 id="pageTitle" class="text-4xl font-bold text-blue-700 mb-2">Cash Flow</h2>
+                <p class="text-gray-500">Year-by-year breakdown of income, expenses and commitments</p>
+            </div>
+
+            <!-- Summary bar -->
+            <div id="summaryBar" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px"></div>
+
+            <!-- Year-by-year table -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 class="text-lg font-bold text-blue-800">Year-by-Year Cash Flow</h3>
+                    <p class="text-sm text-blue-600 mt-0.5">
+                        Click any year to expand goal detail &nbsp;·&nbsp;
+                        <strong>Expenses</strong> = High-priority commitments &nbsp;·&nbsp;
+                        <strong>Commitments</strong> = all others &nbsp;·&nbsp;
+                        <strong>Cash at Bank</strong> = running cumulative
+                    </p>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse;font-size:14px">
+                        <thead>
+                            <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb">
+                                <th style="text-align:left;padding:12px 16px;font-weight:700;color:#374151">Year</th>
+                                <th style="text-align:left;padding:12px 16px;font-weight:700;color:#374151">Period</th>
+                                <th style="text-align:right;padding:12px 16px;font-weight:700;color:#15803d">Annual Income</th>
+                                <th style="text-align:right;padding:12px 16px;font-weight:700;color:#dc2626">Expenses</th>
+                                <th style="text-align:right;padding:12px 16px;font-weight:700;color:#d97706">Commitments</th>
+                                <th style="text-align:right;padding:12px 16px;font-weight:700;color:#1d4ed8">Cash at Bank</th>
+                                <th style="width:32px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cfTableBody">
+                            <tr><td colspan="7" style="padding:48px;text-align:center;color:#9ca3af;font-style:italic">Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sankey — year selector -->
+            <div class="card mb-8" id="sankeyCard">
+                <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-800">Income Flow</h3>
+                        <p class="text-sm text-blue-600 mt-0.5">How income flows into expenses, commitments and savings</p>
+                    </div>
+                    <select id="sankeyYearSelect" onchange="onSankeyYearChange()"
+                        style="padding:8px 14px;border:1.5px solid #bfdbfe;border-radius:8px;font-size:13px;font-weight:600;color:#1e40af;background:#eff6ff;cursor:pointer;outline:none;min-width:230px">
+                        <option>Loading…</option>
+                    </select>
+                </div>
+                <div class="section-body" style="padding-bottom:28px">
+                    <div id="sankeyChart" style="width:100%;min-height:380px"></div>
+                    <p id="sankeyEmpty" class="hidden" style="color:#9ca3af;font-style:italic;text-align:center;padding:60px 0">
+                        Add income data and financial commitments in Profile to see the flow diagram.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    // ── Helpers ─────────────────────────────────────────────────────────────
+    function fmtINR(n) {
+        if (n == null || isNaN(n) || n === '') return '—';
+        const abs = Math.abs(n), sign = n < 0 ? '-' : '';
+        if (abs >= 1e7) return sign + '₹' + (abs/1e7).toFixed(2) + ' Cr';
+        if (abs >= 1e5) return sign + '₹' + (abs/1e5).toFixed(2) + ' L';
+        if (abs >= 1e3) return sign + '₹' + (abs/1e3).toFixed(0) + 'K';
+        return sign + '₹' + Math.round(abs);
+    }
+    function fmtINRFull(n) {
+        if (!n || isNaN(n)) return '—';
+        return '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+    }
+    function escHtml(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    const expandedYears = new Set();
+    let _allYearsData = null;
+
+    // ── Load & compute ───────────────────────────────────────────────────────
+    async function loadCashflow() {
+        let p = {};
+        try {
+            const res = await fetch('/api/profile');
+            p = (await res.json()).profile || {};
+        } catch {}
+
+        const horizon = p.investment_planning_horizon || 0;
+
+        if (!horizon) {
+            document.getElementById('pageTitle').textContent = 'Cash Flow';
+            document.getElementById('cfTableBody').innerHTML =
+                '<tr><td colspan="7" style="padding:56px;text-align:center;color:#9ca3af">' +
+                'Set your <strong>Investment Planning Horizon</strong> in Profile to see cash flow projections.' +
+                '</td></tr>';
+            document.getElementById('sankeyCard').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('pageTitle').textContent = `${horizon} Year Cash Flow`;
+
+        const allAssets = p.existing_assets || [];
+        const members   = p.family_members  || [];
+        const goals     = p.financial_goals || [];
+        const freqMul   = { monthly:12, quarterly:4, '4_months':3, '6_months':2, annually:1 };
+        const freqLabel = { monthly:'monthly', quarterly:'quarterly', '4_months':'every 4 mo',
+                            '6_months':'half-yearly', annually:'annually' };
+
+        // Salary base per member (constant across all years)
+        const memberBases = members.filter(m => m.name).map(m => ({
+            name:    m.name,
+            monthly: m.income || 0,
+            salary:  (m.income || 0) * 12,
+        }));
+
+        // Bond passive income for a member — FY-aware.
+        // When a bond matures inside the FY, income is pro-rated to the active months only.
+        // When a bond matured before the FY starts, income is 0.
+        function passiveOfFy(memberName, fyFrom, fyTo) {
+            const nm = (memberName||'').trim().toLowerCase();
+            if (!nm) return 0;
+            const fyMs = fyTo.getTime() - fyFrom.getTime();
+            return allAssets
+                .filter(a => a.asset_type === 'Bonds'
+                          && (a.owner_name||'').trim().toLowerCase() === nm
+                          && (a.market_value||0) > 0 && (a.annual_return_pct||0) > 0)
+                .reduce((s, a) => {
+                    const ann = a.market_value * a.annual_return_pct / 100;
+                    if (!a.maturity_date) return s + ann;        // no maturity — perpetual
+                    const md = new Date(a.maturity_date);
+                    if (md <= fyFrom) return s;                  // matured before this FY → 0
+                    if (md > fyTo)    return s + ann;            // matures after this FY → full
+                    // Matures mid-FY: pro-rate by days active
+                    const fraction = (md.getTime() - fyFrom.getTime()) / fyMs;
+                    return s + ann * Math.max(0, Math.min(1, fraction));
+                }, 0);
+        }
+
+
+        // Opening balance: sum of FDs that are not tagged as emergency funds
+        const openingBalance = allAssets
+            .filter(a => a.asset_type === 'FDs'
+                      && !(a.name||'').toLowerCase().includes('emergency')
+                      && !(a.goal||'').toLowerCase().includes('emergency'))
+            .reduce((s, a) => s + (a.market_value||0), 0);
+
+        // FY base year: April starts the FY
+        const today = new Date();
+        const fyBase = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
+
+        let cumulativeCash = openingBalance;
+        const years = [];
+
+        for (let i = 1; i <= horizon; i++) {
+            const fyStart = fyBase + i - 1;
+            const fyEnd   = fyStart + 1;
+            const fyLabel = `FY ${fyStart}-${String(fyEnd).slice(-2)}`;
+            const dateRange = `Apr ${fyStart} – Mar ${fyEnd}`;
+            const fyFrom = new Date(fyStart, 3, 1);   // 1 April
+            const fyTo   = new Date(fyEnd,   2, 31);  // 31 March
+
+            // Per-year income: salary fixed, passive income shrinks as bonds mature
+            const memberIncomes = memberBases.map(m => {
+                const passive = passiveOfFy(m.name, fyFrom, fyTo);
+                return { ...m, passive, annual: m.salary + passive };
+            });
+            const totalAnnualIncome = memberIncomes.reduce((s, m) => s + m.annual, 0);
+
+            let annualExpenses = 0, annualCommitments = 0;
+            const expItems = [], commItems = [];
+
+            goals.forEach(g => {
+                let amount = 0, note = '';
+                if (g.recurring) {
+                    amount = (g.amount||0) * (freqMul[g.frequency]||1);
+                    note   = freqLabel[g.frequency] || 'recurring';
+                } else if (g.date) {
+                    const gd = new Date(g.date);
+                    if (gd >= fyFrom && gd <= fyTo) amount = g.amount || 0;
+                } else if (i === 1) {
+                    amount = g.amount || 0;
+                    note   = 'no target date';
+                }
+                if (amount <= 0) return;
+
+                const item = { name: g.name || 'Unnamed', amount, note };
+                if ((g.priority||'Medium') === 'High') { annualExpenses += amount; expItems.push(item); }
+                else                                   { annualCommitments += amount; commItems.push(item); }
+            });
+
+            // Asset maturity proceeds falling in this FY
+            let maturityIncome = 0;
+            const maturityItems = [];
+            allAssets
+                .filter(a => ['Bonds','MF','FDs','ETFs'].includes(a.asset_type)
+                          && a.maturity_date && (a.market_value||0) > 0)
+                .forEach(a => {
+                    const md = new Date(a.maturity_date);
+                    if (md < fyFrom || md > fyTo) return;
+                    // Years remaining from today to maturity (0 if already past)
+                    const yrsLeft = Math.max(0, (md - today) / (365.25 * 24 * 60 * 60 * 1000));
+                    const rate    = a.annual_return_pct || 0;
+                    // Bonds return face-value (principal only); coupon is already passive income
+                    // MF / FD / ETF appreciate at the stated annual return rate
+                    const matVal  = a.asset_type === 'Bonds'
+                        ? a.market_value
+                        : (rate > 0 ? a.market_value * Math.pow(1 + rate/100, yrsLeft) : a.market_value);
+                    const rounded = Math.round(matVal);
+                    maturityIncome += rounded;
+                    maturityItems.push({
+                        name:         a.name || a.unique_no || a.asset_type,
+                        asset_type:   a.asset_type,
+                        currentValue: a.market_value,
+                        amount:       rounded,
+                        gain:         Math.round(rounded - a.market_value),
+                        rate,
+                        yrsLeft:      +yrsLeft.toFixed(1),
+                    });
+                });
+
+            const netCash = totalAnnualIncome + maturityIncome - annualExpenses - annualCommitments;
+            cumulativeCash += netCash;
+
+            years.push({
+                i, fyLabel, fyStart, fyEnd, dateRange,
+                totalIncome: totalAnnualIncome,
+                memberIncomes,
+                maturityIncome, maturityItems,
+                annualExpenses, annualCommitments,
+                netCash, cumulativeCash,
+                expItems, commItems,
+            });
+        }
+
+        renderSummary(years[0]?.totalIncome || 0, years, openingBalance);
+        renderTable(years, openingBalance);
+
+        // Populate the year-selector dropdown
+        const sel = document.getElementById('sankeyYearSelect');
+        sel.innerHTML = years.map(y =>
+            `<option value="${y.i}">Year ${y.i} — ${y.fyLabel}</option>`
+        ).join('') +
+        `<option value="all">All ${years.length} Years (Year 1 – Year ${years.length})</option>`;
+
+        _allYearsData = { years, openingBalance };
+        google.charts.load('current', { packages: ['sankey'] });
+        google.charts.setOnLoadCallback(() => drawSankeyForSelection('1'));
+    }
+
+    // ── Summary bar ──────────────────────────────────────────────────────────
+    function renderSummary(income, years, openingBalance) {
+        const y1 = years[0] || {};
+        const savRate = income > 0 && y1.netCash != null
+            ? Math.round((y1.netCash / income) * 100) : null;
+        const endCash = years.length ? years[years.length-1].cumulativeCash : null;
+
+        const cards = [
+            { label:'Opening FD Balance',    val: openingBalance > 0 ? fmtINR(openingBalance) : '—', bg:'#f0fdf4', b:'#bbf7d0', c:'#15803d' },
+            { label:'Annual Income',         val: fmtINR(income),               bg:'#eff6ff', b:'#bfdbfe', c:'#1d4ed8' },
+            { label:'Yr 1 Expenses',         val: fmtINR(y1.annualExpenses),    bg:'#fef2f2', b:'#fca5a5', c:'#dc2626' },
+            { label:'Yr 1 Commitments',      val: fmtINR(y1.annualCommitments), bg:'#fffbeb', b:'#fde68a', c:'#d97706' },
+            { label:'Yr 1 Savings Rate',     val: savRate !== null ? savRate+'%' : '—', bg:'#f0fdf4', b:'#bbf7d0', c:'#15803d' },
+            { label:'End-of-Horizon Balance',val: fmtINR(endCash),              bg:'#fdf4ff', b:'#e9d5ff', c:'#6b21a8' },
+        ];
+        document.getElementById('summaryBar').innerHTML = cards.map(c =>
+            `<div style="background:${c.bg};border:1px solid ${c.b};border-radius:12px;padding:14px 20px;min-width:150px;flex:1">
+                <p style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;margin:0 0 4px">${c.label}</p>
+                <p style="font-size:21px;font-weight:800;color:${c.c};margin:0">${c.val}</p>
+            </div>`).join('');
+    }
+
+    // ── Table ────────────────────────────────────────────────────────────────
+    function renderTable(years, openingBalance) {
+        document.getElementById('cfTableBody').innerHTML = years.map(y => {
+            const cashColor = y.cumulativeCash >= 0 ? '#1d4ed8' : '#dc2626';
+            return `
+            <tr class="yr-row" onclick="toggleYear(${y.i})"
+                style="border-bottom:1px solid #f1f5f9;background:${y.i%2===0?'#fafafa':'#fff'}">
+                <td style="padding:13px 16px">
+                    <span style="font-weight:700;font-size:14px;color:#1e293b">Year ${y.i}</span>
+                    <span style="font-size:11px;font-weight:600;color:#6b7280;background:#f1f5f9;border-radius:4px;padding:2px 7px;margin-left:8px">${y.fyLabel}</span>
+                </td>
+                <td style="padding:13px 16px;font-size:12px;color:#6b7280;white-space:nowrap">${y.dateRange}</td>
+                <td style="padding:13px 16px;text-align:right">
+                    <span style="font-weight:600;color:#15803d">${fmtINR(y.totalIncome + y.maturityIncome)}</span>
+                    ${y.maturityIncome > 0
+                        ? `<br><span style="font-size:10px;color:#0369a1;font-weight:600">incl. ${fmtINR(y.maturityIncome)} maturity</span>`
+                        : ''}
+                </td>
+                <td style="padding:13px 16px;text-align:right">
+                    <span style="font-weight:600;color:${y.annualExpenses>0?'#dc2626':'#d1d5db'}">${y.annualExpenses>0 ? fmtINR(y.annualExpenses) : '—'}</span>
+                    ${(()=>{
+                        const freqWords = new Set(['monthly','quarterly','every 4 mo','half-yearly','annually','recurring']);
+                        const oneTime = y.expItems
+                            .filter(e => !freqWords.has(e.note))
+                            .sort((a,b) => b.amount - a.amount)
+                            .slice(0,2);
+                        return oneTime.map(e =>
+                            `<br><span style="font-size:10px;color:#dc2626;font-weight:600">${fmtINR(e.amount)} ${escHtml(e.name.length>22?e.name.slice(0,20)+'…':e.name)}</span>`
+                        ).join('');
+                    })()}
+                </td>
+                <td style="padding:13px 16px;text-align:right">
+                    <span style="font-weight:600;color:${y.annualCommitments>0?'#d97706':'#d1d5db'}">${y.annualCommitments>0 ? fmtINR(y.annualCommitments) : '—'}</span>
+                    ${(()=>{
+                        const freqWords = new Set(['monthly','quarterly','every 4 mo','half-yearly','annually','recurring']);
+                        const oneTime = y.commItems
+                            .filter(e => !freqWords.has(e.note))
+                            .sort((a,b) => b.amount - a.amount)
+                            .slice(0,2);
+                        return oneTime.map(e =>
+                            `<br><span style="font-size:10px;color:#d97706;font-weight:600">${fmtINR(e.amount)} ${escHtml(e.name.length>22?e.name.slice(0,20)+'…':e.name)}</span>`
+                        ).join('');
+                    })()}
+                </td>
+                <td style="padding:13px 16px;text-align:right;font-weight:800;font-size:15px;color:${cashColor}">${fmtINR(y.cumulativeCash)}</td>
+                <td style="padding:13px 16px;text-align:center">
+                    <span id="yr-ch-${y.i}" style="color:#9ca3af;font-size:12px;display:inline-block;transition:transform .25s ease">▾</span>
+                </td>
+            </tr>
+            <tr id="yr-det-${y.i}" style="display:none;background:#f8fafc">
+                <td colspan="7" style="padding:0;border-bottom:2px solid #e5e7eb">${buildDetail(y, openingBalance)}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function buildDetail(y, openingBalance) {
+        function mkList(items, color) {
+            if (!items.length) return '<p style="font-size:13px;color:#9ca3af;font-style:italic;margin:4px 0">None this year</p>';
+            return items.map(it =>
+                `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:13px;gap:12px">
+                    <span style="color:#374151;flex:1">${escHtml(it.name)}${it.note ? ` <span style="color:#9ca3af;font-size:11px">(${escHtml(it.note)})</span>` : ''}</span>
+                    <span style="font-weight:700;color:${color};white-space:nowrap">${fmtINRFull(it.amount)}</span>
+                </div>`
+            ).join('');
+        }
+
+        const TYPE_COLOR = { Bonds:'#475569', MF:'#7c3aed', FDs:'#0369a1', ETFs:'#0e7490' };
+
+        function mkMaturityList(items) {
+            if (!items.length) return '<p style="font-size:13px;color:#9ca3af;font-style:italic;margin:4px 0">No maturities this year</p>';
+            return items.map(it => {
+                const tc = TYPE_COLOR[it.asset_type] || '#374151';
+                const gainStr = it.gain > 0
+                    ? `<span style="color:#15803d;font-size:11px"> +${fmtINR(it.gain)} gain</span>`
+                    : '';
+                const rateStr = it.rate > 0 && it.asset_type !== 'Bonds'
+                    ? ` @ ${it.rate}% × ${it.yrsLeft}y` : '';
+                return `
+                <div style="padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:13px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+                        <span style="display:flex;align-items:center;gap:6px;flex:1">
+                            <span style="background:${tc}20;color:${tc};font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">${it.asset_type}</span>
+                            <span style="color:#374151">${escHtml(it.name)}</span>
+                            <span style="color:#9ca3af;font-size:11px">${rateStr}</span>
+                        </span>
+                        <span style="white-space:nowrap;text-align:right">
+                            <span style="font-weight:700;color:#0369a1">${fmtINRFull(it.amount)}</span>
+                            ${gainStr}
+                        </span>
+                    </div>
+                    <div style="font-size:11px;color:#9ca3af;margin-top:2px">
+                        Current value: ${fmtINR(it.currentValue)}
+                        ${it.asset_type === 'Bonds' ? ' · Principal returned (coupon is passive income)' : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        return `
+        <div style="padding:20px 24px">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-bottom:16px">
+                <div>
+                    <p style="font-size:10px;font-weight:700;text-transform:uppercase;color:#15803d;letter-spacing:.5px;margin:0 0 8px">Salary &amp; Passive Income</p>
+                    <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:13px;font-weight:700;border-bottom:1px solid #f1f5f9">
+                        <span style="color:#374151">Total Annual Income</span>
+                        <span style="color:#15803d">${fmtINRFull(y.totalIncome)}</span>
+                    </div>
+                </div>
+                <div>
+                    <p style="font-size:10px;font-weight:700;text-transform:uppercase;color:#0369a1;letter-spacing:.5px;margin:0 0 8px">
+                        Maturity Proceeds ${y.maturityIncome > 0 ? `<span style="color:#0369a1">(${fmtINR(y.maturityIncome)})</span>` : ''}
+                    </p>
+                    ${mkMaturityList(y.maturityItems)}
+                </div>
+                <div>
+                    <p style="font-size:10px;font-weight:700;text-transform:uppercase;color:#dc2626;letter-spacing:.5px;margin:0 0 8px">Expenses (High Priority)</p>
+                    ${mkList(y.expItems, '#dc2626')}
+                </div>
+                <div>
+                    <p style="font-size:10px;font-weight:700;text-transform:uppercase;color:#d97706;letter-spacing:.5px;margin:0 0 8px">Commitments</p>
+                    ${mkList(y.commItems, '#d97706')}
+                </div>
+            </div>
+            <div style="border-top:1px solid #e5e7eb;padding-top:12px;display:flex;gap:28px;flex-wrap:wrap;align-items:center">
+                ${y.i === 1 && openingBalance > 0
+                    ? `<span style="font-size:13px;color:#6b7280">Opening FD balance: <strong style="color:#15803d">${fmtINRFull(openingBalance)}</strong></span>`
+                    : ''}
+                ${y.maturityIncome > 0
+                    ? `<span style="font-size:13px;color:#6b7280">Maturity proceeds: <strong style="color:#0369a1">${fmtINRFull(y.maturityIncome)}</strong></span>`
+                    : ''}
+                <span style="font-size:13px;color:#6b7280">
+                    Year net: <strong style="color:${y.netCash>=0?'#15803d':'#dc2626'}">${fmtINRFull(y.netCash)}</strong>
+                </span>
+                <span style="font-size:13px;color:#6b7280">
+                    Cash at bank: <strong style="color:${y.cumulativeCash>=0?'#1d4ed8':'#dc2626'}">${fmtINRFull(y.cumulativeCash)}</strong>
+                </span>
+            </div>
+        </div>`;
+    }
+
+    function toggleYear(i) {
+        const det = document.getElementById(`yr-det-${i}`);
+        const ch  = document.getElementById(`yr-ch-${i}`);
+        if (!det) return;
+        if (expandedYears.has(i)) {
+            expandedYears.delete(i);
+            det.style.display = 'none';
+            if (ch) ch.style.transform = '';
+        } else {
+            expandedYears.add(i);
+            det.style.display = 'table-row';
+            if (ch) ch.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    // ── Sankey diagram ───────────────────────────────────────────────────────
+    function onSankeyYearChange() {
+        drawSankeyForSelection(document.getElementById('sankeyYearSelect').value);
+    }
+
+    function drawSankeyForSelection(val) {
+        if (!_allYearsData) return;
+        const { years } = _allYearsData;
+        let rows;
+        if (val === 'all') {
+            rows = buildAllYearsRows(years);
+        } else {
+            const y = years[parseInt(val) - 1];
+            if (!y) return;
+            rows = buildYearRows(y);
+        }
+        drawSankeyChart(rows);
+    }
+
+    // Build Sankey rows for a single year
+    function buildYearRows(y) {
+        const rows = [], seenTo = {};
+        function uniqTo(n) { seenTo[n]=(seenTo[n]||0)+1; return seenTo[n]>1?`${n} (${seenTo[n]})`:n; }
+
+        const sources = (y.memberIncomes||[]).filter(m => m.annual > 0);
+        const hasMat  = (y.maturityItems||[]).some(m => m.amount > 0);
+        const useAgg  = sources.length > 1 || hasMat;
+        const incNode = useAgg ? 'Total Income' : (sources[0]?.name || 'Income');
+
+        if (useAgg) {
+            sources.forEach(m => { if (m.annual>0) rows.push([m.name, 'Total Income', m.annual]); });
+            (y.maturityItems||[]).forEach(m => { if (m.amount>0) rows.push([`${m.name} (Maturity)`, 'Total Income', m.amount]); });
+        }
+        y.expItems.forEach(e  => rows.push([incNode, uniqTo(e.name), e.amount]));
+        y.commItems.forEach(c => rows.push([incNode, uniqTo(c.name), c.amount]));
+        if (y.netCash > 0) rows.push([incNode, 'Cash at Bank', y.netCash]);
+        return rows;
+    }
+
+    // Build aggregated Sankey rows across ALL years
+    function buildAllYearsRows(years) {
+        const memberMap = {}, expMap = {}, commMap = {}, matMap = {};
+
+        years.forEach(y => {
+            (y.memberIncomes||[]).forEach(m => { memberMap[m.name] = (memberMap[m.name]||0) + m.annual; });
+            y.expItems.forEach(e  => { expMap[e.name]  = (expMap[e.name] ||0) + e.amount; });
+            y.commItems.forEach(c => { commMap[c.name] = (commMap[c.name]||0) + c.amount; });
+            (y.maturityItems||[]).forEach(m => { matMap[m.name] = (matMap[m.name]||0) + m.amount; });
+        });
+
+        const rows = [], seenTo = {};
+        function uniqTo(n) { seenTo[n]=(seenTo[n]||0)+1; return seenTo[n]>1?`${n} (${seenTo[n]})`:n; }
+
+        const members  = Object.entries(memberMap).filter(([,v]) => v>0);
+        const matItems = Object.entries(matMap).filter(([,v]) => v>0);
+        const useAgg   = members.length > 1 || matItems.length > 0;
+        const incNode  = useAgg ? 'Total Income' : (members[0]?.[0] || 'Income');
+
+        if (useAgg) {
+            members.forEach(([n,v])  => rows.push([n, 'Total Income', Math.round(v)]));
+            matItems.forEach(([n,v]) => rows.push([`${n} (Maturity)`, 'Total Income', Math.round(v)]));
+        }
+        Object.entries(expMap).forEach(([n,v])  => rows.push([incNode, uniqTo(n), Math.round(v)]));
+        Object.entries(commMap).forEach(([n,v]) => rows.push([incNode, uniqTo(n), Math.round(v)]));
+
+        const totalNetSavings = years.reduce((s, y) => s + y.netCash, 0);
+        if (totalNetSavings > 0) rows.push([incNode, 'Net Savings', Math.round(totalNetSavings)]);
+        return rows;
+    }
+
+    // Draw the Sankey chart with the given rows
+    function drawSankeyChart(rows) {
+        const container = document.getElementById('sankeyChart');
+        const emptyEl   = document.getElementById('sankeyEmpty');
+        container.style.display = '';
+        emptyEl.classList.add('hidden');
+
+        if (!rows || rows.length === 0) {
+            container.style.display = 'none';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
+
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'From');
+        data.addColumn('string', 'To');
+        data.addColumn('number', 'Weight');
+        data.addRows(rows);
+
+        const chart = new google.visualization.Sankey(container);
+        chart.draw(data, {
+            height: 420,
+            sankey: {
+                node: {
+                    label: {
+                        fontName: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+                        fontSize: 13,
+                        bold: true,
+                        color: '#1e293b',
+                    },
+                    interactivity: true,
+                    width: 20,
+                    nodePadding: 22,
+                },
+                link: { colorMode: 'gradient', fillOpacity: 0.45 },
+            },
+        });
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+    loadCashflow();
+    </script>
+</body>
+</html>

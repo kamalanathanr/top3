@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+        .card { @apply bg-white rounded-xl shadow-sm border border-gray-200; }
+        .section-header { @apply px-8 py-5 border-b border-blue-100 bg-blue-50 rounded-t-xl; }
+        .section-body { @apply p-8; }
+
+        .form-input {
+            width: 100%; padding: 10px 14px;
+            background: #eff6ff; border: 1px solid #bfdbfe;
+            border-radius: 8px; font-size: 14px; color: #111827; outline: none;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .form-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+        .form-input::placeholder { color: #9ca3af; }
+        .form-label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
+
+        .risk-btn { flex:1; padding:10px 8px; border-radius:8px; border:2px solid; font-weight:600; font-size:14px; cursor:pointer; text-align:center; transition:all .15s; }
+        .risk-btn.active-beginner   { background:#dcfce7; border-color:#22c55e; color:#166534; }
+        .risk-btn.active-moderate   { background:#fef9c3; border-color:#eab308; color:#713f12; }
+        .risk-btn.active-aggressive { background:#fee2e2; border-color:#ef4444; color:#991b1b; }
+        .risk-btn.inactive { background:#fff; border-color:#e5e7eb; color:#6b7280; }
+        .risk-btn.inactive:hover { border-color:#9ca3af; }
+
+        .currency-input-wrap { position:relative; display:flex; align-items:center; }
+        .currency-symbol { position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:13px; font-weight:600; color:#2563eb; pointer-events:none; }
+        .currency-input-wrap .form-input { padding-left:26px; }
+
+        .sub-card { background:#f0f9ff; border:1px solid #bfdbfe; border-radius:12px; padding:20px; }
+
+        /* ── Planning Horizon Slider ── */
+        .horizon-wrap { position:relative; padding:30px 0 38px; }
+        .horizon-bubble {
+            position:absolute; top:0; transform:translateX(-50%);
+            background:#1d4ed8; color:#fff; border-radius:6px; padding:3px 10px;
+            font-size:12px; font-weight:700; pointer-events:none; z-index:5;
+            transition: left .05s;
+        }
+        .horizon-bubble::after {
+            content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+            border:4px solid transparent; border-top-color:#1d4ed8;
+        }
+        /* Year labels row — sits between bubble (top:0) and track (top:44) */
+        .horizon-years { position:absolute; top:20px; left:0; right:0; height:14px; pointer-events:none; display:flex; justify-content:space-between; font-size:9px; }
+        .horizon-track-bg {
+            position:absolute; top:44px; left:0; right:0; height:6px; border-radius:3px; background:#e5e7eb;
+        }
+        .horizon-track-locked { position:absolute; top:0; left:0; height:100%; background:#d1d5db; border-radius:3px 0 0 3px; }
+        .horizon-track-filled { position:absolute; top:0; height:100%; background:#3b82f6; }
+        .horizon-track-empty  { position:absolute; top:0; right:0; height:100%; background:#dbeafe; border-radius:0 3px 3px 0; }
+        .horizon-thumb {
+            position:absolute; top:37px; width:20px; height:20px;
+            background:#2563eb; border:3px solid #fff; border-radius:50%;
+            box-shadow:0 0 0 2px #2563eb; transform:translateX(-50%);
+            pointer-events:none; z-index:3; transition: left .05s;
+        }
+        input[type=range].horizon-input {
+            position:absolute; top:36px; left:0; width:100%; height:22px;
+            opacity:0; cursor:pointer; z-index:4; margin:0; padding:0;
+        }
+        .horizon-ticks { position:absolute; bottom:0; left:0; right:0; display:flex; justify-content:space-between; font-size:10px; color:#9ca3af; }
+
+        /* ── Collapsible item rows ───────────────────────────────────── */
+        .collapse-body { overflow:hidden; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .item-row { display:flex; align-items:center; gap:10px; padding:10px 16px; cursor:pointer; user-select:none; transition:background .12s; }
+        .item-row:hover { background:rgba(37,99,235,.04); }
+        .item-chevron { color:#9ca3af; font-size:13px; transition:transform .3s ease; flex-shrink:0; }
+        .type-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; flex-shrink:0; white-space:nowrap; }
+
+        /* ── Drag handle / expand toggle ── */
+        .drag-handle { display:inline-flex;align-items:center;cursor:grab;padding:4px 6px;border-radius:6px;color:#9ca3af;flex-shrink:0;border:1px solid transparent;user-select:none;transition:color .15s,background .15s,border-color .15s; }
+        .drag-handle:hover { color:#dc2626;background:#fee2e2;border-color:#fca5a5; }
+        .drag-handle:active { cursor:grabbing; }
+
+        /* ── Delete button ── */
+        .delete-btn { display:inline-flex;align-items:center;padding:4px;background:transparent;border:1px solid transparent;color:#d1d5db;border-radius:6px;cursor:pointer;flex-shrink:0;transition:color .15s,background .15s,border-color .15s; }
+        .delete-btn:hover { color:#dc2626;background:#fee2e2;border-color:#fca5a5; }
+
+        /* ── Drag-over target highlight ── */
+        .drag-over { outline:2px dashed #3b82f6;outline-offset:-2px; }
+
+        /* ── Confirm delete modal ── */
+        #confirmModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:9999; align-items:center; justify-content:center; }
+        #confirmModal.open { display:flex; }
+        #confirmBox { background:#fff; border-radius:14px; padding:24px 28px; width:100%; max-width:320px; box-shadow:0 8px 32px rgba(0,0,0,.18); text-align:center; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-12">
+        <div class="max-w-4xl mx-auto px-6">
+
+            <div class="mb-8">
+                <h2 id="profileTitle" class="text-4xl font-bold text-blue-700 mb-2">Your Profile</h2>
+                <p class="text-gray-500">Personalize your investment preferences and personal details</p>
+                <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:16px">
+                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 22px;min-width:170px">
+                        <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px">Net Worth</p>
+                        <p id="summaryNetWorth" style="font-size:22px;font-weight:800;color:#1d4ed8;margin:0">—</p>
+                    </div>
+                    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 22px;min-width:170px">
+                        <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px">Monthly Income</p>
+                        <p id="summaryIncome" style="font-size:22px;font-weight:800;color:#15803d;margin:0">—</p>
+                    </div>
+                    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 22px;min-width:170px">
+                        <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px">Monthly Commitments</p>
+                        <p id="summaryExpenses" style="font-size:22px;font-weight:800;color:#c2410c;margin:0">—</p>
+                    </div>
+                    <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:12px;padding:14px 22px;min-width:170px">
+                        <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px">Towards Goals</p>
+                        <p id="summaryGoals" style="font-size:22px;font-weight:800;color:#7e22ce;margin:0">—</p>
+                    </div>
+                    <div style="background:#fff7f0;border:1px solid #fed7aa;border-radius:12px;padding:14px 22px;min-width:170px">
+                        <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px">Existing Assets</p>
+                        <p id="summaryExistingAssets" style="font-size:22px;font-weight:800;color:#c2410c;margin:0">—</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ Section 1: Investment Preferences ══ -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 class="text-lg font-bold text-blue-800">Investment Preferences</h3>
+                    <p class="text-sm text-blue-600 mt-0.5">Used to tailor financial recommendations to your situation</p>
+                </div>
+                <div class="section-body space-y-7">
+
+                    <!-- Risk Profile -->
+                    <div>
+                        <label class="form-label">Risk Profile</label>
+                        <div class="flex gap-3" id="riskButtons">
+                            <div class="risk-btn inactive" data-value="Beginner" onclick="selectRisk('Beginner')">Beginner<div style="font-size:11px;font-weight:400;opacity:.7;margin-top:2px">Capital preservation</div></div>
+                            <div class="risk-btn inactive" data-value="Moderate" onclick="selectRisk('Moderate')">Moderate<div style="font-size:11px;font-weight:400;opacity:.7;margin-top:2px">Balanced growth</div></div>
+                            <div class="risk-btn inactive" data-value="Aggressive" onclick="selectRisk('Aggressive')">Aggressive<div style="font-size:11px;font-weight:400;opacity:.7;margin-top:2px">High growth potential</div></div>
+                        </div>
+                        <input type="hidden" id="riskProfile" value="Moderate">
+                    </div>
+
+                    <!-- ── Investment Planning Horizon slider ── -->
+                    <div>
+                        <label class="form-label">Investment Planning Horizon</label>
+                        <div class="horizon-wrap" id="horizonWrap">
+                            <div class="horizon-bubble" id="horizonBubble" style="left:0"><span id="horizonBubbleVal">—</span></div>
+                            <div id="horizonYears" class="horizon-years"></div>
+                            <div class="horizon-track-bg">
+                                <div class="horizon-track-locked" id="horizonLocked"></div>
+                                <div class="horizon-track-filled" id="horizonFilled"></div>
+                                <div class="horizon-track-empty"  id="horizonEmpty"></div>
+                            </div>
+                            <div class="horizon-thumb" id="horizonThumb" style="left:0"></div>
+                            <input type="range" class="horizon-input" id="horizonSlider" min="0" max="100" value="0"
+                                oninput="onHorizonInput(this.value)">
+                            <div class="horizon-ticks" id="horizonTicks"></div>
+                        </div>
+                        <p id="horizonSummary" style="font-size:13px;color:#6b7280;margin-top:4px"></p>
+                        <p style="font-size:11px;color:#9ca3af;margin-top:2px">Add a family member marked as Head of Family to enable this slider</p>
+                        <input type="hidden" id="planningHorizon" value="">
+                    </div>
+
+                    <div style="border-top:1px solid #e5e7eb;margin:4px 0"></div>
+
+                    <!-- Family Members (moved here — needed for planning horizon) -->
+                    <div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                            <div>
+                                <label class="form-label" style="margin:0">Family Members</label>
+                                <p style="font-size:11px;color:#9ca3af;margin-top:2px">Name, DOB, income and tax slab</p>
+                            </div>
+                            <button type="button" onclick="addMember()"
+                                style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">
+                                + Add Member
+                            </button>
+                        </div>
+                        <div id="membersContainer" class="space-y-2"></div>
+                        <p id="noMembersMsg" style="font-size:13px;color:#9ca3af;font-style:italic;padding:8px 0">No family members added yet.</p>
+                    </div>
+
+                    <div style="border-top:1px solid #e5e7eb;margin:4px 0"></div>
+
+                    <!-- Existing Assets -->
+                    <div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                            <div>
+                                <label class="form-label" style="margin:0">Existing Assets</label>
+                                <p style="font-size:11px;color:#9ca3af;margin-top:2px">Stocks, MF, ETFs, Bonds, FDs, Gold, Real Estate, Emergency Fund</p>
+                            </div>
+                            <button type="button" onclick="addAsset()"
+                                style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">
+                                + Add Asset
+                            </button>
+                        </div>
+                        <div id="assetsContainer" class="space-y-2"></div>
+                        <p id="noAssetsMsg" style="font-size:13px;color:#9ca3af;font-style:italic;padding:8px 0">No assets added yet.</p>
+                    </div>
+
+                    <div style="border-top:1px solid #e5e7eb;margin:4px 0"></div>
+
+                    <!-- Financial Commitments -->
+                    <div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                            <label class="form-label" style="margin:0">Financial Commitments</label>
+                            <button type="button" onclick="addGoal()"
+                                style="padding:6px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">
+                                + Add Goal
+                            </button>
+                        </div>
+                        <div id="goalsContainer" class="space-y-2"></div>
+                        <p id="noGoalsMsg" style="font-size:13px;color:#9ca3af;font-style:italic;padding:8px 0">No goals added yet.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="border-top:2px solid #e5e7eb;margin:8px 0 24px"></div>
+
+            <!-- ══ Section 2: Personal Details ══ -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 class="text-lg font-bold text-blue-800">Personal Details</h3>
+                    <p class="text-sm text-blue-600 mt-0.5">Included as context in AI queries for better personalization</p>
+                </div>
+                <div class="section-body space-y-5">
+
+                    <!-- Currency + Timezone + City -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+                        <div>
+                            <label class="form-label" for="currency">Default Currency</label>
+                            <select id="currency" class="form-input" onchange="updateCurrencySymbols()">
+                                <option value="INR">INR — Indian Rupee (₹)</option>
+                                <option value="USD">USD — US Dollar ($)</option>
+                                <option value="EUR">EUR — Euro (€)</option>
+                                <option value="GBP">GBP — British Pound (£)</option>
+                                <option value="AED">AED — UAE Dirham (د.إ)</option>
+                                <option value="SGD">SGD — Singapore Dollar (S$)</option>
+                                <option value="JPY">JPY — Japanese Yen (¥)</option>
+                                <option value="CAD">CAD — Canadian Dollar (CA$)</option>
+                                <option value="AUD">AUD — Australian Dollar (A$)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="timezone">Timezone</label>
+                            <select id="timezone" class="form-input">
+                                <option value="Asia/Kolkata">Asia/Kolkata (IST — India)</option>
+                                <option value="America/New_York">America/New_York (EST)</option>
+                                <option value="America/Los_Angeles">America/Los_Angeles (PST)</option>
+                                <option value="Europe/London">Europe/London (GMT)</option>
+                                <option value="Europe/Paris">Europe/Paris (CET)</option>
+                                <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                                <option value="Asia/Singapore">Asia/Singapore (SGT)</option>
+                                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                                <option value="Australia/Sydney">Australia/Sydney (AEDT)</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="city">City</label>
+                            <input type="text" id="city" class="form-input" placeholder="e.g., Bengaluru">
+                            <p style="font-size:10px;color:#9ca3af;margin-top:3px">Used for live gold rate</p>
+                        </div>
+                    </div>
+
+                    <!-- Family Details + Background -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+                        <div>
+                            <label class="form-label" for="familyDetails">Family Details</label>
+                            <textarea id="familyDetails" class="form-input resize-none" style="height:80px" placeholder="e.g., Married, 2 kids, parents in India"></textarea>
+                        </div>
+                        <div>
+                            <label class="form-label" for="history">Background &amp; History</label>
+                            <textarea id="history" class="form-input resize-none" style="height:80px" placeholder="e.g., Started in finance, transitioned to tech"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Hobbies + Interests -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+                        <div>
+                            <label class="form-label" for="hobbies">Hobbies <span style="font-weight:400;color:#9ca3af">(comma-separated)</span></label>
+                            <input type="text" id="hobbies" class="form-input" placeholder="e.g., hiking, photography, cooking">
+                        </div>
+                        <div>
+                            <label class="form-label" for="interests">General Interests <span style="font-weight:400;color:#9ca3af">(comma-separated)</span></label>
+                            <input type="text" id="interests" class="form-input" placeholder="e.g., travel, technology, fitness">
+                        </div>
+                    </div>
+
+                    <!-- Strategies -->
+                    <div>
+                        <label class="form-label" for="strategies">Strategies &amp; Preferences</label>
+                        <textarea id="strategies" class="form-input resize-none" style="height:80px" placeholder="e.g., Prefer budget-friendly options, adventurous but safety-conscious"></textarea>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Save + Status -->
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px">
+                <div id="statusMessage" class="hidden" style="font-size:14px;font-weight:500"></div>
+                <input type="file" id="profileImportFile" accept="application/json,.json" class="hidden" onchange="importProfileFile(event)">
+                <button type="button" onclick="downloadProfile()"
+                    style="padding:12px 22px;background:#f8fafc;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">
+                    Download Profile
+                </button>
+                <button type="button" onclick="document.getElementById('profileImportFile').click()"
+                    style="padding:12px 22px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">
+                    Import Profile
+                </button>
+                <button type="button" onclick="saveProfile()"
+                    style="padding:12px 32px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.25)">
+                    Save Profile
+                </button>
+            </div>
+            <div id="lastUpdatedBar" class="hidden" style="text-align:right;margin-top:10px">
+                <span style="font-size:12px;color:#9ca3af">Last saved: </span>
+                <span id="lastUpdatedTime" style="font-size:12px;color:#6b7280;font-weight:500"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── Confirm-delete modal ── -->
+    <div id="confirmModal">
+        <div id="confirmBox">
+            <p id="confirmMsg" style="font-size:15px;font-weight:600;color:#1e293b;margin:0 0 18px"></p>
+            <div style="display:flex;gap:10px;justify-content:center">
+                <button id="confirmYes"
+                    style="padding:8px 24px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">
+                    Delete
+                </button>
+                <button onclick="closeConfirm()"
+                    style="padding:8px 24px;background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ── Currency ────────────────────────────────────────────────────────
+    const CURRENCY_SYMBOLS = { INR:'₹', USD:'$', EUR:'€', GBP:'£', AED:'د.إ', SGD:'S$', JPY:'¥', CAD:'CA$', AUD:'A$' };
+    function getCurrencySymbol() { return CURRENCY_SYMBOLS[document.getElementById('currency')?.value || 'INR'] || '₹'; }
+    function updateCurrencySymbols() {
+        const s = getCurrencySymbol();
+        ['corpusSymbol','surplusSymbol','realEstateSymbol','incomeSymbol','emergencySymbol'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = s;
+        });
+        document.querySelectorAll('.goal-amount-symbol').forEach(el => el.textContent = s);
+        document.querySelectorAll('.member-income-sym').forEach(el => el.textContent = s);
+        ['corpus','monthlySurplus','realEstateValue','monthlyIncome','emergencyFund'].forEach(id => {
+            const inp = document.getElementById(id);
+            if (!inp) return;
+            const raw = parseFloat(inp.value.replace(/,/g,''));
+            if (!isNaN(raw) && raw > 0) inp.value = formatCurrencyValue(raw);
+        });
+        document.querySelectorAll('.goal-amount').forEach(inp => {
+            const raw = parseFloat(inp.value.replace(/,/g,''));
+            if (!isNaN(raw) && raw > 0) inp.value = formatCurrencyValue(raw);
+        });
+        updateSummaryBar();
+    }
+
+    // ── Formatters ───────────────────────────────────────────────────────
+    function formatINR(num) {
+        if (num === null || num === undefined || num === '') return '';
+        const n = parseFloat(num);
+        if (isNaN(n) || n <= 0) return '';
+        const str = Math.round(n).toString();
+        if (str.length <= 3) return '₹' + str;
+        const last3 = str.slice(-3);
+        const rest = str.slice(0, -3);
+        return '₹' + rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3;
+    }
+
+    function formatINRValue(num) {
+        if (num === null || num === undefined || num === '') return '';
+        const n = parseFloat(String(num).replace(/,/g,''));
+        if (isNaN(n) || n <= 0) return '';
+        const str = Math.round(n).toString();
+        if (str.length <= 3) return str;
+        const last3 = str.slice(-3);
+        const rest = str.slice(0, -3);
+        return rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3;
+    }
+
+    function formatCurrencyValue(num) {
+        const currency = document.getElementById('currency')?.value || 'INR';
+        if (num === null || num === undefined || num === '') return '';
+        const raw = parseFloat(String(num).replace(/,/g,''));
+        if (isNaN(raw) || raw <= 0) return '';
+        if (currency === 'INR') return formatINRValue(raw);
+        return Math.round(raw).toLocaleString('en-US');
+    }
+
+    function getRawValue(inputEl) {
+        if (!inputEl || inputEl.value === '') return null;
+        const v = parseFloat(inputEl.value.replace(/,/g,''));
+        return isNaN(v) || v <= 0 ? null : v;
+    }
+
+    function rupeeBlur(input) {
+        const raw = parseFloat(input.value.replace(/,/g,''));
+        input.value = (!isNaN(raw) && raw > 0) ? formatCurrencyValue(raw) : '';
+        updateSummaryBar();
+    }
+
+    function rupeeFocus(input) {
+        const raw = parseFloat(input.value.replace(/,/g,''));
+        input.value = (!isNaN(raw) && raw > 0) ? String(Math.round(raw)) : '';
+    }
+
+    function updateSummaryBar() {
+        const emergency = getRawValue(document.getElementById('emergencyFund')) || 0;
+        const corpus    = getRawValue(document.getElementById('corpus')) || 0;
+        const realEstate = getRawValue(document.getElementById('realEstateValue')) || 0;
+        const grams = parseFloat(document.getElementById('goldGrams')?.value) || 0;
+        const goldVal = (grams > 0 && goldPricePerGram) ? grams * goldPricePerGram : 0;
+        let existingAssetsTotal = 0;
+        assets.forEach(a => {
+            existingAssetsTotal += getRawValue(document.querySelector(`.asset-mktval[data-id="${a.id}"]`)) || 0;
+        });
+        const netWorth = emergency + corpus + realEstate + goldVal + existingAssetsTotal;
+        let memberIncomeTotal = 0;
+        members.forEach(m => {
+            memberIncomeTotal += getRawValue(document.querySelector(`.member-income[data-id="${m.id}"]`)) || 0;
+        });
+        const income = (getRawValue(document.getElementById('monthlyIncome')) || 0) + memberIncomeTotal;
+
+        let annualRecurring = 0;
+        let totalOneTime    = 0;
+        const freqMul = { monthly:12, quarterly:4, '4_months':3, '6_months':2, annually:1 };
+        goals.forEach(g => {
+            const amtEl    = document.querySelector(`.goal-amount[data-id="${g.id}"]`);
+            const amt      = getRawValue(amtEl) || 0;
+            const recurring = document.querySelector(`.goal-recurring[data-id="${g.id}"]`)?.checked || false;
+            const freq     = document.querySelector(`.goal-frequency[data-id="${g.id}"]`)?.value || 'annually';
+            if (recurring) {
+                annualRecurring += amt * (freqMul[freq] || 1);
+            } else {
+                totalOneTime += amt;
+            }
+        });
+        const monthlyCommitments = annualRecurring / 12;
+
+        const el_nw    = document.getElementById('summaryNetWorth');
+        const el_inc   = document.getElementById('summaryIncome');
+        const el_exp   = document.getElementById('summaryExpenses');
+        const el_goals = document.getElementById('summaryGoals');
+        const el_ea = document.getElementById('summaryExistingAssets');
+        if (el_nw)    el_nw.textContent    = netWorth            > 0 ? formatINR(netWorth)            : '—';
+        if (el_inc)   el_inc.textContent   = income              > 0 ? formatINR(income)              : '—';
+        if (el_exp)   el_exp.textContent   = monthlyCommitments  > 0 ? formatINR(monthlyCommitments)  : '—';
+        if (el_goals) el_goals.textContent = totalOneTime        > 0 ? formatINR(totalOneTime)        : '—';
+        if (el_ea)    el_ea.textContent    = existingAssetsTotal > 0 ? formatINR(existingAssetsTotal) : '—';
+    }
+
+    // ── Gold Market Value ────────────────────────────────────────────────
+    let goldPricePerGram = null;
+
+    async function fetchGoldPrice() {
+        try {
+            const r = await fetch('/api/investment-overview/economy-indicators');
+            const d = await r.json();
+            const goldInd = (d.indicators || []).find(i => i.indicator === 'Gold 22K (per gram)');
+            if (goldInd?.value) {
+                const match = goldInd.value.replace(/,/g, '').match(/[\d.]+/);
+                if (match) goldPricePerGram = parseFloat(match[0]);
+            }
+        } catch {}
+        updateGoldMarketValue();
+    }
+
+    function updateGoldMarketValue() {
+        const grams = parseFloat(document.getElementById('goldGrams')?.value) || 0;
+        const el = document.getElementById('goldMarketValue');
+        if (!el) return;
+        if (grams > 0 && goldPricePerGram) {
+            el.value = formatINR(grams * goldPricePerGram);
+        } else {
+            el.value = '';
+            el.placeholder = goldPricePerGram ? '—' : 'Fetching price…';
+        }
+        updateSummaryBar();
+    }
+
+    // ── Risk ────────────────────────────────────────────────────────────
+    function selectRisk(v) {
+        document.getElementById('riskProfile').value = v;
+        document.querySelectorAll('#riskButtons .risk-btn').forEach(b => {
+            b.className = 'risk-btn ' + (b.dataset.value === v ? 'active-' + v.toLowerCase() : 'inactive');
+        });
+    }
+
+    // ── Horizon slider ──────────────────────────────────────────────────
+    let _currentAge = 0;
+
+    function getAgeFromDOB(dob) {
+        if (!dob) return 0;
+        const d = new Date(dob), today = new Date();
+        let age = today.getFullYear() - d.getFullYear();
+        const m = today.getMonth() - d.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+        return Math.max(0, age);
+    }
+
+    function renderHorizonYears(currentAge) {
+        const container = document.getElementById('horizonYears');
+        if (!container) return;
+        if (!currentAge || currentAge <= 0) { container.innerHTML = ''; return; }
+        const birthYear = new Date().getFullYear() - currentAge;
+        container.innerHTML = [0,10,20,30,40,50,60,70,80,90,100].map(age => {
+            const year = birthYear + age;
+            return `<span style="color:${age < currentAge ? '#e5e7eb' : '#6b7280'}">${year}</span>`;
+        }).join('');
+    }
+
+    function updateProfileTitle() {
+        const titleEl = document.getElementById('profileTitle');
+        const head = members.find(m => document.querySelector(`.member-is-head[data-id="${m.id}"]`)?.checked);
+        if (!head) { titleEl.textContent = 'Your Profile'; return; }
+        const name = document.querySelector(`.member-name[data-id="${head.id}"]`)?.value || '';
+        const dob  = document.querySelector(`.member-dob[data-id="${head.id}"]`)?.value || '';
+        const age  = dob ? getAgeFromDOB(dob) : null;
+        titleEl.textContent = name && age !== null ? `${name}, ${age} years` : (name || 'Your Profile');
+    }
+
+    function updateHorizonFromMembers() {
+        const head = members.find(m => {
+            const isHead = document.querySelector(`.member-is-head[data-id="${m.id}"]`)?.checked;
+            const dob   = document.querySelector(`.member-dob[data-id="${m.id}"]`)?.value;
+            return isHead && dob;
+        });
+        const dob = head ? (document.querySelector(`.member-dob[data-id="${head.id}"]`)?.value || '') : '';
+        const savedHorizon = parseInt(document.getElementById('planningHorizon').value) || 0;
+        initHorizonSlider(savedHorizon, getAgeFromDOB(dob));
+        updateProfileTitle();
+    }
+
+    function initHorizonSlider(savedHorizon, currentAge) {
+        _currentAge = currentAge || 0;
+
+        const ticks = document.getElementById('horizonTicks');
+        ticks.innerHTML = [0,10,20,30,40,50,60,70,80,90,100].map(n => `<span>${n}</span>`).join('');
+
+        renderHorizonYears(_currentAge);
+
+        const slider = document.getElementById('horizonSlider');
+        slider.min = 0; slider.max = 100;
+
+        const targetAge = Math.min(100, Math.max(_currentAge, _currentAge + (savedHorizon || 0)));
+        slider.value = targetAge;
+        updateHorizonDisplay(targetAge);
+    }
+
+    function onHorizonInput(rawVal) {
+        let val = parseInt(rawVal);
+        if (val < _currentAge) {
+            val = _currentAge;
+            document.getElementById('horizonSlider').value = val;
+        }
+        updateHorizonDisplay(val);
+    }
+
+    function updateHorizonDisplay(val) {
+        val = parseInt(val);
+        const pct = val; // range is 0–100, so pct === val
+        // Thumb offset: at 0% thumb is 10px right of left edge; at 100% it's 10px left of right edge
+        const offset = 10 - pct * 0.2;
+        const pos = `calc(${pct}% + ${offset}px)`;
+
+        document.getElementById('horizonBubble').style.left = pos;
+        document.getElementById('horizonBubbleVal').textContent = val;
+        document.getElementById('horizonThumb').style.left = pos;
+
+        const agePct = _currentAge;
+        document.getElementById('horizonLocked').style.width = agePct + '%';
+        document.getElementById('horizonFilled').style.left  = agePct + '%';
+        document.getElementById('horizonFilled').style.width = Math.max(0, pct - agePct) + '%';
+        document.getElementById('horizonEmpty').style.width  = (100 - pct) + '%';
+
+        const horizon = val - _currentAge;
+        document.getElementById('planningHorizon').value = horizon > 0 ? horizon : 0;
+
+        const sumEl = document.getElementById('horizonSummary');
+        if (_currentAge === 0) {
+            sumEl.textContent = 'Add your Date of Birth to enable planning horizon';
+            sumEl.style.color = '#9ca3af';
+        } else if (horizon <= 0) {
+            sumEl.textContent = `Slide right to set your investment horizon (current age: ${_currentAge})`;
+            sumEl.style.color = '#6b7280';
+        } else {
+            sumEl.textContent = `Planning Horizon: ${horizon} year${horizon !== 1 ? 's' : ''} (until age ${val})`;
+            sumEl.style.color = '#1d4ed8';
+        }
+    }
+
+    // ── Helpers ─────────────────────────────────────────────────────────
+    function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    // ── Tax Slab (India FY 2025-26) ──────────────────────────────────────
+    function renderTaxSlabHtml(annualIncome) {
+        const a = Math.round(annualIncome || 0);
+        if (a <= 0) return '<span style="color:#9ca3af;font-style:italic;font-size:12px">Enter income to calculate</span>';
+
+        // New Regime slabs
+        let nSlab;
+        if (a <= 400000)       nSlab = '0%';
+        else if (a <= 800000)  nSlab = '5%';
+        else if (a <= 1200000) nSlab = '10%';
+        else if (a <= 1600000) nSlab = '15%';
+        else if (a <= 2000000) nSlab = '20%';
+        else if (a <= 2400000) nSlab = '25%';
+        else                   nSlab = '30%';
+        const nRebate = a <= 1200000; // 87A: nil tax up to ₹12L
+
+        // Old Regime slabs
+        let oSlab;
+        if (a <= 250000)       oSlab = '0%';
+        else if (a <= 500000)  oSlab = '5%';
+        else if (a <= 1000000) oSlab = '20%';
+        else                   oSlab = '30%';
+        const oRebate = a > 250000 && a <= 500000; // 87A: nil tax up to ₹5L
+
+        const badge = (label, slab, rebate) => {
+            const effectiveNil = slab === '0%' || rebate;
+            const bg    = effectiveNil ? '#f0fdf4' : (slab === '30%' ? '#fef2f2' : '#fff7ed');
+            const color = effectiveNil ? '#15803d' : (slab === '30%' ? '#b91c1c' : '#92400e');
+            const text  = `${label}: ${slab}${rebate ? ' (Nil via 87A)' : ''}`;
+            return `<span style="background:${bg};color:${color};border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap">${text}</span>`;
+        };
+        const fmtA = a >= 1e7 ? '₹'+(a/1e7).toFixed(1)+'Cr' : a >= 1e5 ? '₹'+(a/1e5).toFixed(1)+'L' : '₹'+a.toLocaleString('en-IN');
+        return `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            ${badge('New',nSlab,nRebate)}${badge('Old',oSlab,oRebate)}
+            <span style="font-size:11px;color:#6b7280">Annual: ${fmtA}</span>
+        </div>`;
+    }
+
+    function updateMemberIncomeDisplay(id) {
+        const nameEl   = document.querySelector(`.member-name[data-id="${id}"]`);
+        const monthly  = getRawValue(document.querySelector(`.member-income[data-id="${id}"]`)) || 0;
+        const passive  = computePassiveIncome(nameEl?.value || '');
+        const annual   = monthly * 12 + passive;
+
+        const passiveEl = document.getElementById(`member-passive-${id}`);
+        if (passiveEl) passiveEl.innerHTML = passive > 0
+            ? `<strong>${formatINR(passive)}</strong> /yr`
+            : '<span style="color:#9ca3af;font-style:italic;font-size:13px">No bonds assigned</span>';
+
+        const annualEl = document.getElementById(`member-annual-${id}`);
+        if (annualEl) annualEl.textContent = annual > 0 ? formatINR(annual) : '—';
+
+        const slabEl = document.getElementById(`member-tax-slab-${id}`);
+        if (slabEl) slabEl.innerHTML = renderTaxSlabHtml(annual);
+
+        updateSummaryBar();
+    }
+
+    // kept for compatibility — called on income field blur
+    function updateMemberTaxSlab(id) { updateMemberIncomeDisplay(id); }
+
+    function rupeeMemberBlur(input, id) {
+        rupeeBlur(input);
+        updateMemberIncomeDisplay(id);
+    }
+
+    // ── Existing Assets ──────────────────────────────────────────────────
+    let assets = [];
+
+    const TRASH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
+    // Collapsed = right-pointing dot triangle (3 dots vertical, 2, 1)
+    const HANDLE_COLLAPSED = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="2" cy="2" r="1.3"/><circle cx="2" cy="6" r="1.3"/><circle cx="2" cy="10" r="1.3"/><circle cx="6" cy="4" r="1.3"/><circle cx="6" cy="8" r="1.3"/><circle cx="10" cy="6" r="1.3"/></svg>`;
+    // Expanded = downward-pointing dot triangle (3 dots horizontal, 2 below, 1 below)
+    const HANDLE_EXPANDED  = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="2" cy="2" r="1.3"/><circle cx="6" cy="2" r="1.3"/><circle cx="10" cy="2" r="1.3"/><circle cx="4" cy="6" r="1.3"/><circle cx="8" cy="6" r="1.3"/><circle cx="6" cy="10" r="1.3"/></svg>`;
+
+    // ── Expand / collapse state ──────────────────────────────────────────
+    const expandedIds = { assets: new Set(), goals: new Set(), members: new Set() };
+
+    // Compact currency formatter for summary rows
+    function fmtShort(n) {
+        if (!n || isNaN(n) || n <= 0) return '—';
+        if (n >= 1e7) return '₹' + (n/1e7).toFixed(1) + ' Cr';
+        if (n >= 1e5) return '₹' + (n/1e5).toFixed(1) + ' L';
+        if (n >= 1e3) return '₹' + (n/1e3).toFixed(0) + 'K';
+        return '₹' + Math.round(n);
+    }
+    const SEP = '<span style="color:#d1d5db;margin:0 5px">·</span>';
+    const TYPE_PALETTE = {
+        Stocks:{'bg':'#fef2f2','c':'#dc2626'}, MF:{'bg':'#f5f3ff','c':'#7c3aed'},
+        ETFs:{'bg':'#ecfeff','c':'#0e7490'}, Bonds:{'bg':'#f1f5f9','c':'#475569'},
+        FDs:{'bg':'#e0f2fe','c':'#0369a1'}, Gold:{'bg':'#fffbeb','c':'#d97706'},
+        'Real Estate':{'bg':'#f5f3ff','c':'#6d28d9'},
+        'Emergency Fund':{'bg':'#f0fdf4','c':'#15803d'},
+    };
+    function typeBadge(t) {
+        const p = TYPE_PALETTE[t] || {bg:'#f1f5f9',c:'#475569'};
+        return `<span class="type-badge" style="background:${p.bg};color:${p.c}">${escHtml(t)}</span>`;
+    }
+
+    function buildAssetSum(a) {
+        const name = a.name || a.unique_no || a.asset_type || '—';
+        const qty  = a.quantity > 0 ? `${a.quantity} qty` : '';
+        const val  = a.market_value > 0 ? `<strong style="color:#1d4ed8">${fmtShort(a.market_value)}</strong>` : '';
+        return [`<strong style="color:#1e293b">${escHtml(name)}</strong>`, qty, val].filter(Boolean).join(SEP);
+    }
+
+    function buildGoalSum(g) {
+        const name = g.name || '—';
+        const amt  = g.amount > 0 ? `<strong style="color:#1d4ed8">${fmtShort(g.amount)}</strong>` : '';
+        let when   = '';
+        if (g.recurring) {
+            const f = { monthly:'Monthly', quarterly:'Quarterly', '4_months':'Every 4 Mo', '6_months':'Half-Yearly', annually:'Annually' };
+            when = `<span style="color:#6b7280">${f[g.frequency] || 'Recurring'}</span>`;
+        } else if (g.date) {
+            const d = new Date(g.date);
+            when = `<span style="color:#6b7280">${d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span>`;
+        }
+        return [`<strong style="color:#1e293b">${escHtml(name)}</strong>`, amt, when].filter(Boolean).join(SEP);
+    }
+
+    // Passive income = sum of Bond assets assigned to this member × annual_return_pct
+    function computePassiveIncome(memberName) {
+        const name = (memberName || '').trim().toLowerCase();
+        if (!name) return 0;
+        return assets
+            .filter(a => a.asset_type === 'Bonds'
+                      && (a.owner_name || '').trim().toLowerCase() === name
+                      && (a.market_value || 0) > 0
+                      && (a.annual_return_pct || 0) > 0)
+            .reduce((s, a) => s + a.market_value * a.annual_return_pct / 100, 0);
+    }
+
+    function buildMemberSum(m) {
+        const name = m.name || '—';
+        const age  = m.dob ? (function(){
+            const today=new Date(), d=new Date(m.dob);
+            let a=today.getFullYear()-d.getFullYear();
+            const mo=today.getMonth()-d.getMonth();
+            if(mo<0||(mo===0&&today.getDate()<d.getDate()))a--;
+            return a>0?`${a} yrs`:'';
+        })() : '';
+        const inc = m.income > 0 ? `${fmtShort(m.income)}/mo` : '';
+        // Annual income = monthly × 12 + passive (bonds)
+        const annual = (m.income||0)*12 + computePassiveIncome(m.name||'');
+        let nSlab = '';
+        if (annual > 0) {
+            if (annual <= 1200000)      nSlab = 'Nil (87A)';
+            else if (annual <= 1600000) nSlab = '15% slab';
+            else if (annual <= 2000000) nSlab = '20% slab';
+            else if (annual <= 2400000) nSlab = '25% slab';
+            else                        nSlab = '30% slab';
+        }
+        const badge = nSlab ? `<span style="background:#f0fdf4;color:#15803d;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">${nSlab}</span>` : '';
+        return [`<strong style="color:#1e293b">${escHtml(name)}</strong>`, age, inc, badge].filter(Boolean).join(SEP);
+    }
+
+    // Toggle functions — in-place, no re-render
+    function toggleAsset(id) {
+        syncAssetsFromDom();
+        const det=document.getElementById(`asset-det-${id}`);
+        const ch=document.getElementById(`asset-ch-${id}`);
+        const sum=document.getElementById(`asset-sum-${id}`);
+        if (!det) return;
+        const isOpen=expandedIds.assets.has(id);
+        if (isOpen) {
+            expandedIds.assets.delete(id);
+            det.style.maxHeight='0';
+            if(ch){ ch.innerHTML=HANDLE_COLLAPSED; ch.title='Expand'; }
+            const a=assets.find(a=>a.id===id);
+            if(a&&sum)sum.innerHTML=buildAssetSum(a);
+        } else {
+            expandedIds.assets.add(id);
+            det.style.maxHeight=det.scrollHeight+'px';
+            if(ch){ ch.innerHTML=HANDLE_EXPANDED; ch.title='Minimise'; }
+        }
+    }
+
+    function toggleGoal(id) {
+        const det=document.getElementById(`goal-det-${id}`);
+        const ch=document.getElementById(`goal-ch-${id}`);
+        const sum=document.getElementById(`goal-sum-${id}`);
+        if (!det) return;
+        const isOpen=expandedIds.goals.has(id);
+        if (isOpen) {
+            expandedIds.goals.delete(id);
+            det.style.maxHeight='0';
+            if(ch){ ch.innerHTML=HANDLE_COLLAPSED; ch.title='Expand'; }
+            const g={
+                name:     document.querySelector(`.goal-name[data-id="${id}"]`)?.value||'',
+                amount:   getRawValue(document.querySelector(`.goal-amount[data-id="${id}"]`))||0,
+                recurring:document.querySelector(`.goal-recurring[data-id="${id}"]`)?.checked||false,
+                frequency:document.querySelector(`.goal-frequency[data-id="${id}"]`)?.value||'',
+                date:     document.querySelector(`.goal-date[data-id="${id}"]`)?.value||'',
+            };
+            if(sum)sum.innerHTML=buildGoalSum(g);
+        } else {
+            expandedIds.goals.add(id);
+            det.style.maxHeight=det.scrollHeight+'px';
+            if(ch){ ch.innerHTML=HANDLE_EXPANDED; ch.title='Minimise'; }
+        }
+    }
+
+    function toggleMember(id) {
+        const det=document.getElementById(`member-det-${id}`);
+        const ch=document.getElementById(`member-ch-${id}`);
+        const sum=document.getElementById(`member-sum-${id}`);
+        if (!det) return;
+        const isOpen=expandedIds.members.has(id);
+        if (isOpen) {
+            expandedIds.members.delete(id);
+            det.style.maxHeight='0';
+            if(ch){ ch.innerHTML=HANDLE_COLLAPSED; ch.title='Expand'; }
+            const m={
+                name:  document.querySelector(`.member-name[data-id="${id}"]`)?.value||'',
+                dob:   document.querySelector(`.member-dob[data-id="${id}"]`)?.value||'',
+                income:getRawValue(document.querySelector(`.member-income[data-id="${id}"]`))||0,
+            };
+            if(sum)sum.innerHTML=buildMemberSum(m);
+        } else {
+            expandedIds.members.add(id);
+            det.style.maxHeight=det.scrollHeight+'px';
+            if(ch){ ch.innerHTML=HANDLE_EXPANDED; ch.title='Minimise'; }
+        }
+    }
+
+    // After render, expand items that are in expandedIds
+    function applyExpanded(type) {
+        setTimeout(()=>{
+            expandedIds[type].forEach(id=>{
+                const prefix=type.slice(0,-1);
+                const det=document.getElementById(`${prefix}-det-${id}`);
+                if(det){ det.style.maxHeight=det.scrollHeight+'px'; }
+                const ch=document.getElementById(`${prefix}-ch-${id}`);
+                if(ch){ ch.innerHTML=HANDLE_EXPANDED; ch.title='Minimise'; }
+            });
+        },0);
+    }
+
+    // Sync current DOM values back into the assets array before any re-render
+    function syncAssetsFromDom() {
+        assets.forEach(a => {
+            const n  = document.querySelector(`.asset-name[data-id="${a.id}"]`);
+            const t  = document.querySelector(`.asset-type[data-id="${a.id}"]`);
+            const q  = document.querySelector(`.asset-qty[data-id="${a.id}"]`);
+            const u  = document.querySelector(`.asset-unique[data-id="${a.id}"]`);
+            const r  = document.querySelector(`.asset-return-pct[data-id="${a.id}"]`);
+            const o  = document.querySelector(`.asset-owner[data-id="${a.id}"]`);
+            const mv = document.querySelector(`.asset-mktval[data-id="${a.id}"]`);
+            const md = document.querySelector(`.asset-maturity[data-id="${a.id}"]`);
+            const g  = document.querySelector(`.asset-goal[data-id="${a.id}"]`);
+            if (n)  a.name              = n.value;
+            if (t)  a.asset_type        = t.value;
+            if (q)  a.quantity          = q.value;
+            if (u)  a.unique_no         = u.value;
+            if (r)  a.annual_return_pct = parseFloat(r.value) || null;
+            if (o)  a.owner_name        = o.value;
+            if (mv) a.market_value      = getRawValue(mv) || 0;
+            if (md) a.maturity_date     = md.value;
+            if (g)  a.goal              = g.value;
+        });
+    }
+
+    function syncGoalsFromDom() {
+        goals.forEach(g => {
+            const n  = document.querySelector(`.goal-name[data-id="${g.id}"]`);
+            const a  = document.querySelector(`.goal-amount[data-id="${g.id}"]`);
+            const d  = document.querySelector(`.goal-date[data-id="${g.id}"]`);
+            const p  = document.querySelector(`.goal-priority[data-id="${g.id}"]`);
+            const r  = document.querySelector(`.goal-recurring[data-id="${g.id}"]`);
+            const f  = document.querySelector(`.goal-frequency[data-id="${g.id}"]`);
+            const pd = document.querySelector(`.goal-preferred-day[data-id="${g.id}"]`);
+            if (n)  g.name          = n.value;
+            if (a)  g.amount        = getRawValue(a);
+            if (d)  g.date          = d.value;
+            if (p)  g.priority      = p.value;
+            if (r)  g.recurring     = r.checked;
+            if (f)  g.frequency     = f.value;
+            if (pd) g.preferred_day = pd.value;
+        });
+    }
+
+    function syncMembersFromDom() {
+        members.forEach(m => {
+            const n = document.querySelector(`.member-name[data-id="${m.id}"]`);
+            const h = document.querySelector(`.member-is-head[data-id="${m.id}"]`);
+            const d = document.querySelector(`.member-dob[data-id="${m.id}"]`);
+            const i = document.querySelector(`.member-income[data-id="${m.id}"]`);
+            if (n) m.name    = n.value;
+            if (h) m.is_head = h.checked;
+            if (d) m.dob     = d.value;
+            if (i) m.income  = getRawValue(i) || null;
+        });
+    }
+
+    // ── Drag-and-drop reorder ────────────────────────────────────────────
+    let _drag = null;
+
+    function onDragStart(e, type, id) {
+        _drag = { type, id };
+        e.dataTransfer.effectAllowed = 'move';
+        e.stopPropagation();
+    }
+    function onDragEnd(e) {
+        _drag = null;
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    }
+    function onDragOver(e, type, id) {
+        if (!_drag || _drag.type !== type || _drag.id === id) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const wrap = e.currentTarget;
+        document.querySelectorAll('.drag-over').forEach(el => { if(el!==wrap) el.classList.remove('drag-over'); });
+        wrap.classList.add('drag-over');
+    }
+    function onDrop(e, type, targetId) {
+        e.preventDefault();
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        if (!_drag || _drag.type !== type || _drag.id === targetId) { _drag = null; return; }
+        const srcId = _drag.id;
+        _drag = null;
+
+        let arr;
+        if      (type === 'assets')  { syncAssetsFromDom();  arr = assets; }
+        else if (type === 'goals')   { syncGoalsFromDom();   arr = goals; }
+        else                         { syncMembersFromDom(); syncAssetsFromDom(); arr = members; }
+
+        const srcIdx = arr.findIndex(x => x.id === srcId);
+        const tgtIdx = arr.findIndex(x => x.id === targetId);
+        if (srcIdx === -1 || tgtIdx === -1) return;
+
+        const [item] = arr.splice(srcIdx, 1);
+        arr.splice(tgtIdx, 0, item);
+
+        if      (type === 'assets')  renderAssets();
+        else if (type === 'goals')   renderGoals();
+        else                         { renderMembers(); renderAssets(); }
+
+        saveProfile();
+    }
+
+    // In-place update when type dropdown changes (no full re-render needed)
+    function onAssetTypeChange(id, newType) {
+        if (newType === '__custom__') {
+            const inp = document.getElementById(`custom-type-input-${id}`);
+            if (inp) { inp.style.display = ''; inp.focus(); }
+            return;
+        }
+        const customInp = document.getElementById(`custom-type-input-${id}`);
+        if (customInp) customInp.style.display = 'none';
+
+        const matRow  = document.getElementById(`asset-maturity-row-${id}`);
+        const retLabel = document.getElementById(`asset-return-label-${id}`);
+        const qtyLabel = document.getElementById(`asset-qty-label-${id}`);
+        const fetchBtn = document.querySelector(`.asset-fetch[data-id="${id}"]`);
+        const mktHint  = document.getElementById(`asset-mktval-hint-${id}`);
+        const mktLabel = document.getElementById(`asset-mktval-label-${id}`);
+
+        const hasMaturity = ['Bonds','MF','ETFs','FDs'].includes(newType);
+        const isFetchable = ['Stocks','MF','ETFs','Gold'].includes(newType);
+        const isGold      = newType === 'Gold';
+        const isRE        = newType === 'Real Estate';
+
+        if (matRow)   matRow.style.display  = hasMaturity ? '' : 'none';
+        if (retLabel) retLabel.textContent  = isRE ? 'Annual Appreciation %' : 'Annual Return %';
+        if (qtyLabel) qtyLabel.textContent  = isGold ? 'Quantity (grams)' : 'Quantity';
+        if (fetchBtn) {
+            fetchBtn.style.display   = isFetchable ? '' : 'none';
+            fetchBtn.textContent     = isGold ? 'Calc from Gold' : 'Fetch Price';
+        }
+        if (mktHint)  mktHint.textContent   = ['Stocks','MF','ETFs'].includes(newType)
+            ? 'Auto-fetched (qty × price) or enter manually'
+            : isGold ? 'Auto-calculated from live gold price'
+            : 'Enter value manually';
+        if (mktLabel) mktLabel.textContent  = isRE ? 'Market Value (approx.)' : isGold ? 'Market Value (grams × price)' : 'Market Value (total)';
+    }
+
+    function commitCustomType(event, id) {
+        if (event.key !== 'Enter') return;
+        const inp = document.getElementById(`custom-type-input-${id}`);
+        const val = (inp?.value || '').trim();
+        if (!val) { cancelCustomType(id); return; }
+        const sel = document.querySelector(`.asset-type[data-id="${id}"]`);
+        if (sel) {
+            // Add option if not present
+            let opt = Array.from(sel.options).find(o => o.value === val);
+            if (!opt) {
+                opt = new Option(val, val);
+                sel.insertBefore(opt, sel.querySelector('option[value="__custom__"]'));
+            }
+            sel.value = val;
+            onAssetTypeChange(id, val);
+            updateSummaryBar();
+        }
+        if (inp) inp.style.display = 'none';
+    }
+
+    function cancelCustomType(id) {
+        const sel = document.querySelector(`.asset-type[data-id="${id}"]`);
+        const inp = document.getElementById(`custom-type-input-${id}`);
+        // Revert to first non-__custom__ selected option, or first option
+        if (sel) {
+            const prev = Array.from(sel.options).find(o => o.value !== '__custom__' && o.defaultSelected);
+            sel.value = prev ? prev.value : (sel.options[0]?.value || 'Stocks');
+            if (sel.value === '__custom__') sel.selectedIndex = 0;
+        }
+        if (inp) inp.style.display = 'none';
+    }
+
+    // Auto-calculate gold market value when grams change
+    function onAssetQtyInput(id) {
+        const typeEl = document.querySelector(`.asset-type[data-id="${id}"]`);
+        if (typeEl?.value === 'Gold') {
+            const qtyEl = document.querySelector(`.asset-qty[data-id="${id}"]`);
+            const mktEl = document.querySelector(`.asset-mktval[data-id="${id}"]`);
+            const grams = parseFloat(qtyEl?.value) || 0;
+            if (grams > 0 && goldPricePerGram) {
+                if (mktEl) { mktEl.value = formatCurrencyValue(grams * goldPricePerGram); }
+            }
+        }
+        updateSummaryBar();
+    }
+
+    // ── Confirm-delete modal ─────────────────────────────────────────────
+    let _confirmCallback = null;
+    function showConfirm(msg, callback) {
+        document.getElementById('confirmMsg').textContent = msg;
+        _confirmCallback = callback;
+        document.getElementById('confirmModal').classList.add('open');
+    }
+    function closeConfirm() {
+        document.getElementById('confirmModal').classList.remove('open');
+        _confirmCallback = null;
+    }
+    document.getElementById('confirmYes').addEventListener('click', () => {
+        if (_confirmCallback) _confirmCallback();
+        closeConfirm();
+    });
+    // Close on backdrop click
+    document.getElementById('confirmModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('confirmModal')) closeConfirm();
+    });
+
+    function addAsset(data = null) {
+        const id = Date.now();
+        expandedIds.assets.add(id);
+        assets.push({ id, ...(data || { name:'', asset_type:'Stocks', quantity:'', unique_no:'', owner_name:'', market_value:'', annual_return_pct:'', maturity_date:'', goal:'' }) });
+        renderAssets();
+    }
+    function removeAsset(id) {
+        syncAssetsFromDom();
+        const a = assets.find(a => a.id === id);
+        const label = a?.name || a?.asset_type || 'this Asset';
+        showConfirm(`Delete asset "${label}"?`, () => {
+            expandedIds.assets.delete(id);
+            assets = assets.filter(a => a.id !== id);
+            renderAssets();
+            updateSummaryBar();
+        });
+    }
+
+    function renderAssets() {
+        const c = document.getElementById('assetsContainer');
+        document.getElementById('noAssetsMsg').style.display = assets.length ? 'none' : 'block';
+        const sym = getCurrencySymbol();
+        const ownerNames = members.map(m => {
+            const el = document.querySelector(`.member-name[data-id="${m.id}"]`);
+            return (el ? el.value : m.name) || '';
+        }).filter(Boolean);
+
+        c.innerHTML = assets.map((a, idx) => {
+            const isGold      = a.asset_type === 'Gold';
+            const isRE        = a.asset_type === 'Real Estate';
+            const isFetchable = ['Stocks','MF','ETFs','Gold'].includes(a.asset_type);
+            const hasMaturity = ['Bonds','MF','ETFs','FDs'].includes(a.asset_type);
+            const retLabel    = isRE ? 'Annual Appreciation %' : 'Annual Return %';
+            const qtyLabel    = isGold ? 'Quantity (grams)' : 'Quantity';
+            const fetchLabel  = isGold ? 'Calc from Gold' : 'Fetch Price';
+            const mktLabel    = isRE ? 'Market Value (approx.)' : isGold ? 'Market Value (grams × price)' : 'Market Value (total)';
+            const mktHint     = ['Stocks','MF','ETFs'].includes(a.asset_type)
+                ? 'Auto-fetched (qty × price) or enter manually'
+                : isGold ? 'Auto-calculated from live gold price' : 'Enter value manually';
+            const retVal      = a.annual_return_pct != null && a.annual_return_pct !== '' ? a.annual_return_pct : '';
+            const allTypes    = ['Stocks','MF','ETFs','Bonds','FDs','Gold','Real Estate','Emergency Fund'];
+            const ownerOpts   = ['', ...ownerNames].map(n =>
+                `<option value="${escHtml(n)}" ${a.owner_name===n?'selected':''}>${n || '— Select Owner —'}</option>`
+            ).join('');
+            return `
+            <div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff"
+                 ondragover="onDragOver(event,'assets',${a.id})" ondrop="onDrop(event,'assets',${a.id})">
+                <div class="item-row" onclick="toggleAsset(${a.id})">
+                    <span class="drag-handle" id="asset-ch-${a.id}" title="Expand"
+                          draggable="true"
+                          ondragstart="onDragStart(event,'assets',${a.id})"
+                          ondragend="onDragEnd(event)"
+                          onclick="event.stopPropagation();toggleAsset(${a.id})">${expandedIds.assets.has(a.id) ? HANDLE_EXPANDED : HANDLE_COLLAPSED}</span>
+                    <span style="font-size:11px;font-weight:700;color:#9ca3af;min-width:50px;flex-shrink:0">Asset ${idx+1}</span>
+                    ${typeBadge(a.asset_type)}
+                    <span id="asset-sum-${a.id}" style="font-size:13px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${buildAssetSum(a)}</span>
+                    <button type="button" class="delete-btn" onclick="event.stopPropagation();removeAsset(${a.id})" title="Delete">${TRASH_ICON}</button>
+                </div>
+                <div id="asset-det-${a.id}" class="collapse-body" style="max-height:0">
+                    <div style="border-top:1px solid #e5e7eb;padding:16px">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" style="margin-bottom:12px">
+                            <div class="md:col-span-2">
+                                <label class="form-label">Asset Name</label>
+                                <input type="text" class="form-input asset-name" data-id="${a.id}" value="${escHtml(a.name)}" placeholder="e.g., Reliance / SBI FD / Flat in Chennai">
+                            </div>
+                            <div>
+                                <label class="form-label">Type</label>
+                                <select class="form-input asset-type" data-id="${a.id}" onchange="onAssetTypeChange(${a.id}, this.value)">
+                                    ${allTypes.map(t=>`<option value="${t}" ${a.asset_type===t?'selected':''}>${t}</option>`).join('')}
+                                    ${!allTypes.includes(a.asset_type) && a.asset_type ? `<option value="${escHtml(a.asset_type)}" selected>${escHtml(a.asset_type)}</option>` : ''}
+                                    <option value="__custom__">+ Add new type…</option>
+                                </select>
+                                <input type="text" id="custom-type-input-${a.id}" class="form-input" placeholder="Type name, then press Enter"
+                                    style="display:none;margin-top:6px"
+                                    onkeydown="commitCustomType(event, ${a.id})"
+                                    onblur="cancelCustomType(${a.id})">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4" style="margin-bottom:12px">
+                            <div>
+                                <label class="form-label" id="asset-qty-label-${a.id}">${qtyLabel}</label>
+                                <input type="number" class="form-input asset-qty" data-id="${a.id}" value="${a.quantity||''}" placeholder="${isGold?'e.g., 50 g':'e.g., 50'}" min="0" step="${isGold?'0.01':'0.001'}" oninput="onAssetQtyInput(${a.id})">
+                            </div>
+                            <div>
+                                <label class="form-label">Unique No. <span style="font-weight:400;color:#9ca3af">(ISIN / Ticker)</span></label>
+                                <input type="text" class="form-input asset-unique" data-id="${a.id}" value="${escHtml(a.unique_no)}" placeholder="e.g., RELIANCE or 120503">
+                            </div>
+                            <div>
+                                <label class="form-label"><span id="asset-return-label-${a.id}">${retLabel}</span></label>
+                                <div style="position:relative;display:flex;align-items:center">
+                                    <input type="number" class="form-input asset-return-pct" data-id="${a.id}" value="${retVal}" placeholder="e.g., 7.5" min="0" max="100" step="0.1" style="padding-right:26px">
+                                    <span style="position:absolute;right:10px;font-size:12px;font-weight:600;color:#6b7280;pointer-events:none">%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label">Owner</label>
+                                <select class="form-input asset-owner" data-id="${a.id}">${ownerOpts}</select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-bottom:12px">
+                            <div id="asset-maturity-row-${a.id}" style="display:${hasMaturity?'':'none'}">
+                                <label class="form-label">Maturity Date</label>
+                                <input type="date" class="form-input asset-maturity" data-id="${a.id}" value="${a.maturity_date||''}">
+                            </div>
+                            <div>
+                                <label class="form-label">Goal / Purpose</label>
+                                <input type="text" class="form-input asset-goal" data-id="${a.id}" value="${escHtml(a.goal||'')}" placeholder="e.g., Emergency Fund, Travel, Retirement">
+                            </div>
+                        </div>
+                        <div style="max-width:460px">
+                            <label class="form-label" id="asset-mktval-label-${a.id}">${mktLabel}</label>
+                            <div style="display:flex;gap:8px">
+                                <div class="currency-input-wrap" style="flex:1">
+                                    <span class="currency-symbol">${sym}</span>
+                                    <input type="text" class="form-input asset-mktval" data-id="${a.id}" value="${a.market_value ? formatCurrencyValue(a.market_value) : ''}" placeholder="0" onfocus="rupeeFocus(this)" onblur="rupeeBlur(this)">
+                                </div>
+                                <button type="button" class="asset-fetch" data-id="${a.id}" onclick="fetchAssetPrice(${a.id})"
+                                    style="padding:8px 14px;background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;display:${isFetchable?'':'none'}">
+                                    ${fetchLabel}
+                                </button>
+                            </div>
+                            <p id="asset-mktval-hint-${a.id}" style="font-size:10px;color:#9ca3af;margin-top:4px">${mktHint}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+
+        applyExpanded('assets');
+    }
+
+    async function fetchAssetPrice(id) {
+        const typeEl   = document.querySelector(`.asset-type[data-id="${id}"]`);
+        const uniqueEl = document.querySelector(`.asset-unique[data-id="${id}"]`);
+        const qtyEl    = document.querySelector(`.asset-qty[data-id="${id}"]`);
+        const mktEl    = document.querySelector(`.asset-mktval[data-id="${id}"]`);
+        const fetchBtn = document.querySelector(`.asset-fetch[data-id="${id}"]`);
+        const assetType = typeEl?.value || 'Stocks';
+        const quantity  = parseFloat(qtyEl?.value) || 1;
+
+        // Gold: use local goldPricePerGram, no API call
+        if (assetType === 'Gold') {
+            const grams = parseFloat(qtyEl?.value) || 0;
+            if (!goldPricePerGram) { alert('Gold price not loaded yet — refresh the page.'); return; }
+            if (grams <= 0) { alert('Enter weight in grams first.'); return; }
+            if (mktEl) { mktEl.value = formatCurrencyValue(grams * goldPricePerGram); }
+            updateSummaryBar();
+            return;
+        }
+
+        const symbol = (uniqueEl?.value || '').trim();
+        if (!symbol) { alert('Enter a Unique No. (ticker, ISIN, or scheme code) first.'); return; }
+        if (fetchBtn) { fetchBtn.textContent = '…'; fetchBtn.disabled = true; }
+
+        try {
+            const r = await fetch(`/api/profile/assets/market-price?symbol=${encodeURIComponent(symbol)}&asset_type=${encodeURIComponent(assetType)}`);
+            const d = await r.json();
+            if (d.manual) {
+                alert('Price must be entered manually for this asset type.');
+            } else if (d.error) {
+                alert('Could not fetch price: ' + d.error);
+            } else if (d.price != null) {
+                const totalValue = d.price * quantity;
+                if (mktEl) mktEl.value = formatCurrencyValue(totalValue);
+                const nameEl = document.querySelector(`.asset-name[data-id="${id}"]`);
+                if (nameEl && !nameEl.value && d.name) nameEl.value = d.name;
+                updateSummaryBar();
+            }
+        } catch (e) {
+            alert('Error fetching price. Check your network connection.');
+        } finally {
+            if (fetchBtn) { fetchBtn.textContent = 'Fetch Price'; fetchBtn.disabled = false; }
+        }
+    }
+
+    function collectAssets() {
+        return assets.map(a => ({
+            name:              document.querySelector(`.asset-name[data-id="${a.id}"]`)?.value || '',
+            asset_type:        document.querySelector(`.asset-type[data-id="${a.id}"]`)?.value || 'Stocks',
+            quantity:          parseFloat(document.querySelector(`.asset-qty[data-id="${a.id}"]`)?.value) || 0,
+            unique_no:         document.querySelector(`.asset-unique[data-id="${a.id}"]`)?.value || '',
+            owner_name:        document.querySelector(`.asset-owner[data-id="${a.id}"]`)?.value || '',
+            market_value:      getRawValue(document.querySelector(`.asset-mktval[data-id="${a.id}"]`)) || 0,
+            annual_return_pct: parseFloat(document.querySelector(`.asset-return-pct[data-id="${a.id}"]`)?.value) || null,
+            maturity_date:     document.querySelector(`.asset-maturity[data-id="${a.id}"]`)?.value || null,
+            goal:              document.querySelector(`.asset-goal[data-id="${a.id}"]`)?.value || '',
+        }));
+    }
+
+    // ── Financial Goals ──────────────────────────────────────────────────
+    let goals = [];
+
+    function addGoal(data = null) {
+        const id = Date.now();
+        expandedIds.goals.add(id);
+        goals.push({ id, ...(data || { name:'', amount:'', date:'', priority:'Medium', recurring:false, frequency:'annually', preferred_day:'' }) });
+        renderGoals();
+    }
+    function removeGoal(id) {
+        const g = goals.find(g => g.id === id);
+        const label = g?.name || 'this Commitment';
+        showConfirm(`Delete commitment "${label}"?`, () => {
+            expandedIds.goals.delete(id);
+            goals = goals.filter(g => g.id !== id);
+            renderGoals();
+        });
+    }
+
+    function renderGoals() {
+        const c = document.getElementById('goalsContainer');
+        const sym = getCurrencySymbol();
+        document.getElementById('noGoalsMsg').style.display = goals.length ? 'none' : 'block';
+        c.innerHTML = goals.map((g, idx) => `
+            <div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff"
+                 ondragover="onDragOver(event,'goals',${g.id})" ondrop="onDrop(event,'goals',${g.id})">
+                <div class="item-row" onclick="toggleGoal(${g.id})">
+                    <span class="drag-handle" id="goal-ch-${g.id}" title="Expand"
+                          draggable="true"
+                          ondragstart="onDragStart(event,'goals',${g.id})"
+                          ondragend="onDragEnd(event)"
+                          onclick="event.stopPropagation();toggleGoal(${g.id})">${expandedIds.goals.has(g.id) ? HANDLE_EXPANDED : HANDLE_COLLAPSED}</span>
+                    <span style="font-size:11px;font-weight:700;color:#9ca3af;min-width:50px;flex-shrink:0">Goal ${idx+1}</span>
+                    <span id="goal-sum-${g.id}" style="font-size:13px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${buildGoalSum(g)}</span>
+                    <button type="button" class="delete-btn" onclick="event.stopPropagation();removeGoal(${g.id})" title="Delete">${TRASH_ICON}</button>
+                </div>
+                <div id="goal-det-${g.id}" class="collapse-body" style="max-height:0">
+                    <div style="border-top:1px solid #e5e7eb;padding:16px">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" style="margin-bottom:12px">
+                            <div class="md:col-span-2">
+                                <label class="form-label">Goal Name</label>
+                                <input type="text" class="form-input goal-name" data-id="${g.id}" value="${escHtml(g.name)}" placeholder="e.g., Buy a house">
+                            </div>
+                            <div>
+                                <label class="form-label">Priority</label>
+                                <select class="form-input goal-priority" data-id="${g.id}">
+                                    ${['High','Medium','Low'].map(p=>`<option value="${p}" ${g.priority===p?'selected':''}>${p}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" style="margin-bottom:12px">
+                            <div>
+                                <label class="form-label">Target Amount</label>
+                                <div class="currency-input-wrap">
+                                    <span class="currency-symbol goal-amount-symbol">${sym}</span>
+                                    <input type="text" class="form-input goal-amount" data-id="${g.id}" value="${g.amount ? formatCurrencyValue(g.amount) : ''}" placeholder="0" onfocus="rupeeFocus(this)" onblur="rupeeBlur(this)">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label">Target Date</label>
+                                <input type="date" class="form-input goal-date" data-id="${g.id}" value="${g.date||''}">
+                            </div>
+                        </div>
+                        <div style="margin-bottom:10px">
+                            <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none">
+                                <input type="checkbox" class="goal-recurring" data-id="${g.id}" style="width:16px;height:16px;accent-color:#2563eb" ${g.recurring?'checked':''} onchange="toggleRecurring(${g.id},this.checked)">
+                                <span style="font-size:13px;font-weight:600;color:#374151">Recurring Goal?</span>
+                            </label>
+                        </div>
+                        <div id="recurring-opts-${g.id}" class="${g.recurring?'':'hidden'} grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Frequency</label>
+                                <select class="form-input goal-frequency" data-id="${g.id}">
+                                    ${[['monthly','Monthly'],['quarterly','Quarterly'],['4_months','Every 4 months'],['6_months','Half-yearly'],['annually','Annually']].map(([v,l])=>`<option value="${v}" ${g.frequency===v?'selected':''}>${l}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Preferred Day / Month</label>
+                                <input type="text" class="form-input goal-preferred-day" data-id="${g.id}" value="${escHtml(g.preferred_day)}" placeholder="e.g., 1 or June">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`).join('');
+
+        applyExpanded('goals');
+    }
+
+    function toggleRecurring(id, checked) {
+        const el = document.getElementById(`recurring-opts-${id}`);
+        el.classList.toggle('hidden', !checked);
+        // Re-measure after the recurring section appears/disappears
+        const det = document.getElementById(`goal-det-${id}`);
+        if (det && expandedIds.goals.has(id)) {
+            // Allow the DOM to repaint first so scrollHeight is accurate
+            requestAnimationFrame(() => { det.style.maxHeight = det.scrollHeight + 'px'; });
+        }
+    }
+
+    function collectGoals() {
+        return goals.map(g => ({
+            name:          document.querySelector(`.goal-name[data-id="${g.id}"]`)?.value || '',
+            amount:        getRawValue(document.querySelector(`.goal-amount[data-id="${g.id}"]`)),
+            date:          document.querySelector(`.goal-date[data-id="${g.id}"]`)?.value || null,
+            priority:      document.querySelector(`.goal-priority[data-id="${g.id}"]`)?.value || 'Medium',
+            recurring:     document.querySelector(`.goal-recurring[data-id="${g.id}"]`)?.checked || false,
+            frequency:     document.querySelector(`.goal-frequency[data-id="${g.id}"]`)?.value || null,
+            preferred_day: document.querySelector(`.goal-preferred-day[data-id="${g.id}"]`)?.value || null,
+        }));
+    }
+
+    // ── Family Members ───────────────────────────────────────────────────
+    let members = [];
+
+    function addMember(data = null) {
+        syncAssetsFromDom();
+        const id = Date.now();
+        expandedIds.members.add(id);
+        members.push({ id, ...(data || { name:'', is_head:false, dob:'', income:null }) });
+        renderMembers();
+        updateHorizonFromMembers();
+        renderAssets();
+    }
+    function removeMember(id) {
+        syncAssetsFromDom();
+        const m = members.find(m => m.id === id);
+        const label = m?.name || 'this Member';
+        showConfirm(`Delete member "${label}"?`, () => {
+            expandedIds.members.delete(id);
+            members = members.filter(m => m.id !== id);
+            renderMembers();
+            updateHorizonFromMembers();
+            renderAssets();
+        });
+    }
+
+    function renderMembers() {
+        const c = document.getElementById('membersContainer');
+        document.getElementById('noMembersMsg').style.display = members.length ? 'none' : 'block';
+        const sym = getCurrencySymbol();
+        c.innerHTML = members.map((m, idx) => {
+            const passiveAnnual = computePassiveIncome(m.name || '');
+            const annualTotal   = (m.income || 0) * 12 + passiveAnnual;
+            return `
+            <div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff"
+                 ondragover="onDragOver(event,'members',${m.id})" ondrop="onDrop(event,'members',${m.id})">
+                <div class="item-row" onclick="toggleMember(${m.id})">
+                    <span class="drag-handle" id="member-ch-${m.id}" title="Expand"
+                          draggable="true"
+                          ondragstart="onDragStart(event,'members',${m.id})"
+                          ondragend="onDragEnd(event)"
+                          onclick="event.stopPropagation();toggleMember(${m.id})">${expandedIds.members.has(m.id) ? HANDLE_EXPANDED : HANDLE_COLLAPSED}</span>
+                    <span style="font-size:11px;font-weight:700;color:#9ca3af;min-width:60px;flex-shrink:0">Member ${idx+1}</span>
+                    <span id="member-sum-${m.id}" style="font-size:13px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${buildMemberSum(m)}</span>
+                    <button type="button" class="delete-btn" onclick="event.stopPropagation();removeMember(${m.id})" title="Delete">${TRASH_ICON}</button>
+                </div>
+                <div id="member-det-${m.id}" class="collapse-body" style="max-height:0">
+                    <div style="border-top:1px solid #e5e7eb;padding:16px">
+
+                        <!-- Head of Family -->
+                        <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:14px">
+                            <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:13px;font-weight:600;color:#374151">
+                                <input type="checkbox" class="member-is-head" data-id="${m.id}" style="width:15px;height:15px;accent-color:#2563eb" ${m.is_head?'checked':''} onchange="updateHorizonFromMembers()">
+                                Head of Family
+                            </label>
+                        </div>
+
+                        <!-- Name + DOB -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-bottom:12px">
+                            <div>
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-input member-name" data-id="${m.id}" value="${escHtml(m.name)}" placeholder="Full name" oninput="updateProfileTitle()">
+                            </div>
+                            <div>
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" class="form-input member-dob" data-id="${m.id}" value="${m.dob||''}" onchange="updateHorizonFromMembers()">
+                            </div>
+                        </div>
+
+                        <!-- Monthly Income + Passive Income -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-bottom:12px">
+                            <div>
+                                <label class="form-label">Monthly Income</label>
+                                <div class="currency-input-wrap">
+                                    <span class="currency-symbol member-income-sym" data-id="${m.id}">${sym}</span>
+                                    <input type="text" class="form-input member-income" data-id="${m.id}"
+                                        value="${m.income ? formatCurrencyValue(m.income) : ''}"
+                                        placeholder="e.g., 1,00,000"
+                                        onfocus="rupeeFocus(this)"
+                                        onblur="rupeeMemberBlur(this,${m.id})">
+                                </div>
+                                <p style="font-size:10px;color:#9ca3af;margin-top:2px">Monthly take-home income</p>
+                            </div>
+                            <div>
+                                <label class="form-label">Passive Income <span style="font-weight:400;color:#9ca3af">(from Bonds)</span></label>
+                                <div id="member-passive-${m.id}"
+                                    style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:600;color:#1e293b;min-height:42px;display:flex;align-items:center">
+                                    ${passiveAnnual > 0
+                                        ? `<strong>${formatINR(passiveAnnual)}</strong>&nbsp;<span style="font-size:11px;color:#6b7280;font-weight:400">/yr</span>`
+                                        : '<span style="color:#9ca3af;font-style:italic;font-size:13px;font-weight:400">No bonds assigned</span>'}
+                                </div>
+                                <p style="font-size:10px;color:#9ca3af;margin-top:2px">Bonds assigned to this member × return %</p>
+                            </div>
+                        </div>
+
+                        <!-- Annual Income + Tax Slab (same row) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Annual Income</label>
+                                <div id="member-annual-${m.id}"
+                                    style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:11px 16px;font-size:16px;font-weight:800;color:#1d4ed8;min-height:42px;display:flex;align-items:center">
+                                    ${annualTotal > 0 ? formatINR(annualTotal) : '—'}
+                                </div>
+                                <p style="font-size:10px;color:#9ca3af;margin-top:2px">Monthly × 12 + Passive income</p>
+                            </div>
+                            <div>
+                                <label class="form-label">Tax Slab <span style="font-weight:400;color:#9ca3af">(FY 2025-26)</span></label>
+                                <div id="member-tax-slab-${m.id}"
+                                    style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:9px 12px;min-height:42px;display:flex;align-items:center">
+                                    ${renderTaxSlabHtml(annualTotal)}
+                                </div>
+                                <p style="font-size:11px;color:#9ca3af;margin-top:2px">New &amp; Old regime</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+
+        applyExpanded('members');
+    }
+
+    function collectMembers() {
+        return members.map(m => ({
+            name:    document.querySelector(`.member-name[data-id="${m.id}"]`)?.value || '',
+            is_head: document.querySelector(`.member-is-head[data-id="${m.id}"]`)?.checked || false,
+            dob:     document.querySelector(`.member-dob[data-id="${m.id}"]`)?.value || null,
+            income:  getRawValue(document.querySelector(`.member-income[data-id="${m.id}"]`)) || null,
+        }));
+    }
+
+    // ── Timestamp ────────────────────────────────────────────────────────
+    async function showLastUpdated(iso) {
+        if (!iso) return;
+        try {
+            const r = await fetch(`/api/profile/convert-timestamp?utc_timestamp=${encodeURIComponent(iso)}`);
+            const d = await r.json();
+            document.getElementById('lastUpdatedTime').textContent = d.formatted || iso;
+            document.getElementById('lastUpdatedBar').classList.remove('hidden');
+        } catch {
+            document.getElementById('lastUpdatedTime').textContent = iso;
+            document.getElementById('lastUpdatedBar').classList.remove('hidden');
+        }
+    }
+
+    // ── Load / Save ──────────────────────────────────────────────────────
+    async function downloadProfile() {
+        try {
+            const r = await fetch('/api/profile');
+            if (!r.ok) {
+                const detail = await readErrorDetail(r);
+                showStatus(detail ? `Error downloading profile: ${detail}` : 'Error downloading profile', 'error');
+                return;
+            }
+            const d = await r.json();
+            const profile = d.profile || {};
+            const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `profile-${profile.user_id || 'Kamal'}-${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            showStatus('Profile downloaded', 'success');
+        } catch (err) {
+            console.error(err);
+            showStatus('Error downloading profile', 'error');
+        }
+    }
+
+    async function importProfileFile(event) {
+        const input = event.target;
+        const file = input.files?.[0];
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const profileJson = JSON.parse(text);
+            const profilePayload = normalizeImportedProfile(profileJson);
+            const r = await fetch('/api/profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profilePayload),
+            });
+            if (!r.ok) {
+                const detail = await readErrorDetail(r);
+                showStatus(detail ? `Error importing profile: ${detail}` : 'Error importing profile', 'error');
+                return;
+            }
+            showStatus('Profile imported successfully', 'success');
+            await loadProfile();
+        } catch (err) {
+            console.error(err);
+            showStatus('Invalid profile JSON', 'error');
+        } finally {
+            input.value = '';
+        }
+    }
+
+    function normalizeImportedProfile(data) {
+        const profile = data && typeof data === 'object' && data.profile ? data.profile : data;
+        if (!profile || typeof profile !== 'object' || Array.isArray(profile)) {
+            throw new Error('Profile JSON must be an object');
+        }
+        const cleaned = { ...profile };
+        delete cleaned._id;
+        delete cleaned.user_id;
+        delete cleaned.updated_at;
+        return cleaned;
+    }
+
+    async function readErrorDetail(response) {
+        try {
+            const data = await response.json();
+            if (typeof data.detail === 'string') return data.detail;
+            if (data.detail) return JSON.stringify(data.detail);
+            if (data.error) return data.error;
+        } catch {}
+        return `${response.status} ${response.statusText}`.trim();
+    }
+
+    async function loadProfile() {
+        try {
+            const r = await fetch('/api/profile');
+            const d = await r.json();
+            const p = d.profile || {};
+
+            document.getElementById('familyDetails').value   = p.family_details || '';
+            document.getElementById('hobbies').value         = (p.hobbies || []).join(', ');
+            document.getElementById('history').value         = p.history || '';
+            document.getElementById('interests').value       = (p.interests || []).join(', ');
+            document.getElementById('strategies').value      = p.strategies || '';
+            document.getElementById('timezone').value        = p.timezone || 'Asia/Kolkata';
+            document.getElementById('currency').value        = p.currency || 'INR';
+            document.getElementById('city').value            = p.city || 'Bengaluru';
+            document.getElementById('planningHorizon').value = p.investment_planning_horizon != null ? p.investment_planning_horizon : '0';
+
+            selectRisk(p.risk_profile || 'Moderate');
+            updateCurrencySymbols();
+            fetchGoldPrice();
+
+            // Goals
+            goals = (p.financial_goals || []).map((g, i) => ({
+                id: Date.now() + i, name: g.name||'', amount: g.amount??'', date: g.date||'',
+                priority: g.priority||'Medium', recurring: g.recurring||false,
+                frequency: g.frequency||'annually', preferred_day: g.preferred_day||'',
+            }));
+            renderGoals();
+            updateSummaryBar();
+
+            // Load assets array first so computePassiveIncome() works inside renderMembers()
+            assets = (p.existing_assets || []).map((a, i) => ({
+                id: Date.now() + 2000 + i,
+                name: a.name||'', asset_type: a.asset_type||'Stocks',
+                quantity: a.quantity||0, unique_no: a.unique_no||'',
+                owner_name: a.owner_name||'', market_value: a.market_value||0,
+                annual_return_pct: a.annual_return_pct??null,
+                maturity_date: a.maturity_date||'',
+                goal: a.goal||'',
+            }));
+
+            // Render members (reads assets array for passive income)
+            members = (p.family_members || []).map((m, i) => ({
+                id: Date.now() + 1000 + i, name: m.name||'', is_head: m.is_head||false,
+                dob: m.dob||'', income: m.income||null,
+            }));
+            renderMembers();
+            updateHorizonFromMembers();
+
+            // Render assets (reads member names from DOM for owner dropdown)
+            renderAssets();
+            updateSummaryBar();
+
+            if (p.updated_at) showLastUpdated(p.updated_at);
+        } catch (err) { console.error('Error loading profile:', err); }
+    }
+
+    async function saveProfile() {
+        const hv = document.getElementById('planningHorizon').value;
+        const payload = {
+            family_details:             document.getElementById('familyDetails').value,
+            hobbies:                    document.getElementById('hobbies').value.split(',').map(s=>s.trim()).filter(Boolean),
+            history:                    document.getElementById('history').value,
+            interests:                  document.getElementById('interests').value.split(',').map(s=>s.trim()).filter(Boolean),
+            strategies:                 document.getElementById('strategies').value,
+            timezone:                   document.getElementById('timezone').value,
+            currency:                   document.getElementById('currency').value,
+            city:                       document.getElementById('city').value.trim() || 'Bengaluru',
+            risk_profile:               document.getElementById('riskProfile').value,
+            investment_planning_horizon: hv !== '' ? parseInt(hv) : null,
+            financial_goals:            collectGoals(),
+            family_members:             collectMembers(),
+            existing_assets:            collectAssets(),
+        };
+        try {
+            const r = await fetch('/api/profile', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+            if (r.ok) {
+                showStatus('Profile saved successfully', 'success');
+                const saved = await r.json();
+                if (saved?.profile?.updated_at) showLastUpdated(saved.profile.updated_at);
+            } else {
+                showStatus('Error saving profile', 'error');
+            }
+        } catch (err) { console.error(err); showStatus('Error saving profile', 'error'); }
+    }
+
+    function showStatus(msg, type) {
+        const el = document.getElementById('statusMessage');
+        el.style.cssText = type === 'success'
+            ? 'color:#15803d;background:#f0fdf4;border:1px solid #bbf7d0;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500'
+            : 'color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500';
+        el.textContent = (type === 'success' ? '✓ ' : '✗ ') + msg;
+        el.classList.remove('hidden');
+        if (type === 'success') setTimeout(() => el.classList.add('hidden'), 3000);
+    }
+
+    loadProfile();
+    </script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .nav-link {
+            @apply text-gray-700 hover:text-blue-600 font-medium transition;
+        }
+        .card {
+            @apply bg-white rounded-lg shadow-sm border border-gray-200;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <!-- Navigation Bar -->
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Header -->
+            <div class="mb-8">
+                <h2 class="text-4xl font-bold text-blue-700 mb-3">Logs</h2>
+                <p class="text-lg text-gray-600">Track and manage your AI queries in real-time</p>
+            </div>
+
+            <!-- News refresh log — every attempt to fetch news (src/news_refresh.py) -->
+            <div class="card shadow-sm mb-8">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between gap-4 flex-wrap">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">News &amp; events refresh</h3>
+                        <p id="news-refresh-summary" class="text-sm text-gray-600 mt-1">Loading…</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <label class="flex items-center gap-1 text-gray-600"><input type="checkbox" id="news-hide-skipped" checked onchange="renderNewsRefreshLog()"> Hide skipped</label>
+                        <button onclick="loadNewsRefreshLog()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium">↻ Reload</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto" style="max-height:420px;overflow-y:auto">
+                    <table class="w-full text-sm">
+                        <thead class="sticky top-0 bg-gray-50">
+                            <tr class="border-b border-gray-200">
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Queued</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Job</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Trigger</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Status</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Waited</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Took</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">New / total</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="news-refresh-table" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="card p-5">
+                    <p class="text-gray-500 text-sm font-medium mb-1">Queue Depth</p>
+                    <p class="text-3xl font-bold text-gray-900" id="stat-pending">-</p>
+                </div>
+                <div class="card p-5">
+                    <p class="text-gray-500 text-sm font-medium mb-1">Active</p>
+                    <p class="text-3xl font-bold text-blue-600" id="stat-running">-</p>
+                </div>
+                <div class="card p-5">
+                    <p class="text-gray-500 text-sm font-medium mb-1">Completed</p>
+                    <p class="text-3xl font-bold text-green-600" id="stat-done">-</p>
+                </div>
+                <div class="card p-5">
+                    <p class="text-gray-500 text-sm font-medium mb-1">Success Rate</p>
+                    <p class="text-3xl font-bold text-gray-900" id="stat-rate">-</p>
+                </div>
+            </div>
+
+            <!-- Results Table -->
+            <div class="card shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200 bg-gray-50">
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Template</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Time (s)</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Created</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Preview</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-table" class="divide-y divide-gray-200">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4" onclick="closeDetailModal()">
+        <div class="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] flex flex-col" onclick="event.stopPropagation()">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                    <h2 id="detail-title" class="text-2xl font-bold text-gray-900 mb-2"></h2>
+                    <div id="detail-meta" class="flex gap-4 text-sm text-gray-600"></div>
+                </div>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Left: Query Details -->
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-blue-200">📋 Query</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 uppercase">Query Type</label>
+                                <p id="detail-query-type" class="text-sm text-gray-900 mt-1">-</p>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 uppercase">Interests</label>
+                                <p id="detail-interests" class="text-sm text-gray-900 mt-1">-</p>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 uppercase">Query/Prompt</label>
+                                <pre id="detail-query-text" class="text-xs bg-gray-50 p-3 rounded border border-gray-200 overflow-x-auto whitespace-pre-wrap break-words max-h-96 overflow-y-auto mt-1"></pre>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 uppercase">Execution Time</label>
+                                <p id="detail-time-taken" class="text-sm text-gray-900 mt-1">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Results -->
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-green-200">✓ Results</h3>
+                        <pre id="detail-content" class="text-xs bg-gray-50 p-4 rounded border border-gray-200 overflow-x-auto whitespace-pre-wrap break-words max-h-96 overflow-y-auto"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="p-6 border-t border-gray-200 flex justify-between gap-3">
+                <button onclick="closeDetailModal()" class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium rounded-lg transition">Close</button>
+                <button id="edit-btn" onclick="enableDetailEdit()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">Edit Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let results = [];
+        let currentDetailResult = null;
+        let isDetailEditing = false;
+
+        // ── News refresh log ──────────────────────────────────────────
+        let newsRefresh = { status: null, entries: [] };
+        const NEWS_STATUS_STYLE = {
+            done: 'bg-green-100 text-green-800', running: 'bg-blue-100 text-blue-800', queued: 'bg-yellow-100 text-yellow-800',
+            skipped: 'bg-gray-100 text-gray-600', error: 'bg-red-100 text-red-800', 'not picked up': 'bg-red-100 text-red-800',
+        };
+        const NEWS_TRIGGER_LABEL = { scheduler: '⏱ Scheduler', page: '📰 News page', button: '👆 Refresh button', manual: 'Manual' };
+
+        function newsEsc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+        function newsTime(iso) {
+            return iso ? new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', second: '2-digit' }) : '—';
+        }
+        function newsAgo(iso) {
+            const m = Math.round((Date.now() - new Date(iso)) / 60000);
+            return m < 1 ? 'just now' : m < 60 ? m + 'm ago' : Math.floor(m / 60) + 'h ' + (m % 60) + 'm ago';
+        }
+
+        async function loadNewsRefreshLog() {
+            try {
+                newsRefresh = await (await fetch('/api/news/refresh-log?limit=200')).json();
+            } catch (e) {
+                document.getElementById('news-refresh-summary').textContent = 'Could not load: ' + e.message;
+                return;
+            }
+            renderNewsRefreshLog();
+        }
+
+        function renderNewsRefreshLog() {
+            const st = newsRefresh.status || {};
+            const parts = [];
+            parts.push(st.fetched_at ? `Last fetch <b>${newsTime(st.fetched_at)}</b> (${newsAgo(st.fetched_at)})` : 'No news fetched yet');
+            parts.push(`interval ${st.interval_min} min`);
+            if (st.refreshing) parts.push('<b class="text-blue-700">refreshing now</b>');
+            else if (st.queued) parts.push('<b class="text-yellow-700">queued</b>');
+            else parts.push(st.due ? '<b class="text-orange-600">due now</b>' : `next at ${newsTime(st.next_refresh_at)}`);
+            const ev = st.events || {};
+            parts.push(`<br>Events: ${ev.fetched_at ? `last checked <b>${newsTime(ev.fetched_at)}</b> (${newsAgo(ev.fetched_at)})` : 'not checked yet'} · every ${Math.round((ev.interval_min || 720) / 60)}h · `
+                + (ev.refreshing ? '<b class="text-blue-700">running now</b>' : ev.queued ? '<b class="text-yellow-700">queued</b>' : `next at ${newsTime(ev.next_refresh_at)}`));
+            parts.push(st.scheduler_alive ? '<span class="text-green-700">● scheduler running (Celery worker)</span>'
+                : '<span class="text-red-700">● scheduler NOT running — start the Celery worker</span>');
+            const down = newsRefresh.unreachable || [];
+            if (down.length) parts.push(`<br><span class="text-red-700" title="${newsEsc(down.map(d => d.name + ': ' + (d.error || 'unknown error')).join('\n'))}">`
+                + `Last news refresh couldn't reach: <b>${newsEsc(down.map(d => d.name).join(', '))}</b> (tried twice — usually a brief network blip; hover for errors)</span>`);
+            document.getElementById('news-refresh-summary').innerHTML = parts.join(' · ');
+
+            const hideSkipped = document.getElementById('news-hide-skipped').checked;
+            const rows = (newsRefresh.entries || []).filter(e => !hideSkipped || e.status !== 'skipped');
+            document.getElementById('news-refresh-table').innerHTML = rows.length ? rows.map(e => {
+                const details = [];
+                if (e.reason) details.push(newsEsc(e.reason));
+                if ((e.sources_failed || []).length) details.push('<span class="text-red-700">failed: ' + newsEsc(e.sources_failed.join(', ')) + '</span>');
+                return `<tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 whitespace-nowrap text-gray-900">${newsTime(e.queued_at || e.started_at)}</td>
+                    <td class="px-4 py-2 whitespace-nowrap font-medium">${e.job === 'events' ? '📅 Events' : '📰 News'}</td>
+                    <td class="px-4 py-2 whitespace-nowrap">${NEWS_TRIGGER_LABEL[e.trigger] || newsEsc(e.trigger)}${e.force ? ' <span class="text-xs text-gray-500">(forced)</span>' : ''}</td>
+                    <td class="px-4 py-2"><span class="px-2 py-0.5 rounded-full text-xs font-semibold ${NEWS_STATUS_STYLE[e.status] || ''}">${newsEsc(e.status)}</span></td>
+                    <td class="px-4 py-2 whitespace-nowrap text-gray-600">${e.waited_sec != null ? e.waited_sec.toFixed(1) + 's' : '—'}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-gray-600">${e.duration_sec != null ? e.duration_sec.toFixed(1) + 's' : '—'}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-gray-600">${e.items != null ? (e.new_items != null ? e.new_items + ' / ' : '') + e.items.toLocaleString() : '—'}</td>
+                    <td class="px-4 py-2 text-gray-600">${details.join(' · ') || '—'}</td>
+                </tr>`;
+            }).join('') : '<tr><td colspan="8" class="px-4 py-6 text-center text-gray-500">No refreshes recorded yet</td></tr>';
+        }
+
+        loadNewsRefreshLog();
+        setInterval(loadNewsRefreshLog, 15000);
+
+        function formatDateSync(isoString) {
+            if (!isoString) return '-';
+            const date = new Date(isoString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function formatDateAsync(isoString) {
+            if (!isoString) return '-';
+            try {
+                const response = await fetch(`/api/profile/convert-timestamp?utc_timestamp=${encodeURIComponent(isoString)}`);
+                const data = await response.json();
+                return data.formatted || formatDateSync(isoString);
+            } catch (error) {
+                return formatDateSync(isoString);
+            }
+        }
+
+        function truncateJson(obj, length = 100) {
+            const str = JSON.stringify(obj).substring(0, length);
+            return str + (JSON.stringify(obj).length > length ? '...' : '');
+        }
+
+        function statusBadge(status) {
+            const map = {
+                pending:   'bg-yellow-100 text-yellow-800',
+                running:   'bg-blue-100 text-blue-800',
+                done:      'bg-green-100 text-green-800',
+                error:     'bg-red-100 text-red-800',
+                cancelled: 'bg-gray-100 text-gray-700',
+                paused:    'bg-orange-100 text-orange-800',
+            };
+            const cls = map[status] || 'bg-gray-100 text-gray-700';
+            return `<span class="px-2 py-1 rounded text-xs font-semibold ${cls}">${(status||'unknown').toUpperCase()}</span>`;
+        }
+
+        function updateStats() {
+            const pending  = results.filter(r => r.status === 'pending').length;
+            const running  = results.filter(r => r.status === 'running').length;
+            const done     = results.filter(r => r.status === 'done').length;
+            const total    = results.length;
+            const rate     = total > 0 ? ((done / total) * 100).toFixed(1) + '%' : '—';
+
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-running').textContent = running;
+            document.getElementById('stat-done').textContent    = done;
+            document.getElementById('stat-rate').textContent    = rate;
+        }
+
+        async function loadResults() {
+            try {
+                const response = await fetch('/api/results');
+                const data = await response.json();
+                results = data.results || [];
+                updateStats();
+                await renderResultsTable();
+            } catch (error) {
+                console.error('Error loading results:', error);
+            }
+        }
+
+        async function renderResultsTable() {
+            const table = document.getElementById('results-table');
+            let html = '';
+
+            for (const row of results) {
+                const r = row.result || {};
+                const templateName = row.template_name || 'Unknown';
+                const timeTaken = r.time_taken_sec != null ? parseFloat(r.time_taken_sec).toFixed(2) : '—';
+                const preview = r.output ? truncateJson(r.output) : (row.error ? `Error: ${row.error}` : '—');
+                const formattedDate = await formatDateAsync(row.completed_at || row.created_at);
+                const isActive = row.status === 'pending' || row.status === 'running';
+
+                html += `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">${templateName}</td>
+                        <td class="px-6 py-4 text-sm">${statusBadge(row.status)}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${timeTaken}s</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${formattedDate}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">${preview}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex gap-2 items-center">
+                                <button onclick="showDetail('${row._id}')" class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded text-xs font-medium transition">View</button>
+                                ${isActive ? `
+                                <button onclick="pauseQuery('${row._id}')" class="px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded text-xs font-medium transition">Pause</button>
+                                <button onclick="cancelQuery('${row._id}')" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded text-xs font-medium transition">Cancel</button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+            table.innerHTML = html || '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">No queries yet</td></tr>';
+        }
+
+        async function pauseQuery(queryId) {
+            try {
+                await fetch(`/api/queries/${queryId}/pause`, { method: 'POST' });
+                await loadResults();
+            } catch (error) {
+                console.error('Error pausing query:', error);
+            }
+        }
+
+        async function cancelQuery(queryId) {
+            if (!confirm('Cancel this query?')) return;
+            try {
+                await fetch(`/api/queries/${queryId}`, { method: 'DELETE' });
+                await loadResults();
+            } catch (error) {
+                console.error('Error cancelling query:', error);
+            }
+        }
+
+        function showDetail(rowId) {
+            const row = results.find(r => r._id === rowId);
+            if (!row) return;
+
+            currentDetailResult = row;
+            isDetailEditing = false;
+
+            const r = row.result || {};
+            const templateName = row.template_name || 'Unknown Template';
+            const queryTypeVal = row.query_type || 'ai';
+            const interestsList = row.interests || row.user_interests || [];
+
+            document.getElementById('detail-title').textContent = templateName;
+            document.getElementById('detail-meta').innerHTML = `
+                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">${queryTypeVal.toUpperCase()}</span>
+                <span class="text-gray-500">•</span>
+                <span>${statusBadge(row.status)}</span>
+                <span class="text-gray-500">•</span>
+                <span>${interestsList.join(', ')}</span>
+            `;
+            document.getElementById('detail-query-type').textContent = queryTypeVal.toUpperCase();
+            document.getElementById('detail-interests').textContent = interestsList.length > 0 ? interestsList.join(', ') : '-';
+            document.getElementById('detail-query-text').textContent = row.ai_query || 'N/A';
+            document.getElementById('detail-time-taken').textContent = r.time_taken_sec != null
+                ? `${parseFloat(r.time_taken_sec).toFixed(2)} seconds`
+                : (row.status === 'running' ? 'Still running…' : '—');
+
+            const outputData = r.output || (row.error ? { error: row.error } : { status: row.status, message: 'No result yet' });
+            document.getElementById('detail-content').textContent = JSON.stringify(outputData, null, 2);
+            document.getElementById('edit-btn').textContent = 'Edit Results';
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+            currentDetailResult = null;
+            isDetailEditing = false;
+        }
+
+        function enableDetailEdit() {
+            if (isDetailEditing) {
+                const content = document.getElementById('detail-content');
+                try {
+                    const newOutput = JSON.parse(content.textContent);
+                    saveDetailEdit(newOutput);
+                    document.getElementById('edit-btn').textContent = 'Edit Results';
+                } catch (error) {
+                    alert('Invalid JSON format');
+                }
+            } else {
+                const content = document.getElementById('detail-content');
+                content.contentEditable = true;
+                content.style.background = '#fef2f2';
+                content.style.border = '2px solid #dc2626';
+                document.getElementById('edit-btn').textContent = 'Save';
+                isDetailEditing = true;
+            }
+        }
+
+        async function saveDetailEdit(newOutput) {
+            try {
+                const response = await fetch(`/api/results/${currentDetailResult._id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ output: newOutput })
+                });
+                if (response.ok) {
+                    const content = document.getElementById('detail-content');
+                    content.contentEditable = false;
+                    content.style.border = 'none';
+                    content.style.background = '#f9fafb';
+                    isDetailEditing = false;
+                    await loadResults();
+                } else {
+                    alert('Error saving result');
+                }
+            } catch (error) {
+                console.error('Error saving result:', error);
+                alert('Error saving result');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDetailModal();
+        });
+
+        (async () => {
+            await loadResults();
+            setInterval(loadResults, 3000);
+        })();
+    </script>
+</body>
+</html>

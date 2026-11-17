@@ -1,0 +1,128 @@
+==============================================================================
+TRIP PLAN - country comparison
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Round trip      : yes
+Generated       : 2026-09-10 11:03:10
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  COUNTRY     CITY                DATES                   NIGHTS         TOTAL
+1  Vietnam     Hanoi               2026-10-18 - 2026-10-25 7       INR  165,436
+2  Cambodia    Siem Reap           2026-10-18 - 2026-10-25 7       INR  232,304
+3  Vietnam     Ho Chi Minh City    2026-10-18 - 2026-10-24 6       INR  244,244
+
+INCOMPLETE - NOT COMPARABLE WITH THE ABOVE
+These have no return leg priced, so the total is outbound only and
+understates the real trip cost. Re-run with a higher max_searches.
+   Cambodia    Phnom Penh          2026-10-16 outbound only    INR  140,212
+
+BEST VALUE: Vietnam (Hanoi) - INR 165,436 for 4 travellers
+That is INR 78,808 less than the most expensive option priced.
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Vietnam - Hanoi (HAN)
+   Capital, gateway to Ha Long Bay and the north
+   7 nights, 2026-10-18 to 2026-10-25
+   outbound  2026-10-18  Air India Express,  06:10-05:55 22h 15m  1 stop via AMD         INR 16,765
+             flight IX 2013, VJ 1926 | cabin 7 KGS/Adult | check-in 15 KGS/Adult | refundable: not stated by MMT
+             layover: AMD 15h 50m
+             https://www.makemytrip.com/flight/search?itinerary=BLR-HAN-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   return    2026-10-25  IndiGo              19:05-04:05 10h 30m  1 stop via BOM         INR 24,594
+             flight 6E 1638, 6E 6284 | cabin 7 KGS/Adult | check-in 30 KGS/Adult | refundable: not stated by MMT
+             layover: BOM 3h 10m
+             https://www.makemytrip.com/flight/search?itinerary=HAN-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 41,359  (outbound + return)
+   x 4 travellers: INR 165,436
+
+2. Cambodia - Siem Reap (SAI)
+   Angkor Wat
+   7 nights, 2026-10-18 to 2026-10-25
+   outbound  2026-10-18  Thai AirAsia        23:20-11:10 10h 20m  1 stop via DMK         INR 27,323
+             flight FD 138, FD 610 | refundable: not stated by MMT
+             https://www.makemytrip.com/flight/search?itinerary=BLR-SAI-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   return    2026-10-25  Bangkok Airways, A  19:25-15:50 21h 55m  2 stops via BKK,DEL    INR 30,753
+             flight PG 908, AI 2333 | refundable: not stated by MMT
+             https://www.makemytrip.com/flight/search?itinerary=SAI-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 58,076  (outbound + return)
+   x 4 travellers: INR 232,304
+
+3. Vietnam - Ho Chi Minh City (SGN)
+   Main southern hub, best connected from India
+   6 nights, 2026-10-18 to 2026-10-24
+   outbound  2026-10-18  VietJet Air         23:35-06:00 4h 55m   non-stop               INR 18,939
+             flight VJ 1802 | cabin 7 KGS/Adult | check-in 20 KGS/Adult | refundable: not stated by MMT
+             https://www.makemytrip.com/flight/search?itinerary=BLR-SGN-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&intl=false&cabinClass=E
+   return    2026-10-24  VietJet Air, Thai   08:50-23:55 16h 35m  2 stops via HKT,BKK    INR 42,122
+             flight VJ 809, TG 212 | cabin 7 KGS/Adult | check-in 20 KGS/Adult | refundable: not stated by MMT
+             layover: HKT 5h 10m, BKK 4h 10m
+             https://www.makemytrip.com/flight/search?itinerary=SGN-BLR-24/10/2026&tripType=O&paxType=A-4_C-0_I-0&intl=false&cabinClass=E
+   per adult: INR 61,061  (outbound + return)
+   x 4 travellers: INR 244,244
+
+4. Cambodia - Phnom Penh (PNH)   [OUTBOUND ONLY]
+   Capital
+   8 nights, 2026-10-16 to n/a
+   outbound  2026-10-16  Thai AirAsia        23:20-17:45 16h 55m  1 stop via DMK         INR 35,053
+             flight FD 138, FD 606 | cabin 7 KGS/Adult | check-in 0 KGS/Adult | refundable: not stated by MMT
+             layover: DMK 11h 55m
+             https://www.makemytrip.com/flight/search?itinerary=BLR-PNH-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 35,053  (outbound + return)
+   x 4 travellers: INR 140,212
+   ! No return flights found; outbound cost only.
+
+------------------------------------------------------------------------------
+ALL OPTIONS SEARCHED
+------------------------------------------------------------------------------
+Every date priced for each destination. '<<' marks the combination
+chosen above. Blank fare = no flight found for that date.
+A cheaper fare may go unpicked if the pairing breaks the 5-7 night limit.
+
+Vietnam - Ho Chi Minh City (SGN)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Thai AirAsia          14h 30m   1 stop    INR   36,421
+   outbound  2026-10-17   Air India Express, Vi 15h 45m   2 stops   INR   25,868
+   outbound  2026-10-18   VietJet Air           4h 55m    non-stop  INR   18,939 <<
+   return    2026-10-24   VietJet Air, Thai Air 16h 35m   2 stops   INR   42,122 <<
+   return    2026-10-25   - no flights found -  
+   return    2026-10-26   VietJet Air           4h 50m    non-stop  INR   17,850
+
+Vietnam - Hanoi (HAN)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Akasa Air             11h 35m   1 stop    INR   29,396
+   outbound  2026-10-17   IndiGo                15h 05m   1 stop    INR   36,994
+   outbound  2026-10-18   Air India Express, Vi 22h 15m   1 stop    INR   16,765 <<
+   return    2026-10-24   Akasa Air             11h 35m   1 stop    INR   26,266
+   return    2026-10-25   IndiGo                10h 30m   1 stop    INR   24,594 <<
+   return    2026-10-26   Akasa Air             12h 35m   1 stop    INR   24,055
+
+Cambodia - Siem Reap (SAI)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Thai AirAsia          10h 20m   1 stop    INR   40,340
+   outbound  2026-10-17   Air India, Bangkok Ai 17h 45m   2 stops   INR   40,999
+   outbound  2026-10-18   Thai AirAsia          10h 20m   1 stop    INR   27,323 <<
+   return    2026-10-24   Bangkok Airways, Air  13h 40m   2 stops   INR   35,853
+   return    2026-10-25   Bangkok Airways, Air  21h 55m   2 stops   INR   30,753 <<
+   return    2026-10-26   Bangkok Airways, Air  21h 55m   2 stops   INR   30,053
+
+PNH (PNH)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Thai AirAsia          16h 55m   1 stop    INR   35,053
+   outbound  2026-10-17   - no flights found -  
+   outbound  2026-10-18   - no flights found -  
+   return    2026-10-24   - no flights found -  
+   return    2026-10-25   - no flights found -  
+   return    2026-10-26   - no flights found -  
+
+24 legs priced across 4 destinations (17 live searches, 7 from cache).
+
+==============================================================================
+Prices are what MakeMyTrip listed at generation time and move daily.
+==============================================================================

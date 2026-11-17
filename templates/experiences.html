@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiences</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .btn-primary {
+            @apply px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition;
+        }
+        .btn-secondary {
+            @apply px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium rounded-lg transition;
+        }
+        .nav-link {
+            @apply text-gray-700 hover:text-blue-600 font-medium transition;
+        }
+        .card {
+            @apply bg-white rounded-lg shadow-sm border border-gray-200;
+        }
+        #ranking-content {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+        .tab-button {
+            white-space: nowrap;
+            padding: 8px 0;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .tab-button:not(.active) {
+            color: #6b7280;
+        }
+        .tab-button:not(.active):hover {
+            color: #374151;
+        }
+        .item-content {
+            line-height: 1.8;
+            color: #374151;
+        }
+        .item-content p {
+            margin-bottom: 1rem;
+        }
+        .item-content ul {
+            list-style: disc inside;
+            margin-bottom: 1rem;
+            margin-left: 1rem;
+        }
+        .item-content li {
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .item-content strong {
+            color: #1f2937;
+            font-weight: 600;
+        }
+        .item-section {
+            margin-bottom: 1.5rem;
+        }
+        .item-section-title {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid #2563eb;
+            padding-left: 0.75rem;
+        }
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .video-card-animate {
+            animation: slideInUp 0.4s ease-out;
+        }
+        .video-thumbnail {
+            transition: all 0.3s ease;
+        }
+        .video-thumbnail:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <!-- Navigation Bar -->
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10">
+        <!-- Header Section -->
+        <div class="max-w-7xl mx-auto px-6 mb-6">
+            <h2 class="text-3xl font-bold text-blue-700 mb-4">Experiences</h2>
+
+            <!-- Search Section -->
+            <div class="card p-4 mb-6">
+                <form hx-post="/add-interest" hx-target="#interests-list" hx-swap="afterbegin" hx-on::after-request="if(event.detail.xhr.status === 200) this.reset()">
+                    <div class="flex gap-3">
+                        <input
+                            type="text"
+                            name="text"
+                            placeholder="Enter an area of interest..."
+                            class="flex-1 px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                            required
+                        />
+                        <button
+                            type="submit"
+                            class="btn-primary"
+                        >
+                            Explore
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Your Interests Section -->
+            <div class="card p-6 mb-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Your Interests</h3>
+                <div id="interests-list" class="flex flex-wrap gap-3">
+                    <!-- Interests loaded here -->
+                </div>
+                <div id="empty-state" class="text-gray-500 text-sm text-center py-6">
+                    No interests yet. Add one above to get started.
+                </div>
+            </div>
+
+            <!-- Ranking Panel & Results -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Ranking Panel -->
+                <div id="ranking-panel" class="lg:col-span-1" style="display: none;">
+                    <div class="card sticky top-24 overflow-hidden shadow-md">
+                        <!-- Header (always visible) -->
+                        <div class="p-4 bg-blue-50 border-b border-gray-200 cursor-pointer" onclick="toggleRankingPanel()">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-gray-900">🎯 Ranking</h4>
+                                <span id="ranking-toggle" class="text-2xl">▼</span>
+                            </div>
+                            <div id="ranking-preview" class="text-xs text-gray-600 mt-2"></div>
+                        </div>
+
+                        <!-- Content (expandable) -->
+                        <div id="ranking-content" class="p-4 max-h-[600px] overflow-y-auto">
+                            <div class="space-y-4">
+                                <!-- Relevance -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 block mb-2">Relevance</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="relevance" value="high" class="ranking-option"> High
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="relevance" value="medium" checked class="ranking-option"> Medium
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="relevance" value="low" class="ranking-option"> Low
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Location Filter -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 block mb-2">Location</label>
+                                    <select name="location" class="ranking-option w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Any Location</option>
+                                        <option value="asia">Asia</option>
+                                        <option value="europe">Europe</option>
+                                        <option value="americas">Americas</option>
+                                        <option value="india">India</option>
+                                    </select>
+                                </div>
+
+                                <!-- Budget -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 block mb-2">Budget</label>
+                                    <select name="budget" class="ranking-option w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Any Budget</option>
+                                        <option value="budget">Budget</option>
+                                        <option value="moderate">Moderate</option>
+                                        <option value="premium">Premium</option>
+                                    </select>
+                                </div>
+
+                                <!-- Sort -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 block mb-2">Sort By</label>
+                                    <select name="sortBy" class="ranking-option w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        <option value="relevance">Relevance</option>
+                                        <option value="recent">Recent</option>
+                                        <option value="popular">Popular</option>
+                                    </select>
+                                </div>
+
+                                <button onclick="applyRanking()" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition mt-4">
+                                    Apply Ranking
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Results Area -->
+                <div class="lg:col-span-3">
+                    <div class="card p-8">
+                        <!-- Interest Title & Result Count -->
+                        <div id="interest-header" style="display: none;" class="mb-6 pb-4 border-b border-gray-200">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h2 id="interest-title" class="text-2xl font-bold text-gray-900"></h2>
+                                <span id="result-count" class="text-sm font-medium bg-blue-100 text-blue-800 px-3 py-1 rounded-full"></span>
+                            </div>
+                        </div>
+
+                        <!-- Results Tabs -->
+                        <div id="results-tabs-container" style="display: none;">
+                            <div class="flex items-center gap-1 mb-6 pb-4 border-b border-gray-200">
+                                <button id="tab-prev" onclick="scrollTabs(-1)" style="display: none;" class="text-gray-600 hover:text-gray-900 px-2 py-1 font-bold">‹</button>
+                                <div id="results-tabs" class="flex gap-4 overflow-hidden flex-1">
+                                    <!-- Tabs generated here -->
+                                </div>
+                                <button id="tab-next" onclick="scrollTabs(1)" style="display: none;" class="text-gray-600 hover:text-gray-900 px-2 py-1 font-bold">›</button>
+                            </div>
+                        </div>
+
+                        <!-- Results Content -->
+                        <div id="videos-grid" class="space-y-8">
+                            <div class="text-gray-500 text-center py-16">
+                                Select an area of interest above to explore insights and content
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" style="display: none;" onclick="closeVideoModal()">
+        <div class="bg-white rounded-xl max-w-5xl w-full max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+            <!-- Header -->
+            <div class="p-6 flex justify-between items-center border-b border-gray-200">
+                <p id="modal-title" class="text-gray-900 font-semibold flex-1 truncate text-lg"></p>
+                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-gray-600 text-2xl ml-4">✕</button>
+            </div>
+
+            <!-- Video Container -->
+            <div class="flex-1 bg-black flex items-center justify-center min-h-96 relative">
+                <div id="loading-spinner" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 z-10">
+                    <div class="text-white text-center">
+                        <p class="text-lg mb-2">Loading video...</p>
+                        <p class="text-sm text-gray-400">Extracting from YouTube</p>
+                    </div>
+                </div>
+                <video
+                    id="modal-video"
+                    class="w-full h-full"
+                    controls
+                    style="background: black;">
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allInterests = [];
+        let rankingPanelExpanded = true;
+        let currentInterest = null;
+        let currentRanking = {
+            relevance: 'medium',
+            location: '',
+            budget: '',
+            sortBy: 'relevance'
+        };
+        let tabScrollPosition = 0;
+
+        function toggleRankingPanel() {
+            const content = document.getElementById('ranking-content');
+            const toggle = document.getElementById('ranking-toggle');
+            rankingPanelExpanded = !rankingPanelExpanded;
+
+            if (rankingPanelExpanded) {
+                content.style.maxHeight = '600px';
+                content.style.opacity = '1';
+                toggle.textContent = '▼';
+            } else {
+                content.style.maxHeight = '0px';
+                content.style.opacity = '0';
+                toggle.textContent = '▶';
+            }
+        }
+
+        function applyRanking() {
+            currentRanking.relevance = document.querySelector('input[name="relevance"]:checked')?.value || 'medium';
+            currentRanking.location = document.querySelector('select[name="location"]')?.value || '';
+            currentRanking.budget = document.querySelector('select[name="budget"]')?.value || '';
+            currentRanking.sortBy = document.querySelector('select[name="sortBy"]')?.value || 'relevance';
+
+            const preview = [];
+            if (currentRanking.location) preview.push(`📍 ${currentRanking.location.toUpperCase()}`);
+            if (currentRanking.budget) preview.push(`💰 ${currentRanking.budget}`);
+            document.getElementById('ranking-preview').textContent = preview.join(' • ') || 'All results';
+
+            if (currentInterest) {
+                showVideos(currentInterest);
+            }
+        }
+
+        function scrollTabs(direction) {
+            const tabsContainer = document.getElementById('results-tabs');
+            const scrollAmount = 200;
+            tabsContainer.scrollLeft += direction * scrollAmount;
+            updateTabButtons();
+        }
+
+        function updateTabButtons() {
+            const tabsContainer = document.getElementById('results-tabs');
+            const prevBtn = document.getElementById('tab-prev');
+            const nextBtn = document.getElementById('tab-next');
+
+            const hasOverflow = tabsContainer.scrollWidth > tabsContainer.clientWidth;
+            const isAtStart = tabsContainer.scrollLeft === 0;
+            const isAtEnd = tabsContainer.scrollLeft + tabsContainer.clientWidth >= tabsContainer.scrollWidth - 10;
+
+            if (!hasOverflow) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = isAtStart ? 'none' : 'block';
+                nextBtn.style.display = isAtEnd ? 'none' : 'block';
+            }
+        }
+
+        async function getInterestStatus(interestText) {
+            try {
+                const [queriesRes, resultsRes] = await Promise.all([
+                    fetch('/api/queries'),
+                    fetch('/api/results')
+                ]);
+                const queriesData = await queriesRes.json();
+                const resultsData = await resultsRes.json();
+
+                const allQueries = queriesData.queries || [];
+                const allResults = resultsData.results || [];
+
+                const interestQueries = allQueries.filter(q =>
+                    q.user_interests && q.user_interests.includes(interestText)
+                );
+
+                const interestResults = allResults.filter(r =>
+                    r.user_interests && r.user_interests.includes(interestText) && r.result
+                );
+
+                const hasRunning = interestQueries.some(q => q.status === 'running');
+                const hasPending = interestQueries.some(q => q.status === 'pending');
+                const allDone = interestQueries.length > 0 &&
+                               interestQueries.every(q => q.status === 'done' || q.status === 'error');
+
+                if (hasRunning) {
+                    return { status: 'running', icon: '⏳', text: 'Processing...' };
+                } else if (hasPending) {
+                    return { status: 'pending', icon: '⏸', text: 'Queued' };
+                } else if (allDone && interestResults.length > 0) {
+                    return { status: 'done', icon: '✓', text: `${interestResults.length} results` };
+                } else if (interestQueries.length > 0) {
+                    return { status: 'done', icon: '✓', text: '0 results' };
+                } else {
+                    return { status: 'idle', icon: '○', text: 'Waiting' };
+                }
+            } catch (error) {
+                console.error('Error getting interest status:', error);
+                return { status: 'error', icon: '⚠', text: 'Error' };
+            }
+        }
+
+        async function loadInterests() {
+            try {
+                const response = await fetch('/interests');
+                const data = await response.json();
+                allInterests = data.interests || [];
+                const interestsList = document.getElementById('interests-list');
+                const emptyState = document.getElementById('empty-state');
+
+                if (allInterests.length > 0) {
+                    emptyState.style.display = 'none';
+                    interestsList.innerHTML = '';
+                    allInterests.forEach(async interest => {
+                        const statusInfo = await getInterestStatus(interest.text);
+                        const item = document.createElement('div');
+                        item.className = 'p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition interest-item group border border-blue-200 cursor-pointer';
+                        item.innerHTML = `
+                            <div class="flex justify-between items-start gap-2">
+                                <div class="flex-1" onclick="showVideos('${interest.text}')">
+                                    <p class="text-gray-900 font-medium text-sm">${interest.text}</p>
+                                    <p class="text-gray-600 text-xs mt-1">${statusInfo.icon} ${statusInfo.text}</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 transition text-red-500 hover:text-red-600 px-2 py-1 rounded hover:bg-red-50 text-sm" onclick="deleteInterest('${interest.text}')">
+                                    ✕
+                                </button>
+                            </div>
+                        `;
+                        item.dataset.text = interest.text;
+                        interestsList.appendChild(item);
+                    });
+                } else {
+                    emptyState.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading interests:', error);
+            }
+        }
+
+        function extractBriefPreview(output) {
+            if (!output) return "No content available";
+            if (output.text) {
+                return output.text.substring(0, 150) + (output.text.length > 150 ? '...' : '');
+            }
+            if (output.description) {
+                return output.description.substring(0, 150) + (output.description.length > 150 ? '...' : '');
+            }
+            const outputStr = JSON.stringify(output, null, 2);
+            const lines = outputStr.split('\n').filter(l => l.trim() && !l.includes('{') && !l.includes('['));
+            if (lines.length > 0) {
+                return lines[0].substring(0, 150) + (lines[0].length > 150 ? '...' : '');
+            }
+            return "AI Generated Content";
+        }
+
+        function beautifyContent(content, itemTitle) {
+            let text = content;
+            text = text.replace(/^\*\*\d+[\.\)]\s+[^*]+\*\*[\s\n]*/m, '').trim();
+
+            const lines = text.split('\n');
+            if (lines.length > 0 && lines[0].trim().startsWith('#')) {
+                lines.shift();
+            }
+            text = lines.join('\n').trim();
+
+            let lineArray = text.split('\n');
+            let html = '';
+            let inBulletList = false;
+            let currentSection = '';
+            let bulletItems = [];
+
+            for (let line of lineArray) {
+                line = line.trim();
+                if (!line) continue;
+
+                if (line.startsWith('#')) {
+                    if (bulletItems.length > 0) {
+                        html += '<ul>' + bulletItems.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                        bulletItems = [];
+                        inBulletList = false;
+                    }
+                    if (currentSection) {
+                        html += '</div>';
+                    }
+                    const sectionTitle = line.replace(/^#+\s*/, '').trim();
+                    if (sectionTitle.length > 0) {
+                        html += `<div class="item-section"><div class="item-section-title">${sectionTitle}</div>`;
+                        currentSection = sectionTitle;
+                    }
+                    continue;
+                }
+
+                if (line.startsWith('-') || line.startsWith('•')) {
+                    inBulletList = true;
+                    const bulletText = line.replace(/^[-•]\s*/, '').trim();
+                    const formatted = bulletText.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                    bulletItems.push(formatted);
+                    continue;
+                }
+
+                if (inBulletList && bulletItems.length > 0) {
+                    html += '<ul>' + bulletItems.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                    bulletItems = [];
+                    inBulletList = false;
+                }
+
+                const paragraph = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                if (paragraph.length > 0) {
+                    html += `<p>${paragraph}</p>`;
+                }
+            }
+
+            if (bulletItems.length > 0) {
+                html += '<ul>' + bulletItems.map(item => `<li>${item}</li>`).join('') + '</ul>';
+            }
+            if (currentSection) {
+                html += '</div>';
+            }
+
+            return html || '<p>No content available</p>';
+        }
+
+        function extractTabTitle(content) {
+            if (!content) return "Result";
+            let text = content;
+            if (typeof content === 'object') {
+                text = JSON.stringify(content);
+            }
+            console.log('Extracting title from:', text.substring(0, 100));
+
+            const numberedBoldMatch = text.match(/\*\*(\d+[\.\)]\s+.+?)\*\*/);
+            if (numberedBoldMatch) {
+                let title = numberedBoldMatch[1].trim();
+                title = title.replace(/^\d+[\.\)]\s*/, '');
+                return title.substring(0, 50);
+            }
+            const boldMatch = text.match(/\*\*([^*\n]+)\*\*/);
+            if (boldMatch) {
+                let title = boldMatch[1].trim();
+                title = title.replace(/^\d+[\.\)]\s*/, '');
+                return title.substring(0, 50);
+            }
+            const headingMatch = text.match(/^#+\s+(.+)$/m);
+            if (headingMatch) {
+                return headingMatch[1].trim().substring(0, 50);
+            }
+            const lines = text.split('\n').filter(l => l.trim());
+            if (lines.length > 0) {
+                for (let line of lines) {
+                    if (!line.includes('{') && !line.includes('[') && !line.includes(':')) {
+                        let title = line.replace(/^#+\s*/, '').replace(/^\*+/, '').trim();
+                        title = title.replace(/^\d+[\.\)]\s*/, '');
+                        if (title.length > 3) return title.substring(0, 50);
+                    }
+                }
+            }
+            return "Result";
+        }
+
+        let pollingTimeouts = {};
+
+        async function showVideos(interestText, pollCount = 0) {
+            currentInterest = interestText;
+            const grid = document.getElementById('videos-grid');
+            const rankingPanel = document.getElementById('ranking-panel');
+            const tabsContainer = document.getElementById('results-tabs-container');
+            const tabsList = document.getElementById('results-tabs');
+            const interestHeader = document.getElementById('interest-header');
+            const interestTitle = document.getElementById('interest-title');
+            const resultCount = document.getElementById('result-count');
+
+            grid.innerHTML = '<div class="text-gray-500 text-center py-12">Loading results...</div>';
+            rankingPanel.style.display = 'block';
+
+            try {
+                const [resultsRes, queriesRes] = await Promise.all([
+                    fetch('/api/results'),
+                    fetch('/api/queries')
+                ]);
+                const resultsData = await resultsRes.json();
+                const queriesData = await queriesRes.json();
+                const allResults = resultsData.results || [];
+                const allQueries = queriesData.queries || [];
+
+                const relevantResults = allResults.filter(result => {
+                    const interests = result.user_interests || result.interests || [];
+                    return interests.some(i => i.toLowerCase() === interestText.toLowerCase());
+                });
+
+                const relevantQueries = allQueries.filter(q => {
+                    const interests = q.user_interests || q.interests || [];
+                    return interests.some(interest =>
+                        interest.toLowerCase() === interestText.toLowerCase()
+                    );
+                });
+
+                if (relevantResults.length === 0) {
+                    interestHeader.style.display = 'none';
+
+                    const errorQueries = relevantQueries.filter(q => q.status === 'error');
+                    if (errorQueries.length > 0) {
+                        const errorMessages = errorQueries.map(q => q.error || 'Unknown error').join('\n');
+                        grid.innerHTML = `<div class="text-red-600 text-center py-12">
+                            <p class="font-semibold mb-2">⚠️ Unable to fetch due to errors:</p>
+                            <pre class="text-sm bg-red-50 p-4 rounded border border-red-200 text-left inline-block">${errorMessages}</pre>
+                        </div>`;
+                        clearTimeout(pollingTimeouts[interestText]);
+                        delete pollingTimeouts[interestText];
+                        return;
+                    }
+
+                    const isProcessing = relevantQueries.some(q => q.status === 'pending' || q.status === 'running');
+                    if (isProcessing) {
+                        grid.innerHTML = '<div class="text-gray-500 text-center py-12">⏳ Processing your query...</div>';
+                        if (pollCount < 20) {
+                            clearTimeout(pollingTimeouts[interestText]);
+                            pollingTimeouts[interestText] = setTimeout(() => {
+                                showVideos(interestText, pollCount + 1);
+                            }, 3000);
+                        }
+                        return;
+                    }
+
+                    grid.innerHTML = '<div class="text-gray-500 text-center py-12">No content generated for this interest</div>';
+                    return;
+                }
+
+                const youtubeResults = relevantResults.filter(r => r.query_type === 'youtube' && r.result);
+                const aiResults = relevantResults.filter(r => r.query_type === 'ai' && r.result);
+
+                const errorResults = aiResults.filter(r =>
+                    r.result?.output && (r.result.output.error || r.result.output.includes?.('Error') || r.result.output.includes?.('error'))
+                );
+                if (errorResults.length > 0) {
+                    const errorMsg = errorResults[0].result.output.error || errorResults[0].result.output;
+                    interestHeader.style.display = 'none';
+                    grid.innerHTML = `<div class="text-red-600 text-center py-12">
+                        <p class="font-semibold mb-2">⚠️ Failed to fetch the data due to:</p>
+                        <p class="text-sm bg-red-50 p-4 rounded border border-red-200 inline-block max-w-lg">${errorMsg}</p>
+                    </div>`;
+                    clearTimeout(pollingTimeouts[interestText]);
+                    delete pollingTimeouts[interestText];
+                    return;
+                }
+
+                let allItems = [];
+                aiResults.forEach(result => {
+                    const output = result.result?.output || {};
+                    let contentText = output.text || JSON.stringify(output, null, 2);
+
+                    console.log('[DEBUG] Processing AI result:');
+                    console.log('[DEBUG] Output object:', output);
+                    console.log('[DEBUG] Content text (first 300 chars):', contentText.substring(0, 300));
+
+                    let itemMatches = [];
+
+                    itemMatches = contentText.match(/\*\*\d+[\.\)]\s+[^*]+\*\*[\s\S]*?(?=\*\*\d+[\.\)]|$)/g);
+                    if (itemMatches) {
+                        console.log('[DEBUG] Pattern 1 (numbered bold) matched:', itemMatches.length, 'items');
+                    }
+
+                    if (!itemMatches || itemMatches.length === 0) {
+                        const headingMatches = contentText.match(/^#+\s+.+?(?=\n#+\s|$)/gms);
+                        if (headingMatches && headingMatches.length > 0) {
+                            itemMatches = headingMatches;
+                            console.log('[DEBUG] Pattern 2 (headings with content) matched:', itemMatches.length, 'items');
+                        }
+                    }
+
+                    if (!itemMatches || itemMatches.length === 0) {
+                        const blocks = contentText.split(/\n\n+/).filter(b => b.trim().length > 20);
+                        if (blocks.length > 0) {
+                            itemMatches = blocks;
+                            console.log('[DEBUG] Pattern 3 (blocks) matched:', itemMatches.length, 'items');
+                        }
+                    }
+
+                    console.log('[DEBUG] Final itemMatches count:', itemMatches ? itemMatches.length : 0);
+
+                    if (itemMatches && itemMatches.length > 0) {
+                        itemMatches.forEach((itemText, idx) => {
+                            let title = 'Result';
+                            let titleMatch = itemText.match(/\*\*\d+[\.\)]\s+([^*]+)\*\*/);
+                            if (titleMatch) {
+                                title = titleMatch[1].trim();
+                            } else {
+                                titleMatch = itemText.match(/^#+\s+(.+?)(?:\n|$)/m);
+                                if (titleMatch) {
+                                    title = titleMatch[1].trim();
+                                } else {
+                                    title = itemText.substring(0, 50).replace(/^#+\s*/, '').replace(/\*\*/g, '').trim();
+                                }
+                            }
+                            title = title.replace(/^\d+[\.\)]\s*/, '').trim();
+                            console.log(`[DEBUG] Item ${idx + 1} title:`, title);
+                            allItems.push({
+                                title: title || `Result ${idx + 1}`,
+                                content: itemText.trim(),
+                                id: result._id,
+                                originalIndex: allItems.length
+                            });
+                        });
+                    } else {
+                        console.log('[DEBUG] WARNING: No items extracted from result!');
+                        console.log('[DEBUG] Raw output:', output);
+                    }
+                });
+
+                console.log('Interest:', interestText);
+                console.log('Total results fetched:', allResults.length);
+                console.log('Relevant results found:', relevantResults.length);
+                console.log('Relevant queries found:', relevantQueries.length);
+                console.log('AI results found:', aiResults.length);
+                console.log('Extracted items:', allItems);
+
+                clearTimeout(pollingTimeouts[interestText]);
+                delete pollingTimeouts[interestText];
+
+                if (allItems.length > 0) {
+                    interestHeader.style.display = 'block';
+                    interestTitle.textContent = interestText;
+                    resultCount.textContent = `${allItems.length} ${allItems.length === 1 ? 'result' : 'results'}`;
+                } else {
+                    interestHeader.style.display = 'none';
+                }
+
+                if (allItems.length > 0) {
+                    tabsContainer.style.display = 'block';
+                    tabsList.innerHTML = allItems.map((item, idx) => {
+                        return `
+                            <button
+                                onclick="switchTab(${idx})"
+                                class="tab-button ${idx === 0 ? 'active' : ''}"
+                                data-tab-index="${idx}"
+                                title="${item.title}">
+                                ${item.title}
+                            </button>
+                        `;
+                    }).join('');
+                    setTimeout(updateTabButtons, 100);
+                } else {
+                    tabsContainer.style.display = 'none';
+                }
+
+                let htmlContent = '';
+                allItems.forEach((item, idx) => {
+                    const beautifiedContent = beautifyContent(item.content, item.title);
+                    htmlContent += `
+                        <div class="tab-content" data-tab-index="${idx}" data-item-id="${item.id || ''}" data-item-title="${item.title}" style="display: ${idx === 0 ? 'block' : 'none'};">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div class="lg:col-span-2">
+                                    <div class="item-content p-8 max-h-[600px] overflow-y-auto pr-4">
+                                        ${beautifiedContent}
+                                    </div>
+                                </div>
+                                <div class="lg:col-span-1">
+                                    <div id="related-videos-${idx}" class="sticky top-24">
+                                        <h4 class="text-lg font-bold text-gray-900 mb-4">Related Videos</h4>
+                                        <div class="space-y-4" id="videos-container-${idx}">
+                                            <div class="text-gray-500 text-sm text-center py-6">
+                                                <p>🔍 Searching videos...</p>
+                                                <p class="text-xs mt-2">This may take a moment</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (htmlContent === '') {
+                    if (aiResults.length > 0 && allItems.length === 0) {
+                        grid.innerHTML = `<div class="text-orange-600 text-center py-12">
+                            <p class="font-semibold mb-2">⚠️ Data Extraction Issue</p>
+                            <p class="text-sm text-orange-500 mb-4">Results were generated but items couldn't be extracted from the response format.</p>
+                            <p class="text-xs text-gray-500">Check browser console (F12) for debug logs to help diagnose the issue.</p>
+                        </div>`;
+                    } else {
+                        grid.innerHTML = '<div class="text-gray-500 text-center py-12">⏳ Processing your query...</div>';
+                    }
+                } else {
+                    grid.innerHTML = htmlContent;
+                    document.querySelectorAll('.video-card').forEach(card => {
+                        card.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            playVideo(this);
+                        });
+                    });
+                    if (allItems.length > 0) {
+                        const firstItem = allItems[0];
+                        searchYouTubeForItem(0, firstItem.title, firstItem.id);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading results:', error);
+                grid.innerHTML = '<div class="text-red-600 text-center py-12">Error loading results</div>';
+            }
+        }
+
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                const idx = parseInt(btn.dataset.tabIndex);
+                btn.classList.toggle('active', idx === tabIndex);
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                const idx = parseInt(content.dataset.tabIndex);
+                content.style.display = idx === tabIndex ? 'block' : 'none';
+            });
+            const activeTabButton = document.querySelector(`.tab-button[data-tab-index="${tabIndex}"]`);
+            if (activeTabButton) {
+                activeTabButton.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                updateTabButtons();
+            }
+            const tabContent = document.querySelector(`.tab-content[data-tab-index="${tabIndex}"]`);
+            if (tabContent) {
+                const itemTitle = tabContent.dataset.itemTitle;
+                const itemId = tabContent.dataset.itemId;
+                if (itemTitle) {
+                    searchYouTubeForItem(tabIndex, itemTitle, itemId);
+                }
+            }
+        }
+
+        async function searchYouTubeForItem(tabIndex, itemTitle, itemId) {
+            const videosContainer = document.getElementById(`videos-container-${tabIndex}`);
+            if (!videosContainer) return;
+            console.log(`[YouTube Search] Started for: "${itemTitle}" (ID: ${itemId})`);
+            videosContainer.innerHTML = `
+                <div class="text-gray-500 text-sm text-center py-6">
+                    <p class="animate-pulse">🔍 Searching for "${itemTitle}"...</p>
+                    <p class="text-xs mt-2 text-gray-400">This may take a moment</p>
+                </div>
+            `;
+            try {
+                const url = `/api/search-youtube/${itemId}?title=${encodeURIComponent(itemTitle)}`;
+                const response = await fetch(url, { method: 'POST' });
+                const data = await response.json();
+                if (data.success && data.videos && data.videos.length > 0) {
+                    renderRelatedVideos(tabIndex, data.videos);
+                } else if (data.success) {
+                    videosContainer.innerHTML = `
+                        <div class="text-gray-400 text-sm text-center py-6">
+                            <p>No videos found</p>
+                        </div>
+                    `;
+                } else {
+                    videosContainer.innerHTML = `
+                        <div class="text-red-500 text-sm text-center py-6">
+                            <p>Error searching videos</p>
+                            <p class="text-xs mt-2 text-red-400">${data.error || 'Unknown error'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                videosContainer.innerHTML = `
+                    <div class="text-red-500 text-sm text-center py-6">
+                        <p>Error searching videos</p>
+                        <p class="text-xs mt-2 text-red-400">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderRelatedVideos(tabIndex, videos) {
+            const videosContainer = document.getElementById(`videos-container-${tabIndex}`);
+            if (!videosContainer) return;
+            let html = '';
+            videos.forEach((video, idx) => {
+                const thumbnail = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
+                html += `
+                    <div class="video-card-animate video-thumbnail relative group overflow-hidden rounded-lg bg-gray-200 cursor-pointer transform transition h-32 border border-gray-300"
+                         data-video-id="${video.id}"
+                         data-video-title="${video.title}"
+                         style="animation-delay: ${idx * 100}ms">
+                        <img
+                            src="${thumbnail}"
+                            alt="${video.title}"
+                            class="w-full h-full object-cover group-hover:opacity-80 transition"
+                            onerror="this.parentElement.style.background='#e5e7eb'; this.style.display='none';"
+                            loading="lazy"
+                        />
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-30">
+                            <div class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2">▶</div>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-2">
+                            <p class="text-white text-xs font-medium line-clamp-2">${video.title}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            videosContainer.innerHTML = html;
+            document.querySelectorAll(`#videos-container-${tabIndex} .video-thumbnail`).forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    playVideo(this);
+                });
+            });
+        }
+
+        function playVideo(element) {
+            playVideoInModal(element.dataset.videoId, element.dataset.videoTitle);
+        }
+
+        async function playVideoInModal(videoId, title) {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('modal-video');
+            const spinner = document.getElementById('loading-spinner');
+            const titleEl = document.getElementById('modal-title');
+            modal.style.display = 'flex';
+            spinner.style.display = 'flex';
+            titleEl.textContent = title;
+            try {
+                const response = await fetch(`/video/${videoId}`);
+                const data = await response.json();
+                if (data.error) {
+                    spinner.innerHTML = `<div class="text-white text-center"><p class="text-lg mb-2">Error loading video</p><p class="text-sm text-red-400">${data.error}</p></div>`;
+                    return;
+                }
+                video.src = data.url;
+                video.play();
+                spinner.style.display = 'none';
+            } catch (error) {
+                spinner.innerHTML = `<div class="text-white text-center"><p class="text-lg mb-2">Error loading video</p><p class="text-sm text-red-400">${error.message}</p></div>`;
+            }
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('modal-video');
+            modal.style.display = 'none';
+            video.pause();
+            video.src = '';
+        }
+
+        async function deleteInterest(text) {
+            if (!confirm(`Delete "${text}"?`)) return;
+            try {
+                const response = await fetch(`/delete-interest/${encodeURIComponent(text)}`, { method: 'POST' });
+                if (response.ok) {
+                    loadInterests();
+                    document.getElementById('videos-grid').innerHTML = '<div class="text-gray-500 text-center py-12">Select an area of interest to explore insights and content</div>';
+                }
+            } catch (error) {
+                console.error('Error deleting interest:', error);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeVideoModal();
+        });
+
+        document.addEventListener('htmx:afterSwap', () => {
+            loadInterests();
+        });
+
+        setInterval(async () => {
+            try {
+                const [queriesRes, resultsRes] = await Promise.all([
+                    fetch('/api/queries'),
+                    fetch('/api/results')
+                ]);
+                document.querySelectorAll('[data-text]').forEach(async item => {
+                    const interestText = item.getAttribute('data-text');
+                    const statusInfo = await getInterestStatus(interestText);
+                    const statusEl = item.querySelector('p:last-child');
+                    if (statusEl) {
+                        statusEl.textContent = `${statusInfo.icon} ${statusInfo.text}`;
+                    }
+                });
+            } catch (error) {
+                console.error('Error updating status:', error);
+            }
+        }, 5000);
+
+        loadInterests();
+    </script>
+</body>
+</html>

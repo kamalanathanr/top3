@@ -1,0 +1,53 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-16 16:37:00
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+1  Vietnam only (2 cities)           6       2026-10-16 - 2026-10-22 INR  240,252
+
+CHEAPEST: Vietnam only (2 cities) - INR 240,252 for 4 travellers, 6 nights
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Vietnam only (2 cities)
+   Days: Phu Quoc (PQC) 3n, Ho Chi Minh City (SGN) 3n
+   2026-10-16  BLR -> PQC   AirAsia Berhad        23:25-15:30 14h 35m  1 stop via KUL       INR 28,714
+        flight AK 52, AK 547
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  PQC -> SGN   VietJet Air           13:00-14:00 1h 00m   non-stop             INR 2,839
+        flight VJ 338
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-SGN-19/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-22  SGN -> BLR   Thai Airways          10:05-23:55 15h 20m  1 stop via BKK       INR 28,510
+        flight TG 551, TG 325
+        book: https://www.makemytrip.com/flight/search?itinerary=SGN-BLR-22/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 60,063   x 4 = INR 240,252
+
+2. Egypt only (2 cities)   [INCOMPLETE]
+   Days: Cairo (CAI) 4n, Hurghada (HRG) 3n
+   ! no flights for: CAI->HRG 2026-10-20, HRG->BLR 2026-10-23
+   2026-10-16  BLR -> CAI   Swiss                 19:00-17:15 24h 45m  2 stops via BOM,ZRH  INR 101,814
+        flight LX 9869, LX 155
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-20  CAI -> HRG   NO FLIGHT FOUND
+   2026-10-23  HRG -> BLR   NO FLIGHT FOUND
+
+3. Vietnam -> Egypt   [INCOMPLETE]
+   ! needs at least 10 nights, window allows 7
+
+4. Egypt -> Vietnam   [INCOMPLETE]
+   ! needs at least 10 nights, window allows 7
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

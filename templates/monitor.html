@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Monitor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .btn-primary {
+            @apply px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition;
+        }
+        .nav-link {
+            @apply text-gray-700 hover:text-blue-600 font-medium transition;
+        }
+        .card {
+            @apply bg-white rounded-lg shadow-sm border border-gray-200;
+        }
+        .stat-card {
+            @apply card p-6;
+        }
+        .status-badge {
+            @apply inline-block px-3 py-1 rounded-full text-sm font-medium;
+        }
+        .status-pending { @apply bg-yellow-100 text-yellow-800; }
+        .status-running { @apply bg-blue-100 text-blue-800; }
+        .status-done { @apply bg-green-100 text-green-800; }
+        .status-error { @apply bg-red-100 text-red-800; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <!-- Navigation Bar -->
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Header -->
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-blue-700 mb-3">Query Monitor</h2>
+                <p class="text-lg text-gray-600">Track the status and progress of your AI queries in real-time</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card">
+                    <p class="text-gray-600 text-sm font-medium mb-2">Queue Depth</p>
+                    <p class="text-3xl font-bold text-gray-900" id="queue-depth">-</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-gray-600 text-sm font-medium mb-2">Active Queries</p>
+                    <p class="text-3xl font-bold text-gray-900" id="active-queries">-</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-gray-600 text-sm font-medium mb-2">Completed</p>
+                    <p class="text-3xl font-bold text-gray-900" id="completed-queries">-</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-gray-600 text-sm font-medium mb-2">Success Rate</p>
+                    <p class="text-3xl font-bold text-gray-900" id="success-rate">-</p>
+                </div>
+            </div>
+
+            <!-- Queries Table -->
+            <div class="card shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200 bg-gray-50">
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Interest</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Query Type</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Created</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queries-table" class="divide-y divide-gray-200">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allQueries = [];
+        let userTimezone = 'Asia/Kolkata';
+
+        async function loadUserTimezone() {
+            try {
+                const response = await fetch('/api/profile/timezone');
+                const data = await response.json();
+                userTimezone = data.timezone || 'Asia/Kolkata';
+            } catch (error) {
+                console.error('Error loading timezone:', error);
+            }
+        }
+
+        function formatDateSync(isoString) {
+            if (!isoString) return '-';
+            // Simple sync format - will be converted to user timezone server-side
+            const date = new Date(isoString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function formatDateAsync(isoString) {
+            if (!isoString) return '-';
+            try {
+                const response = await fetch(`/api/profile/convert-timestamp?utc_timestamp=${encodeURIComponent(isoString)}`);
+                const data = await response.json();
+                return data.formatted || formatDateSync(isoString);
+            } catch (error) {
+                return formatDateSync(isoString);
+            }
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': '<span class="status-badge status-pending">Pending</span>',
+                'running': '<span class="status-badge status-running">Running</span>',
+                'done': '<span class="status-badge status-done">Done</span>',
+                'cancelled': '<span class="status-badge status-error">Cancelled</span>',
+                'error': '<span class="status-badge status-error">Error</span>',
+                'paused': '<span class="status-badge status-pending">Paused</span>'
+            };
+            return badges[status] || '<span class="status-badge status-error">Unknown</span>';
+        }
+
+        async function loadQueries() {
+            try {
+                const response = await fetch('/api/queries');
+                const data = await response.json();
+                allQueries = data.queries || [];
+                await renderQueriesTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading queries:', error);
+            }
+        }
+
+        function updateStats() {
+            const pending = allQueries.filter(q => q.status === 'pending').length;
+            const running = allQueries.filter(q => q.status === 'running').length;
+            const done = allQueries.filter(q => q.status === 'done').length;
+            const error = allQueries.filter(q => q.status === 'error').length;
+
+            document.getElementById('queue-depth').textContent = pending.toString();
+            document.getElementById('active-queries').textContent = running.toString();
+            document.getElementById('completed-queries').textContent = done.toString();
+
+            const total = allQueries.length;
+            const successRate = total > 0 ? ((done / total) * 100).toFixed(1) : '0';
+            document.getElementById('success-rate').textContent = successRate + '%';
+        }
+
+        async function renderQueriesTable() {
+            const table = document.getElementById('queries-table');
+            let html = '';
+
+            for (const query of allQueries) {
+                const interests = query.user_interests ? query.user_interests.join(', ') : '-';
+                const queryType = query.query_type ? (query.query_type.charAt(0).toUpperCase() + query.query_type.slice(1)) : 'AI';
+                const formattedDate = await formatDateAsync(query.created_at);
+
+                html += `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">${interests}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${queryType}</td>
+                        <td class="px-6 py-4 text-sm">${getStatusBadge(query.status)}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${formattedDate}</td>
+                        <td class="px-6 py-4 text-sm flex gap-2">
+                            ${query.status === 'pending' || query.status === 'running' ? `
+                                <button onclick="pauseQuery('${query._id}')" class="px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded text-xs font-medium transition">Pause</button>
+                                <button onclick="cancelQuery('${query._id}')" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded text-xs font-medium transition">Cancel</button>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `;
+            }
+            table.innerHTML = html;
+        }
+
+        async function pauseQuery(queryId) {
+            try {
+                const response = await fetch(`/api/queries/${queryId}/pause`, { method: 'POST' });
+                if (response.ok) {
+                    loadQueries();
+                }
+            } catch (error) {
+                console.error('Error pausing query:', error);
+            }
+        }
+
+        async function cancelQuery(queryId) {
+            if (!confirm('Cancel this query?')) return;
+            try {
+                const response = await fetch(`/api/queries/${queryId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    loadQueries();
+                }
+            } catch (error) {
+                console.error('Error cancelling query:', error);
+            }
+        }
+
+        (async () => {
+            await loadUserTimezone();
+            await loadQueries();
+            setInterval(loadQueries, 3000);
+        })();
+    </script>
+</body>
+</html>

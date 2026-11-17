@@ -1,0 +1,44 @@
+
+
+Let’s do following changes.
+
+
+MongoDB:
+
+Will store following details
+1. Area of interest 
+    1. top 3 results for each category
+2. Queries
+    1. will have standard AI-Query from template, user interests, this will be text, User Id(Kamal (hardcoded for now))
+3. Query Results
+    1. Output will be json format, time taken to execute, User ID, URL references, completed date timestamp
+4. Query Template
+    1. International Travel
+        1. Query best international travel, that is suitable for user profile, geo location, age, solo or family, based on users interests, limit the results to 5
+    2. Domestic Travel
+        1. Query best Domestic travel, that is suitable for user profile, limit the results to 5
+    3. Ironman
+        1. list the ironman events, location, date, cost, , limit the results to 5
+
+Redis:
+Message Queuing will be used to take user input queries, and get it executed by executor
+1. Execution type- (AI-Simple query, AI- detailed research, Google- Query, Youtube Query, Scrape execution), AI Model (regular, advanced), User query, user id, time received, priority, status
+
+Executor:
+this will be a Python celery based framework, that will pick the events or queues from redis and get it executed.
+1. If the execution type is AI related
+    1. call for Claude code Executor
+        1. Pickup the input from Queries MongoDB table
+        2. Pickup the AI-Query template and append the user interests an update the query table with user interests
+        3. Executes the query with Claude code internally, note NO-API tokes will be used
+        4. Pickup the output and store in MongoDB table - Query Results
+2. for other execution types we will add the functionality later
+
+
+
+Web Pages:
+1. Home page we will keep as it for now
+2. Have a dedicated page to monitor the Redis progress and executor progress, have a pause/delete button to pause the executor progress, note whatever the action we take on button controls, output should capture it if its cancelled, paused, successfully completed
+3. Provide a web page to view/edit/update Query template
+4. Provide a web page to view/edit/update Query Results
+5. Modify the area of interest list page to pick up the values from Query Results

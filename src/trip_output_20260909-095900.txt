@@ -1,0 +1,182 @@
+==============================================================================
+TRIP PLAN - country comparison
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Round trip      : yes
+Generated       : 2026-09-09 09:59:00
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  COUNTRY     CITY                DATES                   NIGHTS         TOTAL
+1  Vietnam     Ho Chi Minh City    2026-10-18 - 2026-10-25 7       INR  154,984
+2  Vietnam     Hanoi               2026-10-17 - 2026-10-24 7       INR  187,184
+3  Egypt       Cairo               2026-10-17 - 2026-10-24 7       INR  188,348
+4  Cambodia    Siem Reap           2026-10-18 - 2026-10-25 7       INR  243,012
+5  Egypt       Hurghada            2026-10-18 - 2026-10-24 6       INR  347,116
+6  Australia   Melbourne           2026-10-18 - 2026-10-25 7       INR  348,224
+7  Australia   Sydney              2026-10-17 - 2026-10-24 7       INR  410,044
+
+INCOMPLETE - NOT COMPARABLE WITH THE ABOVE
+These have no return leg priced, so the total is outbound only and
+understates the real trip cost. Re-run with a higher max_searches.
+   Cambodia    Phnom Penh          2026-10-18 outbound only    INR  100,492
+
+BEST VALUE: Vietnam (Ho Chi Minh City) - INR 154,984 for 4 travellers
+That is INR 255,060 less than the most expensive option priced.
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Vietnam - Ho Chi Minh City (SGN)
+   Main southern hub, best connected from India
+   7 nights, 2026-10-18 to 2026-10-25
+   outbound  2026-10-18  VietJet Air         23:35-06:00 4h 55m   non-stop               INR 18,619
+   return    2026-10-25  VietJet Air, Batik  07:35-22:20 16h 15m  1 stop via KUL         INR 20,127
+   per adult: INR 38,746  (outbound + return)
+   x 4 travellers: INR 154,984
+
+2. Vietnam - Hanoi (HAN)
+   Capital, gateway to Ha Long Bay and the north
+   7 nights, 2026-10-17 to 2026-10-24
+   outbound  2026-10-17  Air India Express,  06:10-05:55 22h 15m  1 stop via AMD         INR 21,241
+   return    2026-10-24  Akasa Air           13:30-23:35 11h 35m  1 stop via BOM         INR 25,555
+   per adult: INR 46,796  (outbound + return)
+   x 4 travellers: INR 187,184
+
+3. Egypt - Cairo (CAI)
+   Pyramids, Egyptian Museum, main hub
+   7 nights, 2026-10-17 to 2026-10-24
+   outbound  2026-10-17  Air Arabia          04:25-10:45 8h 50m   1 stop via SHJ         INR 27,748
+   return    2026-10-24  Saudia, IndiGo      18:10-22:05 25h 25m  3 stops via JED,BOM,GOI INR 19,339
+   per adult: INR 47,087  (outbound + return)
+   x 4 travellers: INR 188,348
+
+4. Cambodia - Siem Reap (SAI)
+   Angkor Wat
+   7 nights, 2026-10-18 to 2026-10-25
+   outbound  2026-10-18  Thai AirAsia        23:20-16:10 15h 20m  1 stop via DMK         INR 30,772
+   return    2026-10-25  Bangkok Airways, A  19:25-15:50 21h 55m  2 stops via BKK,DEL    INR 29,981
+   per adult: INR 60,753  (outbound + return)
+   x 4 travellers: INR 243,012
+
+5. Egypt - Hurghada (HRG)
+   Red Sea diving and resorts
+   6 nights, 2026-10-18 to 2026-10-24
+   outbound  2026-10-18  Gulf Air, EgyptAir  22:20-09:25 13h 35m  2 stops via BAH,CAI    INR 45,027
+   return    2026-10-24  EgyptAir, Gulf Air  22:30-04:15 27h 15m  3 stops via CAI,RUH,BAH INR 41,752
+   per adult: INR 86,779  (outbound + return)
+   x 4 travellers: INR 347,116
+
+6. Australia - Melbourne (MEL)
+   Culture, coffee, Great Ocean Road
+   7 nights, 2026-10-18 to 2026-10-25
+   outbound  2026-10-18  VietJet Air         23:35-23:35 18h 30m  1 stop via SGN         INR 44,654
+   return    2026-10-25  IndiGo              16:55-06:25 19h 00m  1 stop via SIN         INR 42,402
+   per adult: INR 87,056  (outbound + return)
+   x 4 travellers: INR 348,224
+
+7. Australia - Sydney (SYD)
+   Main gateway, harbour and beaches
+   7 nights, 2026-10-17 to 2026-10-24
+   outbound  2026-10-17  Air India           20:00-20:05 18h 35m  1 stop via DEL         INR 57,418
+   return    2026-10-24  Scoot, Batik Air M  14:00-22:20 37h 50m  2 stops via SIN,KUL    INR 45,093
+   per adult: INR 102,511  (outbound + return)
+   x 4 travellers: INR 410,044
+
+8. Cambodia - Phnom Penh (PNH)   [OUTBOUND ONLY]
+   Capital
+   8 nights, 2026-10-18 to n/a
+   outbound  2026-10-18  Thai AirAsia        23:20-17:45 16h 55m  1 stop via DMK         INR 25,123
+   per adult: INR 25,123  (outbound + return)
+   x 4 travellers: INR 100,492
+   ! No return flights found; outbound cost only.
+
+------------------------------------------------------------------------------
+ALL OPTIONS SEARCHED
+------------------------------------------------------------------------------
+Every date priced for each destination. '<<' marks the combination
+chosen above. Blank fare = no flight found for that date.
+A cheaper fare may go unpicked if the pairing breaks the 5-7 night limit.
+
+Vietnam - Ho Chi Minh City (SGN)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Srilankan Airlines, V 23h 25m   2 stops   INR   26,754
+   outbound  2026-10-17   Air India Express, Vi 15h 45m   2 stops   INR   26,193
+   outbound  2026-10-18   VietJet Air           4h 55m    non-stop  INR   18,619 <<
+   return    2026-10-24   VietJet Air, Thai Air 39h 10m   2 stops   INR   40,491
+   return    2026-10-25   VietJet Air, Batik Ai 16h 15m   1 stop    INR   20,127 <<
+   return    2026-10-26   VietJet Air           4h 50m    non-stop  INR   17,919
+
+Vietnam - Hanoi (HAN)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Air India Express, Vi 8h 55m    1 stop    INR   25,311
+   outbound  2026-10-17   Air India Express, Vi 22h 15m   1 stop    INR   21,241 <<
+   outbound  2026-10-18   IndiGo                11h 20m   1 stop    INR   22,266
+   return    2026-10-24   Akasa Air             11h 35m   1 stop    INR   25,555 <<
+   return    2026-10-25   IndiGo                10h 30m   1 stop    INR   24,594
+   return    2026-10-26   VietJet Air, Air Indi 17h 50m   1 stop    INR   15,975
+
+Australia - Sydney (SYD)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Air India             23h 05m   1 stop    INR   56,316
+   outbound  2026-10-17   Air India             18h 35m   1 stop    INR   57,418 <<
+   outbound  2026-10-18   IndiGo                14h 20m   1 stop    INR   62,427
+   return    2026-10-24   Scoot, Batik Air Mala 37h 50m   2 stops   INR   45,093 <<
+   return    2026-10-25   Scoot, IndiGo         20h 50m   2 stops   INR   49,669
+   return    2026-10-26   Thai Airways          14h 10m   1 stop    INR   52,379
+
+Australia - Melbourne (MEL)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Air India             19h 30m   1 stop    INR   56,503
+   outbound  2026-10-17   Air India             16h 40m   1 stop    INR   57,605
+   outbound  2026-10-18   VietJet Air           18h 30m   1 stop    INR   44,654 <<
+   return    2026-10-24   IndiGo                19h 00m   1 stop    INR   46,210
+   return    2026-10-25   IndiGo                19h 00m   1 stop    INR   42,402 <<
+   return    2026-10-26   AirAsia X, AirAsia Be 22h 00m   1 stop    INR   31,614
+
+Egypt - Cairo (CAI)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Oman Air              10h 35m   1 stop    INR   26,972
+   outbound  2026-10-17   Air Arabia            8h 50m    1 stop    INR   27,748 <<
+   outbound  2026-10-18   Air Arabia            8h 50m    1 stop    INR   27,748
+   return    2026-10-24   Saudia, IndiGo        25h 25m   3 stops   INR   19,339 <<
+   return    2026-10-25   Kuwait Airways        12h 05m   1 stop    INR   19,436
+   return    2026-10-26   Kuwait Airways        12h 05m   1 stop    INR   19,436
+
+Egypt - Hurghada (HRG)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Gulf Air, EgyptAir    14h 25m   2 stops   INR   45,505
+   outbound  2026-10-17   Lufthansa             27h 15m   2 stops   INR  117,246
+   outbound  2026-10-18   Gulf Air, EgyptAir    13h 35m   2 stops   INR   45,027 <<
+   return    2026-10-24   EgyptAir, Gulf Air    27h 15m   3 stops   INR   41,752 <<
+   return    2026-10-25   EgyptAir, Emirates    17h 05m   2 stops   INR   58,556
+   return    2026-10-26   EgyptAir, Gulf Air    19h 45m   3 stops   INR   48,826
+
+Cambodia - Siem Reap (SAI)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Thai AirAsia          10h 20m   1 stop    INR   37,379
+   outbound  2026-10-17   Air India, Bangkok Ai 15h 05m   2 stops   INR   37,091
+   outbound  2026-10-18   Thai AirAsia          15h 20m   1 stop    INR   30,772 <<
+   return    2026-10-24   Bangkok Airways, Air  13h 40m   2 stops   INR   41,399
+   return    2026-10-25   Bangkok Airways, Air  21h 55m   2 stops   INR   29,981 <<
+   return    2026-10-26   Bangkok Airways, Air  13h 50m   2 stops   INR   29,631
+
+PNH (PNH)
+   DIRECTION DATE         AIRLINE               DURATION  STOPS       FARE/ADULT
+   outbound  2026-10-16   Thai AirAsia          16h 55m   1 stop    INR   32,116
+   outbound  2026-10-17   - no flights found -  
+   outbound  2026-10-18   Thai AirAsia          16h 55m   1 stop    INR   25,123
+   return    2026-10-24   - no flights found -  
+   return    2026-10-25   - no flights found -  
+   return    2026-10-26   - no flights found -  
+
+48 legs priced across 8 destinations (48 live searches, 0 from cache).
+
+==============================================================================
+Prices are what MakeMyTrip listed at generation time and move daily.
+==============================================================================

@@ -1,0 +1,385 @@
+==============================================================================
+TRIP PLAN - country and city combinations
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Generated       : 2026-09-15 17:40:09
+
+------------------------------------------------------------------------------
+RANKED BY TOTAL FLIGHT COST FOR THE PARTY
+------------------------------------------------------------------------------
+#  ITINERARY                         NIGHTS  DATES                          TOTAL
+1  Singapore only (1 city)           3       2026-10-16 - 2026-10-19 INR  146,392
+2  Vietnam only (1 city)             3       2026-10-18 - 2026-10-21 INR  202,556
+3  Egypt only (1 city)               4       2026-10-18 - 2026-10-22 INR  236,692
+4  Indonesia -> Singapore            7       2026-10-18 - 2026-10-25 INR  252,228
+5  Singapore -> Indonesia            7       2026-10-18 - 2026-10-25 INR  256,148
+6  Indonesia only (1 city)           5       2026-10-18 - 2026-10-23 INR  276,260
+7  Singapore -> Indonesia -> Vietnam 7       2026-10-16 - 2026-10-23 INR  302,708
+8  Indonesia -> Vietnam              7       2026-10-16 - 2026-10-23 INR  364,864
+
+CHEAPEST: Singapore only (1 city) - INR 146,392 for 4 travellers, 3 nights
+Adding a second country costs INR 105,836 more than the best single-country trip (Indonesia -> Singapore vs Singapore only (1 city)).
+
+------------------------------------------------------------------------------
+DETAIL
+------------------------------------------------------------------------------
+
+1. Singapore only (1 city)
+   Days: Singapore (SIN) 3n
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  SIN -> BLR   IndiGo                04:40-20:10 18h 00m  1 stop via MAA       INR 18,844
+        flight 6E 1002, 6E 189
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-19/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 36,598   x 4 = INR 146,392
+
+2. Vietnam only (1 city)
+   Days: Phu Quoc (PQC) 3n
+   2026-10-18  BLR -> PQC   Thai AirAsia          23:20-13:20 12h 30m  1 stop via DMK       INR 26,567
+        flight FD 138, FD 660
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-21  PQC -> BLR   VietJet Air           10:50-22:35 13h 15m  1 stop via SGN       INR 24,072
+        flight VJ 324, VJ 1801
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-BLR-21/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 50,639   x 4 = INR 202,556
+
+3. Egypt only (1 city)
+   Days: Cairo (CAI) 4n
+   2026-10-18  BLR -> CAI   Oman Air              09:55-18:00 10h 35m  1 stop via MCT       INR 28,973
+        flight WY 282, WY 405 | cabin 1 PCS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-22  CAI -> BLR   Air Arabia            16:25-03:45 8h 50m   1 stop via SHJ       INR 30,200
+        flight G9 625, G9 496
+        book: https://www.makemytrip.com/flight/search?itinerary=CAI-BLR-22/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 59,173   x 4 = INR 236,692
+
+4. Indonesia -> Singapore
+   Days: Denpasar (Bali) (DPS) 5n, Singapore (SIN) 2n
+   2026-10-18  BLR -> DPS   Batik Air Malaysia    23:20-12:00 10h 10m  1 stop via KUL       INR 30,586
+        flight OD 242, OD 306 | cabin 7 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-23  DPS -> SIN   Scoot                 14:05-16:55 2h 50m   non-stop             INR 10,810
+        flight TR 289
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-SIN-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-25  SIN -> BLR   IndiGo                22:30-08:10 12h 10m  1 stop via MAA       INR 21,661
+        flight 6E 1344, 6E 6081 | cabin 7 KGS/Adult | check-in 30 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 63,057   x 4 = INR 252,228
+
+5. Singapore -> Indonesia
+   Days: Singapore (SIN) 2n, Denpasar (Bali) (DPS) 5n
+   2026-10-18  BLR -> SIN   IndiGo                19:35-16:40 18h 35m  1 stop via TRZ       INR 17,688
+        flight 6E 7165, 6E 1023
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-20  SIN -> DPS   Scoot                 21:15-00:05 2h 50m   non-stop             INR 7,927
+        flight TR 346
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-DPS-20/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-25  DPS -> BLR   AirAsia Berhad        13:05-22:45 12h 10m  1 stop via KUL       INR 38,422
+        flight AK 365, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-25/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 64,037   x 4 = INR 256,148
+
+6. Indonesia only (1 city)
+   Days: Denpasar (Bali) (DPS) 5n
+   2026-10-18  BLR -> DPS   Batik Air Malaysia    23:20-12:00 10h 10m  1 stop via KUL       INR 30,586
+        flight OD 242, OD 306 | cabin 7 KGS/Adult | check-in 20 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-23  DPS -> BLR   AirAsia Berhad        15:25-22:45 9h 50m   1 stop via KUL       INR 38,479
+        flight AK 377, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 69,065   x 4 = INR 276,260
+
+7. Singapore -> Indonesia -> Vietnam
+   Days: Singapore (SIN) 2n, Denpasar (Bali) (DPS) 3n, Phu Quoc (PQC) 2n
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  SIN -> DPS   Scoot                 21:15-00:05 2h 50m   non-stop             INR 11,037
+        flight TR 346 | cabin 10 KGS/Adult | check-in 0 KGS/Adult
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-DPS-18/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-21  DPS -> PQC   Scoot                 19:45-17:40 22h 55m  1 stop via SIN       INR 23,382
+        flight TR 283, TR 524
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-PQC-21/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-23  PQC -> BLR   Thai AirAsia          13:50-22:40 10h 20m  1 stop via DMK       INR 23,504
+        flight FD 661, FD 137
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 75,677   x 4 = INR 302,708
+
+8. Indonesia -> Vietnam
+   Days: Denpasar (Bali) (DPS) 5n, Phu Quoc (PQC) 2n
+   2026-10-16  BLR -> DPS   IndiGo                21:15-12:30 12h 45m  1 stop via SIN       INR 44,330
+        flight 6E 1247, 6E 3656
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-21  DPS -> PQC   Scoot                 19:45-17:40 22h 55m  1 stop via SIN       INR 23,382
+        flight TR 283, TR 524
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-PQC-21/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-23  PQC -> BLR   Thai AirAsia          13:50-22:40 10h 20m  1 stop via DMK       INR 23,504
+        flight FD 661, FD 137
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   per adult: INR 91,216   x 4 = INR 364,864
+
+9. Vietnam -> Indonesia   [INCOMPLETE]
+   Days: Phu Quoc (PQC) 2n, Denpasar (Bali) (DPS) 5n
+   ! no flights for: PQC->DPS 2026-10-18
+   2026-10-16  BLR -> PQC   Thai AirAsia          23:20-17:00 16h 10m  1 stop via DMK       INR 34,312
+        flight FD 138, FD 662
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  PQC -> DPS   NO FLIGHT FOUND
+   2026-10-23  DPS -> BLR   AirAsia Berhad        15:25-22:45 9h 50m   1 stop via KUL       INR 38,479
+        flight AK 377, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+10. Indonesia -> Egypt   [INCOMPLETE]
+   Days: Denpasar (Bali) (DPS) 4n, Cairo (CAI) 3n
+   ! no flights for: DPS->CAI 2026-10-20, CAI->BLR 2026-10-23
+   2026-10-16  BLR -> DPS   IndiGo                21:15-12:30 12h 45m  1 stop via SIN       INR 44,330
+        flight 6E 1247, 6E 3656
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-20  DPS -> CAI   NO FLIGHT FOUND
+   2026-10-23  CAI -> BLR   NO FLIGHT FOUND
+
+11. Egypt -> Indonesia   [INCOMPLETE]
+   Days: Cairo (CAI) 3n, Denpasar (Bali) (DPS) 4n
+   ! no flights for: CAI->DPS 2026-10-19
+   2026-10-16  BLR -> CAI   Gulf Air              05:45-15:35 12h 20m  1 stop via BAH       INR 29,687
+        flight GF 283, GF 71
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  CAI -> DPS   NO FLIGHT FOUND
+   2026-10-23  DPS -> BLR   AirAsia Berhad        15:25-22:45 9h 50m   1 stop via KUL       INR 38,479
+        flight AK 377, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+12. Singapore -> Vietnam   [INCOMPLETE]
+   Days: Singapore (SIN) 3n, Phu Quoc (PQC) 3n
+   ! no flights for: SIN->PQC 2026-10-19, PQC->BLR 2026-10-22
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  SIN -> PQC   NO FLIGHT FOUND
+   2026-10-22  PQC -> BLR   NO FLIGHT FOUND
+
+13. Vietnam -> Singapore   [INCOMPLETE]
+   Days: Phu Quoc (PQC) 3n, Singapore (SIN) 3n
+   ! no flights for: PQC->SIN 2026-10-19, SIN->BLR 2026-10-22
+   2026-10-16  BLR -> PQC   Thai AirAsia          23:20-17:00 16h 10m  1 stop via DMK       INR 34,312
+        flight FD 138, FD 662
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  PQC -> SIN   NO FLIGHT FOUND
+   2026-10-22  SIN -> BLR   NO FLIGHT FOUND
+
+14. Singapore -> Egypt   [INCOMPLETE]
+   Days: Singapore (SIN) 3n, Cairo (CAI) 4n
+   ! no flights for: SIN->CAI 2026-10-19, CAI->BLR 2026-10-23
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  SIN -> CAI   NO FLIGHT FOUND
+   2026-10-23  CAI -> BLR   NO FLIGHT FOUND
+
+15. Egypt -> Singapore   [INCOMPLETE]
+   Days: Cairo (CAI) 4n, Singapore (SIN) 3n
+   ! no flights for: CAI->SIN 2026-10-20
+   2026-10-16  BLR -> CAI   Gulf Air              05:45-15:35 12h 20m  1 stop via BAH       INR 29,687
+        flight GF 283, GF 71
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-20  CAI -> SIN   NO FLIGHT FOUND
+   2026-10-23  SIN -> BLR   IndiGo                04:40-17:20 15h 10m  1 stop via MAA       INR 20,578
+        flight 6E 1002, 6E 847
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+16. Vietnam -> Egypt   [INCOMPLETE]
+   Days: Phu Quoc (PQC) 3n, Cairo (CAI) 4n
+   ! no flights for: PQC->CAI 2026-10-19, CAI->BLR 2026-10-23
+   2026-10-16  BLR -> PQC   Thai AirAsia          23:20-17:00 16h 10m  1 stop via DMK       INR 34,312
+        flight FD 138, FD 662
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  PQC -> CAI   NO FLIGHT FOUND
+   2026-10-23  CAI -> BLR   NO FLIGHT FOUND
+
+17. Egypt -> Vietnam   [INCOMPLETE]
+   Days: Cairo (CAI) 4n, Phu Quoc (PQC) 3n
+   ! no flights for: CAI->PQC 2026-10-20
+   2026-10-16  BLR -> CAI   Gulf Air              05:45-15:35 12h 20m  1 stop via BAH       INR 29,687
+        flight GF 283, GF 71
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-20  CAI -> PQC   NO FLIGHT FOUND
+   2026-10-23  PQC -> BLR   Thai AirAsia          13:50-22:40 10h 20m  1 stop via DMK       INR 23,504
+        flight FD 661, FD 137
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+18. Indonesia -> Singapore -> Vietnam   [INCOMPLETE]
+   Days: Denpasar (Bali) (DPS) 3n, Singapore (SIN) 2n, Phu Quoc (PQC) 2n
+   ! no flights for: DPS->SIN 2026-10-19, SIN->PQC 2026-10-21
+   2026-10-16  BLR -> DPS   IndiGo                21:15-12:30 12h 45m  1 stop via SIN       INR 44,330
+        flight 6E 1247, 6E 3656
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  DPS -> SIN   NO FLIGHT FOUND
+   2026-10-21  SIN -> PQC   NO FLIGHT FOUND
+   2026-10-23  PQC -> BLR   Thai AirAsia          13:50-22:40 10h 20m  1 stop via DMK       INR 23,504
+        flight FD 661, FD 137
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+19. Indonesia -> Vietnam -> Singapore   [INCOMPLETE]
+   Days: Denpasar (Bali) (DPS) 3n, Phu Quoc (PQC) 2n, Singapore (SIN) 2n
+   ! no flights for: DPS->PQC 2026-10-19, PQC->SIN 2026-10-21
+   2026-10-16  BLR -> DPS   IndiGo                21:15-12:30 12h 45m  1 stop via SIN       INR 44,330
+        flight 6E 1247, 6E 3656
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-DPS-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  DPS -> PQC   NO FLIGHT FOUND
+   2026-10-21  PQC -> SIN   NO FLIGHT FOUND
+   2026-10-23  SIN -> BLR   IndiGo                04:40-17:20 15h 10m  1 stop via MAA       INR 20,578
+        flight 6E 1002, 6E 847
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+20. Singapore -> Vietnam -> Indonesia   [INCOMPLETE]
+   Days: Singapore (SIN) 2n, Phu Quoc (PQC) 2n, Denpasar (Bali) (DPS) 3n
+   ! no flights for: SIN->PQC 2026-10-18, PQC->DPS 2026-10-20
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  SIN -> PQC   NO FLIGHT FOUND
+   2026-10-20  PQC -> DPS   NO FLIGHT FOUND
+   2026-10-23  DPS -> BLR   AirAsia Berhad        15:25-22:45 9h 50m   1 stop via KUL       INR 38,479
+        flight AK 377, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+21. Vietnam -> Indonesia -> Singapore   [INCOMPLETE]
+   Days: Phu Quoc (PQC) 2n, Denpasar (Bali) (DPS) 3n, Singapore (SIN) 2n
+   ! no flights for: PQC->DPS 2026-10-18
+   2026-10-16  BLR -> PQC   Thai AirAsia          23:20-17:00 16h 10m  1 stop via DMK       INR 34,312
+        flight FD 138, FD 662
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  PQC -> DPS   NO FLIGHT FOUND
+   2026-10-21  DPS -> SIN   Scoot                 19:45-22:40 2h 55m   non-stop             INR 8,045
+        flight TR 283
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-SIN-21/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-23  SIN -> BLR   IndiGo                04:40-17:20 15h 10m  1 stop via MAA       INR 20,578
+        flight 6E 1002, 6E 847
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+22. Vietnam -> Singapore -> Indonesia   [INCOMPLETE]
+   Days: Phu Quoc (PQC) 2n, Singapore (SIN) 2n, Denpasar (Bali) (DPS) 3n
+   ! no flights for: PQC->SIN 2026-10-18
+   2026-10-16  BLR -> PQC   Thai AirAsia          23:20-17:00 16h 10m  1 stop via DMK       INR 34,312
+        flight FD 138, FD 662
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  PQC -> SIN   NO FLIGHT FOUND
+   2026-10-20  SIN -> DPS   Scoot                 21:15-00:05 2h 50m   non-stop             INR 7,927
+        flight TR 346
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-DPS-20/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-23  DPS -> BLR   AirAsia Berhad        15:25-22:45 9h 50m   1 stop via KUL       INR 38,479
+        flight AK 377, AK 53
+        book: https://www.makemytrip.com/flight/search?itinerary=DPS-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+23. Indonesia -> Singapore -> Egypt   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+24. Indonesia -> Egypt -> Singapore   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+25. Singapore -> Indonesia -> Egypt   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+26. Singapore -> Egypt -> Indonesia   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+27. Egypt -> Indonesia -> Singapore   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+28. Egypt -> Singapore -> Indonesia   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+29. Indonesia -> Vietnam -> Egypt   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+30. Indonesia -> Egypt -> Vietnam   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+31. Vietnam -> Indonesia -> Egypt   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+32. Vietnam -> Egypt -> Indonesia   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+33. Egypt -> Indonesia -> Vietnam   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+34. Egypt -> Vietnam -> Indonesia   [INCOMPLETE]
+   ! needs at least 8 nights, window allows 7
+
+35. Singapore -> Vietnam -> Egypt   [INCOMPLETE]
+   Days: Singapore (SIN) 2n, Phu Quoc (PQC) 2n, Cairo (CAI) 3n
+   ! no flights for: SIN->PQC 2026-10-18, PQC->CAI 2026-10-20, CAI->BLR 2026-10-23
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  SIN -> PQC   NO FLIGHT FOUND
+   2026-10-20  PQC -> CAI   NO FLIGHT FOUND
+   2026-10-23  CAI -> BLR   NO FLIGHT FOUND
+
+36. Singapore -> Egypt -> Vietnam   [INCOMPLETE]
+   Days: Singapore (SIN) 2n, Cairo (CAI) 3n, Phu Quoc (PQC) 2n
+   ! no flights for: SIN->CAI 2026-10-18, CAI->PQC 2026-10-21
+   2026-10-16  BLR -> SIN   Air India Express     17:40-10:40 14h 30m  1 stop via TRZ       INR 17,754
+        flight IX 5306, IX 690
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-SIN-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  SIN -> CAI   NO FLIGHT FOUND
+   2026-10-21  CAI -> PQC   NO FLIGHT FOUND
+   2026-10-23  PQC -> BLR   Thai AirAsia          13:50-22:40 10h 20m  1 stop via DMK       INR 23,504
+        flight FD 661, FD 137
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+37. Vietnam -> Singapore -> Egypt   [INCOMPLETE]
+   Days: Phu Quoc (PQC) 2n, Singapore (SIN) 2n, Cairo (CAI) 3n
+   ! no flights for: PQC->SIN 2026-10-18, SIN->CAI 2026-10-20, CAI->BLR 2026-10-23
+   2026-10-16  BLR -> PQC   Thai AirAsia          23:20-17:00 16h 10m  1 stop via DMK       INR 34,312
+        flight FD 138, FD 662
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  PQC -> SIN   NO FLIGHT FOUND
+   2026-10-20  SIN -> CAI   NO FLIGHT FOUND
+   2026-10-23  CAI -> BLR   NO FLIGHT FOUND
+
+38. Vietnam -> Egypt -> Singapore   [INCOMPLETE]
+   Days: Phu Quoc (PQC) 2n, Cairo (CAI) 3n, Singapore (SIN) 2n
+   ! no flights for: PQC->CAI 2026-10-18, CAI->SIN 2026-10-21
+   2026-10-16  BLR -> PQC   Thai AirAsia          23:20-17:00 16h 10m  1 stop via DMK       INR 34,312
+        flight FD 138, FD 662
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-PQC-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-18  PQC -> CAI   NO FLIGHT FOUND
+   2026-10-21  CAI -> SIN   NO FLIGHT FOUND
+   2026-10-23  SIN -> BLR   IndiGo                04:40-17:20 15h 10m  1 stop via MAA       INR 20,578
+        flight 6E 1002, 6E 847
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+39. Egypt -> Singapore -> Vietnam   [INCOMPLETE]
+   Days: Cairo (CAI) 3n, Singapore (SIN) 2n, Phu Quoc (PQC) 2n
+   ! no flights for: CAI->SIN 2026-10-19, SIN->PQC 2026-10-21
+   2026-10-16  BLR -> CAI   Gulf Air              05:45-15:35 12h 20m  1 stop via BAH       INR 29,687
+        flight GF 283, GF 71
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  CAI -> SIN   NO FLIGHT FOUND
+   2026-10-21  SIN -> PQC   NO FLIGHT FOUND
+   2026-10-23  PQC -> BLR   Thai AirAsia          13:50-22:40 10h 20m  1 stop via DMK       INR 23,504
+        flight FD 661, FD 137
+        book: https://www.makemytrip.com/flight/search?itinerary=PQC-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+40. Egypt -> Vietnam -> Singapore   [INCOMPLETE]
+   Days: Cairo (CAI) 3n, Phu Quoc (PQC) 2n, Singapore (SIN) 2n
+   ! no flights for: CAI->PQC 2026-10-19, PQC->SIN 2026-10-21
+   2026-10-16  BLR -> CAI   Gulf Air              05:45-15:35 12h 20m  1 stop via BAH       INR 29,687
+        flight GF 283, GF 71
+        book: https://www.makemytrip.com/flight/search?itinerary=BLR-CAI-16/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+   2026-10-19  CAI -> PQC   NO FLIGHT FOUND
+   2026-10-21  PQC -> SIN   NO FLIGHT FOUND
+   2026-10-23  SIN -> BLR   IndiGo                04:40-17:20 15h 10m  1 stop via MAA       INR 20,578
+        flight 6E 1002, 6E 847
+        book: https://www.makemytrip.com/flight/search?itinerary=SIN-BLR-23/10/2026&tripType=O&paxType=A-4_C-0_I-0&cabinClass=E&lang=eng
+
+==============================================================================
+Links open MakeMyTrip's results for that leg and date - the fare shown
+is what was listed at generation time and moves daily.
+==============================================================================

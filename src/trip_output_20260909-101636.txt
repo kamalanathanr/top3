@@ -1,0 +1,29 @@
+==============================================================================
+TRIP PLAN - country comparison
+==============================================================================
+From            : BLR
+Travellers      : 4
+Window          : 2026-10-17 to 2026-10-25 (8 nights), flex +/-1d
+Nights allowed  : 5 to 7
+Round trip      : yes
+Generated       : 2026-09-09 10:16:36
+
+------------------------------------------------------------------------------
+NOT PRICED
+------------------------------------------------------------------------------
+  Vietnam (Ho Chi Minh City) no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+  Vietnam (Hanoi)  no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+  Australia (Sydney) no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+  Australia (Melbourne) no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+  Egypt (Cairo)    no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+  Egypt (Hurghada) no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+  Cambodia (Siem Reap) no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+  Cambodia (Phnom Penh) no outbound flights listed on 2026-10-16/2026-10-17/2026-10-18
+
+! MakeMyTrip rate-limited this run and it stopped early.
+  Wait 10-15 minutes and re-run; the cache resumes where it
+  left off. Raising pause_seconds in trip_input.txt makes this less likely.
+
+No priced options. Either every search failed or the search
+budget ran out before any country was costed. Re-run to
+continue - completed searches are cached.

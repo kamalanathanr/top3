@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+        .card { @apply bg-white rounded-xl shadow-sm border border-gray-200; }
+        .section-header { @apply px-8 py-5 border-b border-blue-100 bg-blue-50 rounded-t-xl; }
+        .section-body { @apply p-8; }
+        .proj-input:focus { outline: none; }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-12">
+        <div class="max-w-4xl mx-auto px-6">
+
+            <div class="mb-8">
+                <h2 class="text-4xl font-bold text-blue-700 mb-2">Planning</h2>
+                <p class="text-gray-500">Personalised financial planning based on your profile</p>
+            </div>
+
+            <!-- ══ Risk Score ══ -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 class="text-lg font-bold text-blue-800">Risk Score</h3>
+                    <p class="text-sm text-blue-600 mt-0.5">Calculated from your financial profile — age, risk appetite, emergency fund, investment horizon and income stability</p>
+                </div>
+                <div class="section-body">
+                    <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap">
+                        <div style="text-align:center;min-width:180px">
+                            <div id="scoreBadge" style="width:150px;height:150px;border-radius:50%;background:#f3f4f6;border:8px solid #e5e7eb;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;transition:all .5s ease">
+                                <div id="scoreNum" style="font-size:50px;font-weight:900;line-height:1;color:#9ca3af">—</div>
+                                <div style="font-size:13px;font-weight:600;color:#9ca3af">/ 10</div>
+                            </div>
+                            <div id="scoreLabel" style="font-size:18px;font-weight:700;color:#1e293b;margin-bottom:6px">—</div>
+                            <div id="scoreAlloc" style="font-size:12px;color:#6b7280;line-height:1.6;max-width:180px;margin:0 auto 18px">—</div>
+                            <div style="position:relative;height:10px;background:#e5e7eb;border-radius:6px;overflow:hidden">
+                                <div style="position:absolute;left:0;top:0;bottom:0;width:40%;background:#dcfce7"></div>
+                                <div style="position:absolute;left:40%;top:0;bottom:0;width:30%;background:#fef9c3"></div>
+                                <div style="position:absolute;left:70%;top:0;bottom:0;width:30%;background:#fee2e2"></div>
+                                <div id="scoreBar" style="position:absolute;left:0;top:0;bottom:0;width:0%;border-radius:6px;transition:width 1s ease;z-index:2"></div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:10px;color:#9ca3af;margin-top:5px">
+                                <span>0</span><span style="color:#15803d;font-weight:600">4</span>
+                                <span style="color:#d97706;font-weight:600">7</span><span>10</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:9px;color:#9ca3af;margin-top:1px">
+                                <span></span><span style="color:#15803d">Conservative</span>
+                                <span style="color:#d97706">Moderate</span>
+                                <span style="color:#dc2626;padding-right:2px">Aggressive</span>
+                            </div>
+                        </div>
+                        <div style="flex:1;min-width:300px">
+                            <table style="width:100%;border-collapse:collapse;font-size:14px">
+                                <thead>
+                                    <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb">
+                                        <th style="text-align:left;padding:10px 12px;font-weight:700;color:#374151">Factor</th>
+                                        <th style="text-align:left;padding:10px 12px;font-weight:700;color:#374151">Reading</th>
+                                        <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Wt</th>
+                                        <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Score</th>
+                                        <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Wtd</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="riskTableBody">
+                                    <tr><td colspan="5" style="padding:24px;text-align:center;color:#9ca3af;font-style:italic">Loading…</td></tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="background:#eff6ff;border-top:2px solid #bfdbfe">
+                                        <td colspan="2" style="padding:12px;font-weight:700;color:#1e40af">Final Score</td>
+                                        <td style="text-align:center;padding:12px;font-weight:700;color:#1e40af">100%</td>
+                                        <td></td>
+                                        <td id="totalWeighted" style="text-align:center;padding:12px;font-weight:800;font-size:15px;color:#1e40af">—</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <div id="missingDataNote" class="hidden" style="font-size:12px;color:#92400e;margin-top:12px;background:#fef9c3;padding:10px 14px;border-radius:8px;border:1px solid #fde68a;line-height:1.6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ Base Asset Allocation ══ -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 class="text-lg font-bold text-blue-800">Base Asset Allocation</h3>
+                    <p class="text-sm text-blue-600 mt-0.5">Derived from your risk profile with macro adjustments from current market conditions</p>
+                </div>
+                <div class="section-body">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <span style="font-size:13px;color:#6b7280;font-weight:500">Risk Profile:</span>
+                            <span id="allocProfileBadge" style="font-size:13px;font-weight:700;color:#1e40af;padding:4px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:999px">—</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <span style="font-size:13px;color:#6b7280;font-weight:500">Expected Portfolio Return:</span>
+                            <span id="allocPortfolioReturn" style="font-size:24px;font-weight:800;color:#1e40af">—</span>
+                        </div>
+                    </div>
+                    <div id="allocBar" style="height:44px;border-radius:10px;overflow:hidden;display:flex;margin-bottom:10px;background:#e5e7eb">
+                        <div style="flex:1;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:13px">Loading…</div>
+                    </div>
+                    <div id="allocLegend" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:28px;font-size:12px;color:#374151"></div>
+                    <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:28px">
+                        <thead>
+                            <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb">
+                                <th style="text-align:left;padding:10px 12px;font-weight:700;color:#374151">Asset</th>
+                                <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Base %</th>
+                                <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Macro Adj.</th>
+                                <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Final %</th>
+                                <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Target Value</th>
+                                <th style="text-align:left;padding:10px 12px;font-weight:700;color:#374151">Current Position</th>
+                                <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Gap Value</th>
+                                <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Exp. Return</th>
+                                <th style="text-align:center;padding:10px 12px;font-weight:700;color:#374151">Contribution</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allocTableBody">
+                            <tr><td colspan="9" style="padding:24px;text-align:center;color:#9ca3af;font-style:italic">Loading…</td></tr>
+                        </tbody>
+                        <tfoot>
+                            <tr style="background:#eff6ff;border-top:2px solid #bfdbfe">
+                                <td colspan="3" style="padding:12px;font-weight:700;color:#1e40af">Portfolio Return</td>
+                                <td style="text-align:center;padding:12px;font-weight:700;color:#1e40af">100%</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td id="allocTotalReturn" style="text-align:center;padding:12px;font-weight:800;font-size:15px;color:#1e40af">—</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div>
+                        <h4 style="font-size:14px;font-weight:700;color:#374151;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #e5e7eb">Macro Adjustment Engine</h4>
+                        <div id="macroAdjPanel"><p style="color:#9ca3af;font-size:13px">Loading market conditions…</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ Future Wealth Projection ══ -->
+            <div class="card mb-8">
+                <div class="section-header">
+                    <h3 class="text-lg font-bold text-blue-800">Future Wealth Projection</h3>
+                    <p class="text-sm text-blue-600 mt-0.5">Compound growth forecast — adjust inputs below for what-if scenarios</p>
+                </div>
+                <div class="section-body">
+
+                    <!-- Inputs -->
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin-bottom:28px">
+                        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px">
+                            <label style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px">Initial Corpus</label>
+                            <div style="display:flex;align-items:center;gap:4px;padding:8px 10px;background:white;border:1px solid #e2e8f0;border-radius:7px">
+                                <span style="color:#9ca3af;font-size:13px;flex-shrink:0">₹</span>
+                                <input id="projCorpus" type="number" min="0" class="proj-input" oninput="updateProjection()" style="flex:1;border:none;font-size:15px;font-weight:700;color:#1e293b;background:transparent;width:0">
+                            </div>
+                            <p style="font-size:10px;color:#9ca3af;margin-top:5px">From profile corpus</p>
+                        </div>
+                        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px">
+                            <label style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px">Monthly SIP</label>
+                            <div style="display:flex;align-items:center;gap:4px;padding:8px 10px;background:white;border:1px solid #e2e8f0;border-radius:7px">
+                                <span style="color:#9ca3af;font-size:13px;flex-shrink:0">₹</span>
+                                <input id="projSip" type="number" min="0" class="proj-input" oninput="updateProjection()" style="flex:1;border:none;font-size:15px;font-weight:700;color:#1e293b;background:transparent;width:0">
+                            </div>
+                            <p id="projSipHint" style="font-size:10px;color:#9ca3af;margin-top:5px">Income − expenses</p>
+                        </div>
+                        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px">
+                            <label style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px">Expected Return</label>
+                            <div style="display:flex;align-items:center;gap:4px;padding:8px 10px;background:white;border:1px solid #e2e8f0;border-radius:7px">
+                                <input id="projReturn" type="number" min="1" max="30" step="0.1" class="proj-input" oninput="updateProjection()" style="flex:1;border:none;font-size:15px;font-weight:700;color:#1e293b;background:transparent;width:0">
+                                <span style="color:#9ca3af;font-size:13px;flex-shrink:0">%</span>
+                            </div>
+                            <p style="font-size:10px;color:#9ca3af;margin-top:5px">From asset allocation</p>
+                        </div>
+                        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px">
+                            <label style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px">Time Horizon</label>
+                            <div style="display:flex;align-items:center;gap:4px;padding:8px 10px;background:white;border:1px solid #e2e8f0;border-radius:7px">
+                                <input id="projYears" type="number" min="1" max="50" class="proj-input" oninput="updateProjection()" style="flex:1;border:none;font-size:15px;font-weight:700;color:#1e293b;background:transparent;width:0">
+                                <span style="color:#9ca3af;font-size:13px;flex-shrink:0">yrs</span>
+                            </div>
+                            <p style="font-size:10px;color:#9ca3af;margin-top:5px">From profile horizon</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div style="position:relative;height:300px;margin-bottom:28px">
+                        <canvas id="wealthChart"></canvas>
+                    </div>
+
+                    <!-- Output cards -->
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px">
+                        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px 18px">
+                            <p style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Expected Corpus</p>
+                            <p id="projNominal" style="font-size:22px;font-weight:800;color:#1e40af;margin:0">—</p>
+                            <p style="font-size:11px;color:#6b7280;margin-top:4px">Nominal value at end</p>
+                        </div>
+                        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px 18px">
+                            <p style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Inflation-Adjusted</p>
+                            <p id="projReal" style="font-size:22px;font-weight:800;color:#92400e;margin:0">—</p>
+                            <p style="font-size:11px;color:#6b7280;margin-top:4px">At today's value (6% inflation)</p>
+                        </div>
+                        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:16px 18px">
+                            <p style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Total Invested</p>
+                            <p id="projInvested" style="font-size:22px;font-weight:800;color:#166534;margin:0">—</p>
+                            <p style="font-size:11px;color:#6b7280;margin-top:4px">Corpus + SIP contributions</p>
+                        </div>
+                        <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:12px;padding:16px 18px">
+                            <p style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Returns Generated</p>
+                            <p id="projReturns" style="font-size:22px;font-weight:800;color:#6b21a8;margin:0">—</p>
+                            <p id="projMultiple" style="font-size:11px;color:#6b7280;margin-top:4px">Wealth multiple: —</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    // ── Shared state ─────────────────────────────────────────────────────────
+    let profileData          = null;
+    let monthlyExpensesCalc  = 0;
+    let portfolioReturnResult = 0;
+    let riskProfileResult    = null;
+    let wealthChartInstance  = null;
+
+    // ── Risk Score ───────────────────────────────────────────────────────────
+
+    const SCORE_RANGES = [
+        { max:3.9,  label:'Conservative', color:'#15803d', bg:'#f0fdf4', border:'#86efac', barColor:'#22c55e', alloc:'Equity 10–30%\nDebt 70–90%'  },
+        { max:6.9,  label:'Moderate',     color:'#d97706', bg:'#fefce8', border:'#fde68a', barColor:'#f59e0b', alloc:'Equity 40–60%\nDebt 40–60%'  },
+        { max:10.0, label:'Aggressive',   color:'#dc2626', bg:'#fef2f2', border:'#fca5a5', barColor:'#ef4444', alloc:'Equity 70–100%\nDebt 0–30%'  },
+    ];
+
+    function getRangeInfo(score) {
+        return SCORE_RANGES.find(r => score <= r.max) || SCORE_RANGES[SCORE_RANGES.length - 1];
+    }
+    function subScoreColor(s) { return s >= 7 ? '#15803d' : s >= 4 ? '#d97706' : '#dc2626'; }
+    function calcAge(dobStr) {
+        if (!dobStr) return 0;
+        const today = new Date(), dob = new Date(dobStr);
+        let age = today.getFullYear() - dob.getFullYear();
+        const mo = today.getMonth() - dob.getMonth();
+        if (mo < 0 || (mo === 0 && today.getDate() < dob.getDate())) age--;
+        return Math.max(0, age);
+    }
+    function scoredAge(age) {
+        if (age === 0) return { score:5.5, band:'Unknown' };
+        if (age < 30)  return { score:9.5, band:`${age} yrs (< 30)` };
+        if (age <= 40) return { score:7.5, band:`${age} yrs (30–40)` };
+        if (age <= 50) return { score:5.5, band:`${age} yrs (41–50)` };
+        if (age <= 60) return { score:3.5, band:`${age} yrs (51–60)` };
+        return                { score:1.0, band:`${age} yrs (> 60)` };
+    }
+    function scoredRisk(p) {
+        if (p === 'Aggressive') return { score:8.0, band:'High (Aggressive)' };
+        if (p === 'Moderate')   return { score:5.5, band:'Moderate' };
+        return                         { score:3.0, band:'Low (Beginner)' };
+    }
+    function scoredEmergency(m) {
+        if (m >= 12) return { score:9.5, band:`${m.toFixed(1)} mo (12+)` };
+        if (m >= 6)  return { score:7.0, band:`${m.toFixed(1)} mo (6–12)` };
+        if (m >= 3)  return { score:4.0, band:`${m.toFixed(1)} mo (3–6)` };
+        if (m > 0)   return { score:1.0, band:`${m.toFixed(1)} mo (< 3)` };
+        return               { score:1.0, band:'—' };
+    }
+    function scoredHorizon(y) {
+        if (y >= 10) return { score:9.5, band:`${y} yrs (10+)` };
+        if (y >= 5)  return { score:7.0, band:`${y} yrs (5–10)` };
+        if (y >= 3)  return { score:4.0, band:`${y} yrs (3–5)` };
+        if (y > 0)   return { score:1.0, band:`${y} yrs (< 3)` };
+        return               { score:1.0, band:'—' };
+    }
+
+    async function loadRiskScore() {
+        let p = {};
+        try {
+            const r = await fetch('/api/profile');
+            const d = await r.json();
+            p = d.profile || {};
+        } catch (e) {
+            document.getElementById('riskTableBody').innerHTML =
+                '<tr><td colspan="5" style="padding:24px;text-align:center;color:#ef4444">Failed to load profile data</td></tr>';
+            return;
+        }
+
+        profileData = p;
+
+        const warnings = [];
+        const head = (p.family_members || []).find(m => m.is_head);
+        const age = head?.dob ? calcAge(head.dob) : 0;
+        if (!age) warnings.push('Age — add a Head of Family member with date of birth in Profile');
+        const ageInfo = scoredAge(age);
+
+        const riskProfile = p.risk_profile || 'Moderate';
+        const riskInfo = scoredRisk(riskProfile);
+
+        // Emergency fund: sum all assets of type "Emergency Fund", or those whose name/goal contains "emergency"
+        const emergencyFund = (p.existing_assets || [])
+            .filter(a =>
+                a.asset_type === 'Emergency Fund' ||
+                (a.name || '').toLowerCase().includes('emergency') ||
+                (a.goal || '').toLowerCase().includes('emergency')
+            )
+            .reduce((s, a) => s + (a.market_value || 0), 0);
+
+        let annualGoalExp = 0;
+        (p.financial_goals || []).forEach(g => {
+            const amt = g.amount || 0;
+            if (g.recurring) {
+                const mul = { monthly:12, quarterly:4, '4_months':3, '6_months':2, annually:1 };
+                annualGoalExp += amt * (mul[g.frequency] || 1);
+            } else {
+                annualGoalExp += amt;
+            }
+        });
+        const monthlyExp = annualGoalExp / 12;
+        monthlyExpensesCalc = monthlyExp;
+
+        const emergMonths = (emergencyFund > 0 && monthlyExp > 0) ? emergencyFund / monthlyExp : 0;
+        const emergInfo = scoredEmergency(emergMonths);
+        // Only warn about missing expenses; do not warn if emergency fund asset is absent
+
+        const horizon = p.investment_planning_horizon || 0;
+        const horizInfo = scoredHorizon(horizon);
+        if (!horizon) warnings.push('Investment Horizon — set your planning horizon in Profile');
+
+        const incomeScore = 4.5;
+        const incomeBand  = 'Moderate (assumed)';
+
+        // When no emergency fund asset exists, exclude it from scoring and
+        // redistribute its 10% proportionally across the other four factors.
+        const hasEmergency = emergencyFund > 0;
+        // scale = 100/90 ≈ 1.1111 when emergency is absent, 1.0 otherwise
+        const SC = hasEmergency ? 1.0 : (10/9);
+
+        const wAge    = +(ageInfo.score   * 20 * SC / 100).toFixed(4);
+        const wRisk   = +(riskInfo.score  * 30 * SC / 100).toFixed(4);
+        const wEmerg  = hasEmergency ? +(emergInfo.score * 0.10).toFixed(4) : 0;
+        const wHoriz  = +(horizInfo.score * 20 * SC / 100).toFixed(4);
+        const wIncome = +(incomeScore     * 20 * SC / 100).toFixed(4);
+        const finalScore = wAge + wRisk + wEmerg + wHoriz + wIncome;
+
+        const ri = getRangeInfo(finalScore);
+
+        const badge = document.getElementById('scoreBadge');
+        badge.style.background = ri.bg;
+        badge.style.borderColor = ri.border;
+        const numEl = document.getElementById('scoreNum');
+        numEl.style.color = ri.color;
+        numEl.textContent = finalScore.toFixed(1);
+        document.getElementById('scoreLabel').textContent = ri.label;
+        document.getElementById('scoreAlloc').innerHTML = ri.alloc.replace('\n', '<br>');
+
+        const bar = document.getElementById('scoreBar');
+        bar.style.background = ri.barColor;
+        setTimeout(() => { bar.style.width = (finalScore / 10 * 100).toFixed(1) + '%'; }, 80);
+
+        document.getElementById('totalWeighted').textContent = finalScore.toFixed(2);
+
+        // Display weights: when emergency is absent redistribute to sum to 100%
+        // 20→22, 30→33, 20→22, 20→23 (22+33+22+23=100)
+        const dAge = hasEmergency ? 20 : 22;
+        const dRisk = hasEmergency ? 30 : 33;
+        const dHoriz = hasEmergency ? 20 : 22;
+        const dIncome = hasEmergency ? 20 : 23;
+
+        const rows = [
+            { factor:'Age',               weight:dAge,   reading:ageInfo.band,   sub:ageInfo.score,   wtd:wAge    },
+            { factor:'Risk Appetite',     weight:dRisk,  reading:riskInfo.band,  sub:riskInfo.score,  wtd:wRisk   },
+            ...(hasEmergency ? [{ factor:'Emergency Fund', weight:10, reading:emergInfo.band, sub:emergInfo.score, wtd:wEmerg }] : []),
+            { factor:'Investment Horizon',weight:dHoriz, reading:horizInfo.band, sub:horizInfo.score, wtd:wHoriz  },
+            { factor:'Income Stability',  weight:dIncome,reading:incomeBand,     sub:incomeScore,     wtd:wIncome },
+        ];
+        document.getElementById('riskTableBody').innerHTML = rows.map((r, i) => `
+            <tr style="border-bottom:1px solid #f1f5f9;background:${i%2===0?'#fff':'#f8fafc'}">
+                <td style="padding:11px 12px;font-weight:600;color:#1e293b">${r.factor}</td>
+                <td style="padding:11px 12px;color:#6b7280;font-size:13px">${r.reading}</td>
+                <td style="padding:11px 12px;text-align:center;color:#6b7280">${r.weight}%</td>
+                <td style="padding:11px 12px;text-align:center"><span style="font-weight:700;color:${subScoreColor(r.sub)}">${r.sub.toFixed(1)}</span></td>
+                <td style="padding:11px 12px;text-align:center;font-weight:600;color:#1e293b">${r.wtd.toFixed(2)}</td>
+            </tr>`).join('');
+
+        const noteEl = document.getElementById('missingDataNote');
+        if (warnings.length) {
+            noteEl.classList.remove('hidden');
+            noteEl.innerHTML = '<strong>⚠ Missing data — score may be inaccurate. Complete these in Profile:</strong>'
+                + '<ul style="margin-top:5px;padding-left:16px">'
+                + warnings.map(w => `<li style="margin-top:3px">${w}</li>`).join('')
+                + '</ul>';
+        }
+
+        riskProfileResult = { score: finalScore, profile: ri.label };
+        await loadAssetAllocation();
+    }
+
+    // ── Base Asset Allocation Engine ─────────────────────────────────────────
+
+    const BASE_ALLOCATIONS = {
+        Conservative: [
+            { asset:'Equity',     pct:20, returnKey:'equity' },
+            { asset:'Debt',       pct:40, returnKey:'debt'   },
+            { asset:'FD / Bonds', pct:25, returnKey:'fd'     },
+            { asset:'Gold',       pct:10, returnKey:'gold'   },
+            { asset:'Cash',       pct: 5, returnKey:'cash'   },
+        ],
+        Moderate: [
+            { asset:'Equity', pct:50, returnKey:'equity' },
+            { asset:'Debt',   pct:25, returnKey:'debt'   },
+            { asset:'Gold',   pct:15, returnKey:'gold'   },
+            { asset:'Cash',   pct:10, returnKey:'cash'   },
+        ],
+        Aggressive: [
+            { asset:'Equity', pct:70, returnKey:'equity' },
+            { asset:'Debt',   pct:15, returnKey:'debt'   },
+            { asset:'Gold',   pct:10, returnKey:'gold'   },
+            { asset:'Cash',   pct: 5, returnKey:'cash'   },
+        ],
+    };
+
+    const DEFAULT_RETURNS = { equity:12, debt:7, fd:7, gold:8, cash:4 };
+
+    const ASSET_COLORS = {
+        'Equity':'#3b82f6', 'Debt':'#22c55e', 'FD / Bonds':'#14b8a6', 'Gold':'#f59e0b', 'Cash':'#94a3b8',
+    };
+
+    function parseReturnPct(str) {
+        if (!str) return null;
+        const range = str.match(/(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)\s*%/);
+        if (range) return (parseFloat(range[1]) + parseFloat(range[2])) / 2;
+        const single = str.match(/~?(\d+\.?\d*)\s*%/);
+        if (single) return parseFloat(single[1]);
+        return null;
+    }
+
+    function getExpectedReturnsFromData(instruments) {
+        const buckets = {};
+        instruments.forEach(inst => {
+            const cat = inst.category || '';
+            const sub = (inst.sub_type || '').toLowerCase();
+            let key = null;
+            if (cat === 'Stock' || cat === 'ETF') key = 'equity';
+            else if (cat === 'MF') key = (sub.includes('debt') || sub.includes('bond') || sub.includes('liquid') || sub.includes('money market')) ? 'debt' : 'equity';
+            else if (cat === 'Bond') key = 'debt';
+            else if (cat === 'FD')   key = 'fd';
+            else if (cat === 'Gold') key = 'gold';
+            if (!key) return;
+            const ret = parseReturnPct(inst.return_profile?.expected_annual_return);
+            if (ret !== null && ret > 0 && ret < 50) {
+                if (!buckets[key]) buckets[key] = [];
+                buckets[key].push(ret);
+            }
+        });
+        const result = { ...DEFAULT_RETURNS };
+        Object.keys(buckets).forEach(key => {
+            const arr = buckets[key];
+            if (arr.length) result[key] = parseFloat((arr.reduce((s, v) => s + v, 0) / arr.length).toFixed(1));
+        });
+        return result;
+    }
+
+    function parseMacroRules(indicators) {
+        const adjustments = [];
+        const allocAdj = {};
+        const find = (kws) => indicators.find(ind => kws.some(k => (ind.indicator || '').toLowerCase().includes(k.toLowerCase())));
+        const parseNum = (str) => { const m = String(str || '').match(/([\d.]+)/); return m ? parseFloat(m[1]) : null; };
+        const adj = (asset, d) => { allocAdj[asset] = (allocAdj[asset] || 0) + d; };
+
+        const cpiInd = find(['CPI', 'Inflation', 'inflation rate', 'consumer price']);
+        if (cpiInd) {
+            const cpi = parseNum(cpiInd.value);
+            const fired = cpi !== null && cpi > 6;
+            adjustments.push({ rule:'High Inflation', condition: cpi !== null ? `CPI ${cpi.toFixed(1)}% ${fired?'>':'≤'} 6%` : 'CPI data found', action:'+5% Gold, −5% Debt', fired });
+            if (fired) { adj('Gold', 5); adj('Debt', -5); }
+        }
+        const peInd = find(['NIFTY PE', 'Nifty PE', 'P/E', 'PE Ratio', 'nifty 50 pe', 'price to earnings']);
+        if (peInd) {
+            const pe = parseNum(peInd.value);
+            const fired = pe !== null && pe > 22;
+            adjustments.push({ rule:'Expensive Market', condition: pe !== null ? `NIFTY P/E ${pe.toFixed(1)} ${fired?'>':'≤'} 22 (hist. avg)` : 'P/E data found', action:'−10% Equity, +5% Debt, +5% Cash', fired });
+            if (fired) { adj('Equity', -10); adj('Debt', 5); adj('Cash', 5); }
+        }
+        const vixInd = find(['VIX', 'India VIX', 'volatility index', 'fear index']);
+        if (vixInd) {
+            const vix = parseNum(vixInd.value);
+            const fired = vix !== null && vix > 20;
+            adjustments.push({ rule:'High Volatility', condition: vix !== null ? `India VIX ${vix.toFixed(1)} ${fired?'>':'≤'} 20` : 'VIX data found', action:'−5% Equity, +5% Debt', fired });
+            if (fired) { adj('Equity', -5); adj('Debt', 5); }
+        }
+        return { adjustments, allocAdj };
+    }
+
+    function applyAndNormalize(base, allocAdj) {
+        const result = base.map(a => {
+            const delta = allocAdj[a.asset] || 0;
+            return { ...a, adjustment: delta, finalPct: Math.max(0, a.pct + delta) };
+        });
+        const total = result.reduce((s, a) => s + a.finalPct, 0);
+        if (total > 0 && Math.abs(total - 100) > 0.01)
+            result.forEach(a => { a.finalPct = Math.round((a.finalPct / total) * 1000) / 10; });
+        return result;
+    }
+
+    function computeCurrentPositions(alloc) {
+        if (!profileData) return null;
+        const assets = profileData.existing_assets || [];
+        const hasFdRow = alloc.some(a => a.returnKey === 'fd');
+
+        const typeToKey = (type) => {
+            switch ((type || '').trim()) {
+                case 'Stocks': case 'ETFs': return 'equity';
+                case 'MF': return 'equity';
+                case 'Bonds': return hasFdRow ? 'fd' : 'debt';
+                case 'FDs': return 'cash';
+                case 'Emergency Fund': return 'cash';
+                case 'Gold': return 'gold';
+                default: return null;
+            }
+        };
+
+        const byKey = {};
+        let total = 0;
+        assets.forEach(a => {
+            const v = parseFloat(a.market_value || 0);
+            if (v > 0) {
+                const key = typeToKey(a.asset_type);
+                if (key) {
+                    total += v;
+                    byKey[key] = (byKey[key] || 0) + v;
+                }
+            }
+        });
+        if (total === 0) return null;
+
+        const positions = {};
+        alloc.forEach(a => {
+            const value = byKey[a.returnKey] || 0;
+            positions[a.asset] = { pct: parseFloat(((value / total) * 100).toFixed(1)), value };
+        });
+        return { positions, total };
+    }
+
+    function renderPositionBar(currentPct, finalPct, color) {
+        const c = parseFloat((currentPct || 0).toFixed(1));
+        const f = parseFloat(finalPct.toFixed(1));
+        if (f === 0) return '<span style="color:#9ca3af;font-size:11px">—</span>';
+        const over = c > f;
+
+        if (over) {
+            const solidFrac = (f / c * 100).toFixed(1);
+            const dotFrac = ((c - f) / c * 100).toFixed(1);
+            return `<div style="padding:3px 0">
+              <div style="display:flex;height:12px;width:${c}%;border-radius:3px;overflow:hidden">
+                <div style="width:${solidFrac}%;height:100%;background:${color};flex-shrink:0"></div>
+                <div style="width:${dotFrac}%;height:100%;background:${color}33;border:1.5px dashed ${color};border-left:none;flex-shrink:0;box-sizing:border-box"></div>
+              </div>
+              <div style="font-size:10px;margin-top:2px;color:#dc2626">+${(c - f).toFixed(1)}% over target</div>
+            </div>`;
+        } else {
+            const fillFrac = (c / f * 100).toFixed(1);
+            return `<div style="padding:3px 0">
+              <div style="position:relative;height:12px;width:${f}%;border:1.5px dashed ${color};border-radius:3px;box-sizing:border-box">
+                ${c > 0 ? `<div style="position:absolute;left:0;top:0;bottom:0;width:${fillFrac}%;background:${color};border-radius:2px"></div>` : ''}
+              </div>
+              <div style="font-size:10px;margin-top:2px;color:#9ca3af">${c}% / ${f}% target</div>
+            </div>`;
+        }
+    }
+
+    function fmtGap(gap) {
+        if (!isFinite(gap) || gap === null) return '<span style="color:#9ca3af">—</span>';
+        const color = gap > 0 ? '#15803d' : gap < 0 ? '#dc2626' : '#6b7280';
+        const sign = gap > 0 ? '+' : '−';
+        const abs = Math.abs(gap);
+        let num;
+        if (abs >= 1e7) num = sign + '₹' + (abs / 1e7).toFixed(2) + ' Cr';
+        else if (abs >= 1e5) num = sign + '₹' + (abs / 1e5).toFixed(2) + ' L';
+        else num = (gap >= 0 ? '+' : '−') + '₹' + Math.round(abs).toLocaleString('en-IN');
+        return `<span style="color:${color};font-weight:700;font-size:13px">${num}</span>`;
+    }
+
+    function renderAssetAllocation(profile, alloc, returns, adjustments) {
+        let portfolioReturn = 0;
+        alloc.forEach(a => {
+            const ret = returns[a.returnKey] ?? DEFAULT_RETURNS[a.returnKey] ?? 0;
+            a.expectedReturn = ret;
+            a.contribution = parseFloat(((a.finalPct / 100) * ret).toFixed(2));
+            portfolioReturn += a.contribution;
+        });
+        portfolioReturn = parseFloat(portfolioReturn.toFixed(2));
+        portfolioReturnResult = portfolioReturn;
+
+        document.getElementById('allocProfileBadge').textContent = profile;
+        document.getElementById('allocPortfolioReturn').textContent = portfolioReturn.toFixed(2) + '%';
+        document.getElementById('allocTotalReturn').textContent = portfolioReturn.toFixed(2) + '%';
+
+        document.getElementById('allocBar').innerHTML = alloc.map(a => {
+            const c = ASSET_COLORS[a.asset] || '#6b7280';
+            return `<div style="flex:${a.finalPct};background:${c};height:100%;position:relative;min-width:2px" title="${a.asset}: ${a.finalPct}%">
+                ${a.finalPct >= 8 ? `<span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:700;color:white;white-space:nowrap">${a.finalPct}%</span>` : ''}
+            </div>`;
+        }).join('');
+
+        document.getElementById('allocLegend').innerHTML = alloc.map(a => {
+            const c = ASSET_COLORS[a.asset] || '#6b7280';
+            return `<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:${c};flex-shrink:0"></div><span style="font-weight:500">${a.asset}</span></div>`;
+        }).join('');
+
+        const currentData = computeCurrentPositions(alloc);
+
+        document.getElementById('allocTableBody').innerHTML = alloc.map((a, i) => {
+            const c = ASSET_COLORS[a.asset] || '#6b7280';
+            const adjStr = a.adjustment > 0 ? `<span style="color:#15803d;font-weight:700">+${a.adjustment}%</span>`
+                : a.adjustment < 0 ? `<span style="color:#dc2626;font-weight:700">${a.adjustment}%</span>`
+                : `<span style="color:#9ca3af">—</span>`;
+            const pos = currentData ? currentData.positions[a.asset] : null;
+            const posBar = pos != null
+                ? renderPositionBar(pos.pct, a.finalPct, c)
+                : '<span style="color:#9ca3af;font-size:11px">—</span>';
+            const targetValue = currentData ? (a.finalPct / 100 * currentData.total) : null;
+            const targetHtml = targetValue !== null
+                ? `<span style="font-weight:700;color:#1e40af;font-size:13px">${fmtCr(targetValue)}</span>`
+                : '<span style="color:#9ca3af;font-size:11px">—</span>';
+            const gap = (pos != null && currentData)
+                ? pos.value - (a.finalPct / 100 * currentData.total)
+                : null;
+            const gapHtml = gap !== null ? fmtGap(gap) : '<span style="color:#9ca3af;font-size:11px">—</span>';
+            return `<tr style="border-bottom:1px solid #f1f5f9;background:${i%2===0?'#fff':'#f8fafc'}">
+                <td style="padding:11px 12px"><div style="display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;border-radius:2px;background:${c};flex-shrink:0"></div><span style="font-weight:600;color:#1e293b">${a.asset}</span></div></td>
+                <td style="padding:11px 12px;text-align:center;color:#6b7280">${a.pct}%</td>
+                <td style="padding:11px 12px;text-align:center">${adjStr}</td>
+                <td style="padding:11px 12px;text-align:center;font-weight:700;color:#1e293b">${a.finalPct}%</td>
+                <td style="padding:11px 12px;text-align:center">${targetHtml}</td>
+                <td style="padding:11px 12px">${posBar}</td>
+                <td style="padding:11px 12px;text-align:center">${gapHtml}</td>
+                <td style="padding:11px 12px;text-align:center;color:#6b7280">${a.expectedReturn.toFixed(1)}%</td>
+                <td style="padding:11px 12px;text-align:center;font-weight:600;color:#1e40af">${a.contribution.toFixed(2)}%</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('macroAdjPanel').innerHTML = adjustments.length === 0
+            ? '<p style="color:#9ca3af;font-size:13px;padding:8px 0">Economy indicators not available — refresh market data on the Market page to enable macro adjustments.</p>'
+            : adjustments.map(adj => {
+                const bg = adj.fired ? '#fef2f2' : '#f0fdf4';
+                const br = adj.fired ? '#fca5a5' : '#86efac';
+                const tc = adj.fired ? '#991b1b' : '#166534';
+                const badge = adj.fired
+                    ? `<span style="font-size:10px;font-weight:700;color:#dc2626;padding:2px 8px;background:#fff;border:1px solid #fca5a5;border-radius:999px;white-space:nowrap">ACTIVE</span>`
+                    : `<span style="font-size:10px;font-weight:700;color:#15803d;padding:2px 8px;background:#fff;border:1px solid #86efac;border-radius:999px;white-space:nowrap">OK</span>`;
+                return `<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:${bg};border:1px solid ${br};border-radius:8px;margin-bottom:8px">
+                    <span style="font-size:15px;margin-top:1px">${adj.fired ? '⚡' : '✓'}</span>
+                    <div style="flex:1"><div style="font-weight:700;color:${tc};font-size:13px">${adj.rule}</div><div style="font-size:12px;color:#6b7280;margin-top:2px">${adj.condition} — ${adj.action}</div></div>
+                    ${badge}
+                </div>`;
+            }).join('');
+    }
+
+    async function loadAssetAllocation() {
+        if (!riskProfileResult) return;
+        const { profile } = riskProfileResult;
+        const base = BASE_ALLOCATIONS[profile] || BASE_ALLOCATIONS['Moderate'];
+
+        const [econResult, investResult] = await Promise.allSettled([
+            fetch('/api/investment-overview/economy-indicators').then(r => r.json()),
+            fetch('/api/investment-overview').then(r => r.json()),
+        ]);
+
+        const indicators  = econResult.status  === 'fulfilled' ? (econResult.value.indicators   || []) : [];
+        const instruments = investResult.status === 'fulfilled' ? (investResult.value.instruments || []) : [];
+
+        const expectedReturns = getExpectedReturnsFromData(instruments);
+        const { adjustments, allocAdj } = parseMacroRules(indicators);
+        const finalAlloc = applyAndNormalize(base, allocAdj);
+
+        renderAssetAllocation(profile, finalAlloc, expectedReturns, adjustments);
+        loadWealthProjection();
+    }
+
+    // ── Future Wealth Projection ─────────────────────────────────────────────
+
+    function fmtCr(val) {
+        if (!isFinite(val) || val === null) return '—';
+        if (Math.abs(val) >= 1e7) return '₹' + (val / 1e7).toFixed(2) + ' Cr';
+        if (Math.abs(val) >= 1e5) return '₹' + (val / 1e5).toFixed(2) + ' L';
+        return '₹' + Math.round(val).toLocaleString('en-IN');
+    }
+
+    function computeProjection(corpus, monthlySip, annualReturnPct, years) {
+        const r = annualReturnPct / 100 / 12;
+        const INFLATION = 6;
+        const pts = [];
+        for (let yr = 0; yr <= years; yr++) {
+            const n = yr * 12;
+            const fv = r > 0
+                ? corpus * Math.pow(1 + r, n) + monthlySip * ((Math.pow(1 + r, n) - 1) / r)
+                : corpus + monthlySip * n;
+            pts.push({ year: yr, nominal: fv, real: fv / Math.pow(1 + INFLATION / 100, yr) });
+        }
+        return pts;
+    }
+
+    function renderWealthChart(pts) {
+        const canvas = document.getElementById('wealthChart');
+        if (!canvas) return;
+        const labels   = pts.map(p => p.year);
+        const nomData  = pts.map(p => parseFloat((p.nominal / 1e7).toFixed(3)));
+        const realData = pts.map(p => parseFloat((p.real   / 1e7).toFixed(3)));
+
+        if (wealthChartInstance) {
+            wealthChartInstance.data.labels = labels;
+            wealthChartInstance.data.datasets[0].data = nomData;
+            wealthChartInstance.data.datasets[1].data = realData;
+            wealthChartInstance.update('active');
+            return;
+        }
+
+        wealthChartInstance = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Nominal Value',
+                        data: nomData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59,130,246,0.10)',
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        borderWidth: 2,
+                    },
+                    {
+                        label: 'Inflation-Adjusted (6% p.a.)',
+                        data: realData,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245,158,11,0.06)',
+                        fill: true,
+                        tension: 0.35,
+                        borderDash: [6, 4],
+                        pointRadius: 2,
+                        pointHoverRadius: 5,
+                        borderWidth: 2,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top', labels: { font: { size: 12 }, usePointStyle: true, padding: 20 } },
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => `Year ${items[0].label}`,
+                            label: (ctx) => ` ${ctx.dataset.label}: ₹${ctx.parsed.y.toFixed(2)} Cr`,
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#f1f5f9' },
+                        ticks: { font: { size: 11 }, maxTicksLimit: 11, callback: (_, idx) => `Yr ${labels[idx]}` },
+                        title: { display: true, text: 'Years', font: { size: 12 }, color: '#6b7280' },
+                    },
+                    y: {
+                        grid: { color: '#f1f5f9' },
+                        ticks: {
+                            font: { size: 11 },
+                            callback: (v) => v < 1 ? '₹' + v.toFixed(2) + ' Cr' : '₹' + v.toFixed(1) + ' Cr',
+                        },
+                        title: { display: true, text: 'Net Worth (₹ Crores)', font: { size: 12 }, color: '#6b7280' },
+                    },
+                },
+            },
+        });
+    }
+
+    function updateProjection() {
+        const corpus = parseFloat(document.getElementById('projCorpus').value)  || 0;
+        const sip    = parseFloat(document.getElementById('projSip').value)     || 0;
+        const ret    = parseFloat(document.getElementById('projReturn').value)  || 10;
+        const years  = parseInt(document.getElementById('projYears').value)     || 10;
+
+        const pts = computeProjection(corpus, sip, ret, years);
+        renderWealthChart(pts);
+
+        const last          = pts[pts.length - 1];
+        const totalInvested = corpus + sip * years * 12;
+        const returns       = last.nominal - totalInvested;
+        const multiple      = totalInvested > 0 ? (last.nominal / totalInvested).toFixed(2) + 'x' : '—';
+
+        document.getElementById('projNominal').textContent  = fmtCr(last.nominal);
+        document.getElementById('projReal').textContent     = fmtCr(last.real);
+        document.getElementById('projInvested').textContent = fmtCr(totalInvested);
+        document.getElementById('projReturns').textContent  = fmtCr(returns);
+        document.getElementById('projMultiple').textContent = `Wealth multiple: ${multiple}`;
+    }
+
+    function loadWealthProjection() {
+        if (!profileData) return;
+
+        const INVESTABLE = new Set(['Stocks','MF','ETFs','Bonds','FDs']);
+        const corpus = (profileData.existing_assets || [])
+            .filter(a => INVESTABLE.has(a.asset_type) && a.market_value > 0)
+            .reduce((s, a) => s + a.market_value, 0);
+        const income = (profileData.family_members || [])
+            .reduce((s, m) => s + (m.income || 0), 0);
+        const sip     = Math.max(0, income - monthlyExpensesCalc);
+        const retPct  = portfolioReturnResult > 0 ? portfolioReturnResult : 10;
+        const years   = profileData.investment_planning_horizon || 10;
+
+        document.getElementById('projCorpus').value = Math.round(corpus);
+        document.getElementById('projSip').value    = Math.round(sip);
+        document.getElementById('projReturn').value = retPct.toFixed(2);
+        document.getElementById('projYears').value  = years;
+
+        if (income > 0 || monthlyExpensesCalc > 0) {
+            document.getElementById('projSipHint').textContent =
+                `${fmtCr(income)} income − ${fmtCr(monthlyExpensesCalc)} exp.`;
+        }
+
+        updateProjection();
+    }
+
+    loadRiskScore();
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+# Top3 Trip Planner - input
+#
+# Edit the values below, then run:
+#     python3 -m src.trip_planner
+# Results are written to src/trip_output.txt
+#
+# Lines starting with # are ignored. Lists are one "- item" per line.
+
+# Where you fly from (airport code)
+source: BLR
+
+# How many adults travelling
+travellers: 4
+
+# Intended trip window (YYYY-MM-DD)
+start_date: 2026-10-17
+end_date: 2026-10-25
+
+# Shift departure/return by up to this many days either side to find a
+# cheaper combination. 0 = exact dates only.
+#
+# COST: searches = countries x cities_per_country x 2 x (2*date_flex + 1)
+#       and each search takes ~20-40s. With the values below that is
+#       3 x 2 x 2 x 3 = 36 searches, roughly 15-20 minutes on a cold cache.
+#       Results are cached, so re-runs and interrupted runs are cheap.
+date_flex: 1
+
+# Allow the trip to be shorter or longer than the window above, within
+# these bounds (nights). Leave blank to keep the window length as-is.
+min_nights: 5
+max_nights: 7
+
+# compare = price each country separately and rank them (pick one trip)
+# route   = visit every country listed, in order, on one trip
+# combine = every single-country AND multi-country combination, priced and
+#           ranked, with days per city worked out from trip_country_city.py
+mode: combine
+
+# Price the return leg too
+round_trip: yes
+
+# How many cities per country to try (more = better prices, slower)
+cities_per_country: 2
+
+# Sort preference passed to flights.py: cheapest | fastest | non_stop
+prefer: cheapest
+
+# Seconds to wait between searches. MakeMyTrip rate-limits bursts; 3-5s
+# keeps a long run alive. Raise if you see "rate limited" in the output.
+pause_seconds: 3
+
+# Safety cap on how many flight searches to run
+max_searches: 20
+
+# Candidate countries
+countries:
+  - Vietnam
+  - Cambodia
+
+  
+
+# Already visited - skipped when planning
+visited:
+
+
+# Airport pairs MakeMyTrip does not operate. Discovered automatically when a
+# search returns "Sorry, Flights Not Found", and skipped on later runs to save
+# time. Delete a line to search that pair again (useful if a seasonal route
+# reopens).
+no_flight_routes:

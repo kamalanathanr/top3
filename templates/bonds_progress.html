@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonds Scrap Progress</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+        .card { @apply bg-white rounded-lg shadow-sm border border-gray-200; }
+        .btn-primary   { @apply px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition; }
+        .btn-secondary { @apply px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium rounded-lg transition; }
+
+        /* Progress bar */
+        .progress-track { height:10px; background:#e5e7eb; border-radius:6px; overflow:hidden; }
+        .progress-fill  { height:100%; background:#3b82f6; border-radius:6px; transition:width .4s ease; }
+
+        /* Status badges */
+        .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; white-space:nowrap; }
+        .s-success    { background:#dcfce7; color:#15803d; }
+        .s-fetching   { background:#dbeafe; color:#1e40af; }
+        .s-skipped    { background:#f3f4f6; color:#6b7280; }
+        .s-failed     { background:#fee2e2; color:#991b1b; }
+        .s-incomplete { background:#ffedd5; color:#9a3412; }
+        .s-rate_limited  { background:#fef9c3; color:#854d0e; }
+        .s-network_error { background:#fce7f3; color:#9d174d; }
+        .s-empty_data    { background:#fef3c7; color:#92400e; }
+
+        /* Bond cards */
+        .bond-card { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; margin-bottom:10px; }
+        .bond-card.success    { border-left:4px solid #22c55e; }
+        .bond-card.failed     { border-left:4px solid #ef4444; }
+        .bond-card.incomplete { border-left:4px solid #f97316; }
+        .bond-card.fetching   { border-left:4px solid #3b82f6; }
+        .bond-card.skipped    { border-left:4px solid #9ca3af; }
+        .bond-card.rate_limited  { border-left:4px solid #eab308; }
+        .bond-card.network_error { border-left:4px solid #ec4899; }
+
+        /* Event log */
+        .evt { font-size:11px; color:#6b7280; padding:3px 0; border-bottom:1px solid #f1f5f9; }
+        .evt:last-child { border-bottom:none; }
+        .evt-start     { color:#3b82f6; }
+        .evt-success   { color:#15803d; font-weight:600; }
+        .evt-error     { color:#dc2626; }
+        .evt-rate_limited { color:#d97706; }
+        .evt-network_error { color:#db2777; }
+
+        /* Stat counter cards */
+        .count-card { background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:12px 18px; text-align:center; min-width:90px; }
+
+        /* Bond list scroll */
+        .bond-list { max-height: 65vh; overflow-y: auto; padding-right: 4px; }
+        .bond-list::-webkit-scrollbar { width:5px; }
+        .bond-list::-webkit-scrollbar-thumb { background:#93c5fd; border-radius:3px; }
+
+        /* Collapsible events */
+        details > summary { cursor:pointer; font-size:11px; color:#6b7280; margin-top:6px; user-select:none; }
+        details > summary:hover { color:#3b82f6; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10">
+        <div class="max-w-5xl mx-auto px-6">
+
+            <!-- Page header -->
+            <div class="mb-6 flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-700 mb-1">Bonds Scrap Progress</h2>
+                    <p class="text-gray-500 text-sm">Real-time scrap progress from IndiaBonds.com</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="/bonds"
+                        style="padding:8px 16px;background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center">
+                        ← Back to Bonds
+                    </a>
+                    <button id="autoRefreshBtn" onclick="toggleAutoRefresh()"
+                        style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
+                        <span>⟳</span> Auto-Refresh: ON
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── Run overview card ── -->
+            <div class="card mb-6 px-6 py-5">
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-4">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div id="runStatusDot"
+                                 style="width:12px;height:12px;border-radius:50%;background:#9ca3af;flex-shrink:0"></div>
+                            <span id="runStatusLabel" style="font-size:15px;font-weight:700;color:#1e293b">No run data</span>
+                        </div>
+                        <p id="runStarted"  style="font-size:12px;color:#6b7280;margin-top:4px"></p>
+                        <p id="runFinished" style="font-size:12px;color:#6b7280"></p>
+                        <p id="runTaskId"   style="font-size:11px;color:#9ca3af;font-family:monospace"></p>
+                    </div>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap">
+                        <div class="count-card">
+                            <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase">Total</div>
+                            <div id="cntTotal" style="font-size:24px;font-weight:800;color:#1d4ed8">—</div>
+                        </div>
+                        <div class="count-card" style="background:#f0fdf4;border-color:#bbf7d0">
+                            <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase">Success</div>
+                            <div id="cntSuccess" style="font-size:24px;font-weight:800;color:#15803d">—</div>
+                        </div>
+                        <div class="count-card" style="background:#f3f4f6;border-color:#d1d5db">
+                            <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase">Skipped</div>
+                            <div id="cntSkipped" style="font-size:24px;font-weight:800;color:#6b7280">—</div>
+                        </div>
+                        <div class="count-card" style="background:#fff7ed;border-color:#fed7aa">
+                            <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase">Incomplete</div>
+                            <div id="cntIncomplete" style="font-size:24px;font-weight:800;color:#c2410c">—</div>
+                        </div>
+                        <div class="count-card" style="background:#fef2f2;border-color:#fca5a5">
+                            <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase">Failed</div>
+                            <div id="cntFailed" style="font-size:24px;font-weight:800;color:#991b1b">—</div>
+                        </div>
+                        <div class="count-card" style="background:#fef9c3;border-color:#fde68a">
+                            <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase">Rate-limited</div>
+                            <div id="cntRateLimited" style="font-size:24px;font-weight:800;color:#854d0e">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="progress-track mb-2">
+                    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280">
+                    <span id="progressDone">0 done</span>
+                    <span id="progressPct">0%</span>
+                    <span id="progressTotal">0 total</span>
+                </div>
+            </div>
+
+            <!-- ── Bond-by-bond log ── -->
+            <div class="card">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-wrap gap-3">
+                    <h3 class="text-base font-bold text-gray-900">Per-Bond Log</h3>
+                    <div class="flex items-center gap-3">
+                        <select id="statusFilter" class="filter-select" onchange="renderBonds()"
+                            style="padding:6px 10px;border:1px solid #bfdbfe;border-radius:8px;background:#eff6ff;font-size:12px;outline:none">
+                            <option value="">All statuses</option>
+                            <option value="success">Success</option>
+                            <option value="fetching">Fetching</option>
+                            <option value="skipped">Skipped</option>
+                            <option value="failed">Failed</option>
+                            <option value="incomplete">Incomplete</option>
+                            <option value="rate_limited">Rate Limited</option>
+                            <option value="network_error">Network Error</option>
+                        </select>
+                        <span id="bondCount" style="font-size:12px;color:#6b7280"></span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="bond-list" id="bondList">
+                        <p style="font-size:13px;color:#9ca3af;text-align:center;padding:32px 0">
+                            No scrap data yet — click "Refresh Data" on the Bonds page to start.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    let allBondData = [];
+    let autoRefresh = true;
+    let refreshTimer = null;
+
+    function toggleAutoRefresh() {
+        autoRefresh = !autoRefresh;
+        const btn = document.getElementById('autoRefreshBtn');
+        if (autoRefresh) {
+            btn.innerHTML = '<span>⟳</span> Auto-Refresh: ON';
+            btn.style.background = '#2563eb';
+            btn.style.color      = '#fff';
+            scheduleRefresh();
+        } else {
+            clearTimeout(refreshTimer);
+            btn.innerHTML = '<span>⟳</span> Auto-Refresh: OFF';
+            btn.style.background = '#eff6ff';
+            btn.style.color      = '#2563eb';
+        }
+    }
+
+    function scheduleRefresh() {
+        clearTimeout(refreshTimer);
+        if (!autoRefresh) return;
+        refreshTimer = setTimeout(async () => {
+            await loadProgress();
+            scheduleRefresh();
+        }, 4000);
+    }
+
+    async function loadProgress() {
+        try {
+            const r = await fetch('/api/bonds/scrape-status-live');
+            const s = await r.json();
+            updateOverview(s);
+        } catch (e) { /* keep retrying */ }
+
+        try {
+            const r = await fetch('/api/bonds/scrape-log');
+            const d = await r.json();
+            const bondsObj = d.bonds || {};
+            allBondData = typeof bondsObj === 'object' && !Array.isArray(bondsObj)
+                ? Object.values(bondsObj)
+                : bondsObj;
+            allBondData.sort((a, b) => {
+                const order = { fetching:0, network_error:1, rate_limited:2, empty_data:3,
+                                failed:4, incomplete:5, success:6, skipped:7 };
+                return (order[a.status] ?? 8) - (order[b.status] ?? 8);
+            });
+            renderBonds();
+        } catch (e) { /* keep retrying */ }
+    }
+
+    function updateOverview(s) {
+        if (!s.available) return;
+
+        const dot   = document.getElementById('runStatusDot');
+        const label = document.getElementById('runStatusLabel');
+        if (s.is_running) {
+            dot.style.background = '#3b82f6';
+            dot.style.animation  = 'pulse 1.5s ease-in-out infinite';
+            label.textContent    = 'Scrap in progress…';
+            label.style.color    = '#1d4ed8';
+        } else if (s.completed_at) {
+            dot.style.background = '#22c55e';
+            dot.style.animation  = 'none';
+            label.textContent    = 'Scrap completed';
+            label.style.color    = '#15803d';
+        } else {
+            dot.style.background = '#9ca3af';
+            label.textContent    = 'Idle';
+            label.style.color    = '#6b7280';
+        }
+
+        if (s.started_at)
+            document.getElementById('runStarted').textContent = 'Started: ' + fmtDate(s.started_at);
+        if (s.completed_at)
+            document.getElementById('runFinished').textContent = 'Finished: ' + fmtDate(s.completed_at);
+        if (s.task_id)
+            document.getElementById('runTaskId').textContent = 'Task: ' + s.task_id;
+
+        const counts = s.counts || {};
+        document.getElementById('cntTotal').textContent       = s.total_urls ?? '—';
+        document.getElementById('cntSuccess').textContent     = counts.success    ?? 0;
+        document.getElementById('cntSkipped').textContent     = counts.skipped    ?? 0;
+        document.getElementById('cntIncomplete').textContent  = counts.incomplete ?? 0;
+        document.getElementById('cntFailed').textContent      = counts.failed     ?? 0;
+        document.getElementById('cntRateLimited').textContent = s.rate_limited_events ?? 0;
+
+        const pct  = s.progress_pct ?? 0;
+        const done = s.done ?? 0;
+        document.getElementById('progressFill').style.width  = pct + '%';
+        document.getElementById('progressPct').textContent   = pct.toFixed(1) + '%';
+        document.getElementById('progressDone').textContent  = done + ' done';
+        document.getElementById('progressTotal').textContent = (s.total_urls ?? 0) + ' total';
+    }
+
+    function renderBonds() {
+        const filter = document.getElementById('statusFilter').value;
+        const shown  = filter ? allBondData.filter(b => b.status === filter) : allBondData;
+
+        document.getElementById('bondCount').textContent =
+            `${shown.length} of ${allBondData.length} bond${allBondData.length !== 1 ? 's' : ''}`;
+
+        if (!shown.length) {
+            document.getElementById('bondList').innerHTML =
+                `<p style="font-size:13px;color:#9ca3af;text-align:center;padding:32px 0">
+                    ${allBondData.length ? 'No bonds match this filter.' : 'No scrap data yet.'}
+                </p>`;
+            return;
+        }
+
+        document.getElementById('bondList').innerHTML = shown.map(b => {
+            const statusCls = b.status || 'fetching';
+            const badge = statusBadge(b.status);
+            const events = (b.events || []).slice(-8);  // last 8 events
+
+            const meta = [
+                b.issuer_name ? `<strong>${escHtml(b.issuer_name)}</strong>` : `<span style="color:#9ca3af">${b.isin}</span>`,
+                b.rating ? `<span class="badge" style="background:#eff6ff;color:#1e40af">${b.rating}</span>` : '',
+                b.ytm    ? `YTM ${parseFloat(b.ytm).toFixed(2)}%` : '',
+            ].filter(Boolean).join(' · ');
+
+            const timing = b.duration_ms
+                ? `<span style="font-size:11px;color:#9ca3af;float:right">${(b.duration_ms / 1000).toFixed(1)}s · ${b.attempts} attempt${b.attempts !== 1 ? 's' : ''}</span>`
+                : '';
+
+            const evtHtml = events.map(e => {
+                const cls = e.type ? `evt-${e.type}` : '';
+                const ts  = e.ts ? e.ts.slice(11, 19) : '';
+                return `<div class="evt ${cls}"><span style="opacity:.5">${ts}</span> ${escHtml(e.msg || e.type || '')}</div>`;
+            }).join('');
+
+            return `
+                <div class="bond-card ${statusCls}">
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap">
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:12px;font-family:monospace;color:#6b7280;margin-bottom:4px">
+                                ${b.isin} ${timing}
+                            </div>
+                            <div style="font-size:13px;line-height:1.5">${meta}</div>
+                        </div>
+                        <div style="flex-shrink:0">${badge}</div>
+                    </div>
+                    ${evtHtml ? `<details style="margin-top:8px"><summary>Events (${b.events?.length ?? 0})</summary>
+                        <div style="margin-top:6px;padding:6px 8px;background:#f8fafc;border-radius:6px">${evtHtml}</div>
+                    </details>` : ''}
+                </div>`;
+        }).join('');
+    }
+
+    function statusBadge(status) {
+        const map = {
+            success:'Success', fetching:'Fetching', skipped:'Skipped',
+            failed:'Failed', incomplete:'Incomplete', rate_limited:'Rate Limited',
+            network_error:'Network Error', empty_data:'Empty Data',
+        };
+        return `<span class="badge s-${status || 'fetching'}">${map[status] || status || '?'}</span>`;
+    }
+
+    function fmtDate(iso) {
+        if (!iso) return '';
+        try {
+            return new Date(iso).toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
+        } catch { return iso; }
+    }
+
+    function escHtml(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // Init
+    loadProgress();
+    scheduleRefresh();
+    </script>
+
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity:1; }
+            50% { opacity:.3; }
+        }
+    </style>
+</body>
+</html>

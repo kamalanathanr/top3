@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+        .nav-link { @apply text-gray-700 hover:text-blue-600 font-medium transition; }
+
+        /* Design tokens — inspired by NOL World (world.nol.com) */
+        :root {
+            --brand: #4154ff;  --brand-weak: #f5f6ff;  --brand-ghost: #b2baff;
+            --accent: #ff322e; --accent-weak: #ffefee;
+            --ink: #29292d;    --ink-80: #545457;      --ink-60: #7e7e81;  --ink-50: #949496;
+            --line: #e9eaef;   --line-weak: #f2f3f7;   --bg: #f7f8fb;
+            --radius: 12px;
+            --shadow: 0 0 8px #0000001a;
+        }
+        .news-page, .news-page *, #newsModal, #newsModal * {
+            font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        .news-page { color: var(--ink); }
+
+        /* Category tabs — underline style */
+        .tabs-row { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); }
+        .tabs { display: flex; gap: 22px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; margin-bottom: -1px; }
+        .tabs.overflowing { -webkit-mask-image: linear-gradient(90deg, #000 90%, transparent); mask-image: linear-gradient(90deg, #000 90%, transparent); }
+        .tab .ev-flag { display: inline-block; width: 6px; height: 6px; margin: 0 0 2px 4px; border-radius: 999px; background: var(--accent); vertical-align: middle; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab { position: relative; padding: 12px 0 14px; font-size: 16px; font-weight: 600; color: var(--ink-50); white-space: nowrap; cursor: pointer; background: none; border: 0; }
+        .tab:hover { color: var(--ink); }
+        .tab.active { color: var(--ink); }
+        .tab.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ink); }
+        .tab .count { font-size: 12px; font-weight: 500; color: var(--ink-50); margin-left: 4px; }
+
+        /* Toolbar */
+        .pill { height: 38px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 14px; color: var(--ink); }
+        .pill:focus { outline: none; border-color: var(--ink); }
+        .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--line-weak); }
+        .seg button { white-space: nowrap; height: 32px; padding: 0 16px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink-60); border: 0; background: none; cursor: pointer; }
+        .seg button.active { background: #fff; color: var(--ink); box-shadow: 0 1px 4px #0000001a; }
+        .icon-btn { width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
+        .icon-btn:hover:not(:disabled) { border-color: var(--ink); }
+        .icon-btn:disabled { opacity: .35; cursor: default; }
+
+        /* Top Stories carousel */
+        .hero { display: grid; grid-template-columns: 1fr; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow); cursor: pointer; min-height: 280px; }
+        @media (min-width: 768px) { .hero { grid-template-columns: 1.15fr 1fr; height: 300px; } }
+        .hero-img { position: relative; background: var(--bg); min-height: 180px; overflow: hidden; }
+        .hero-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+        /* Top story: never crop — whole photo on top of a blurred, enlarged copy of itself */
+        .hero-img img.hero-backdrop { object-fit: cover; filter: blur(22px) saturate(1.2) brightness(.92); transform: scale(1.15); }
+        .hero-img img.hero-photo { object-fit: contain; }
+        .hero-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+        .hero-title { font-size: 22px; font-weight: 700; line-height: 1.35; letter-spacing: -0.01em;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .hero-summary { font-size: 14px; color: var(--ink-80); line-height: 1.6;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .counter { font-size: 13px; font-weight: 600; color: var(--ink-60); min-width: 44px; text-align: center; }
+
+        /* News tiles — fixed height so every corner lines up across the grid */
+        .tile { display: flex; gap: 14px; align-items: flex-start; height: 148px; padding: 14px; width: 100%; text-align: left;
+            background: #fff; border: 1px solid var(--line); border-radius: var(--radius); cursor: pointer; transition: box-shadow .15s, border-color .15s; }
+        .tile:hover { border-color: var(--brand-ghost); box-shadow: var(--shadow); }
+        .thumb { flex: none; width: 88px; height: 88px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line-weak); background: var(--bg); position: relative; }
+        @media (max-width: 640px) { .thumb { width: 64px; height: 64px; } }
+        /* Square thumbs must crop — keep the upper part (where faces usually are) */
+        .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+        .ph { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
+        .ph img.ph-logo { position: absolute; inset: auto; top: 50%; left: 50%; width: 46%; height: auto; max-width: 72px; aspect-ratio: 1;
+            transform: translate(-50%, -50%); padding: 6%; border-radius: 22%; background: #fff; box-shadow: 0 2px 8px #0000001a; object-fit: contain; }
+        .tile-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .tile-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-60); white-space: nowrap; }
+        .tile-src { font-weight: 700; color: var(--ink-80); overflow: hidden; text-overflow: ellipsis; }
+        .tile-title { font-size: 14px; font-weight: 700; line-height: 1.38; color: var(--ink);
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .tile-title.long { -webkit-line-clamp: 4; }   /* no summary — let the headline use the space */
+        .tile-summary { font-size: 12.5px; line-height: 1.45; color: var(--ink-80);
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Re-rank animation (FLIP) */
+        @keyframes tileIn { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+        .tile-new { animation: tileIn .5s ease-out; }
+        /* Upcoming-events timeline (event tabs) */
+        .events-panel { background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+        .events-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--line-weak); }
+        .events-scroll { max-height: 360px; overflow-y: auto; padding: 0 20px 12px; scrollbar-width: thin; }
+        .ev-month { position: sticky; top: 0; z-index: 1; background: #fff; padding: 12px 0 6px; font-size: 11px; font-weight: 800;
+            letter-spacing: .08em; text-transform: uppercase; color: var(--ink-50); }
+        .ev { display: grid; grid-template-columns: 52px 44px 1fr auto; gap: 0 8px; align-items: start; padding: 6px 0; }
+        .ev-date { text-align: right; padding-top: 2px; }
+        .ev-day { font-size: 20px; font-weight: 800; line-height: 1; }
+        .ev-wd { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-50); margin-top: 2px; }
+        .ev-rail { position: relative; align-self: stretch; }
+        .ev-rail::before { content: ''; position: absolute; left: 21px; top: -6px; bottom: -6px; width: 2px; background: var(--line); }
+        /* Popularity: a dot plus one ring per star (1-5), rings never touch the dot */
+        .ev-stars { position: relative; display: block; width: 44px; height: 44px; margin-top: -10px; color: var(--brand); }
+        .ev.now .ev-stars { color: var(--accent); }
+        .ev-stars .bg { fill: var(--bg-card, #fff); }
+        .ev-name { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+        .ev-name:hover { color: var(--brand); text-decoration: underline; }
+        .ev-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 3px; font-size: 12px; color: var(--ink-60); }
+        .ev-kind { padding: 1px 7px; border-radius: 6px; background: var(--line-weak); color: var(--ink-80); font-weight: 700; font-size: 11px; }
+        .ev-desc { margin-top: 3px; font-size: 12.5px; line-height: 1.45; color: var(--ink-80); }
+        .ev-when { margin-top: 3px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; background: var(--brand-weak); color: var(--brand); }
+        .ev-when.soon { background: var(--accent-weak); color: var(--accent); }
+        .events-head { flex-wrap: wrap; }
+        .ef { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line);
+            background: #fff; font-size: 12px; font-weight: 600; color: var(--ink-60); cursor: pointer; user-select: none; }
+        .ef input { width: 14px; height: 14px; accent-color: var(--brand); cursor: pointer; }
+        .ef.on { border-color: var(--brand-ghost); background: var(--brand-weak); color: var(--brand); }
+        .ef-sep { width: 1px; height: 18px; background: var(--line); margin: 0 2px; }
+        .near { padding: 1px 7px; border-radius: 6px; background: #fff4e8; color: #e8590c; font-weight: 700; font-size: 11px; }
+        @media (max-width: 640px) {
+            .tabs-row { flex-wrap: wrap; }
+            .tabs { flex-basis: 100%; }
+            .tabs-row > span { order: 2; padding: 6px 0; font-size: 12px; }
+            .events-head { padding: 12px 14px; }
+            #events-updated, #events-count { display: none; }
+            .events-scroll { padding: 0 14px 10px; }
+            .ev { grid-template-columns: 34px 36px 1fr; }
+            .ev-stars { width: 36px; height: 36px; margin-top: -7px; }
+            .ev-rail::before { left: 17px; }
+            .ev-when { grid-column: 3; justify-self: start; margin-top: 4px; }
+        }
+
+        /* Tabs checklist (settings) */
+        .tab-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+        .tab-row.off { background: var(--bg); color: var(--ink-50); }
+        .tab-row input { width: 16px; height: 16px; accent-color: var(--brand); }
+        .tab-row .tab-name { font-weight: 700; font-size: 14px; }
+        .tab-row .tab-desc { font-size: 11px; color: var(--ink-50); }
+        .tab-row .mv { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-size: 13px; cursor: pointer; }
+        .tab-row .mv:disabled { opacity: .3; cursor: default; }
+
+        /* Like (heart) */
+        .heart { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 999px;
+            color: var(--ink-50); cursor: pointer; transition: color .15s, background .15s, transform .15s; }
+        .heart svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+        .heart:hover { color: #ef4444; background: #fef2f2; }
+        .heart.on { color: #ef4444; }
+        .heart.on svg { fill: currentColor; }
+        .heart.lg { width: 38px; height: 38px; border: 1px solid var(--line); background: #fff; }
+        .heart.lg svg { width: 18px; height: 18px; }
+        @keyframes heartPop { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+        .heart.pop { animation: heartPop .35s ease-out; }
+        #saved-btn { color: #ef4444; position: relative; }
+        #saved-btn svg { width: 17px; height: 17px; fill: currentColor; }
+        #saved-btn.active { background: #fef2f2; border-color: #ef4444; }
+        #saved-count { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+            background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+        .seg.dim { opacity: .45; }
+        #saved-count.hidden { display: none; }
+        @keyframes glowUp { 0% { box-shadow: 0 0 0 2px #0f9d58aa; } 100% { box-shadow: 0 0 0 0 transparent; } }
+        @keyframes glowDown { 0% { box-shadow: 0 0 0 2px #ff322e66; } 100% { box-shadow: 0 0 0 0 transparent; } }
+        .tile-up { animation: glowUp 2.2s ease-out; }
+        .tile-down { animation: glowDown 2.2s ease-out; }
+        @keyframes moveFade { 0%, 75% { opacity: 1; } 100% { opacity: 0; } }
+        .move { flex: none; padding: 1px 6px; border-radius: 999px; font-weight: 800; font-size: 11px; animation: moveFade 8s forwards; }
+        .move.up { background: #f2f8f7; color: #0f9d58; }
+        .move.down { background: var(--accent-weak); color: var(--accent); }
+        .move.new { background: var(--brand-weak); color: var(--brand); }
+
+        .rank { position: absolute; top: 0; left: 0; min-width: 22px; height: 22px; padding: 0 6px; border-bottom-right-radius: 8px;
+            background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+        .score { flex: none; padding: 1px 7px; border-radius: 999px; background: var(--brand-weak); color: var(--brand); font-weight: 700; font-size: 11px; }
+        .more-src { flex: none; padding: 1px 7px; border-radius: 999px; background: var(--accent-weak); color: var(--accent); font-weight: 700; font-size: 11px; }
+        .label { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+
+        /* Category colours — placeholder thumbnails & labels */
+        .c-India    { background: #fff4e8; color: #e8590c; }
+        .c-World    { background: var(--brand-weak); color: var(--brand); }
+        .c-Business { background: #f6f1fd; color: #7c3aed; }
+        .c-Markets  { background: #f2f8f7; color: #0f9d58; }
+        .c-Tech     { background: #ecfeff; color: #0e7490; }
+        .c-Tamil    { background: #fdf0f6; color: #d6336c; }
+
+        /* Modal */
+        #newsModal { display: none; }
+        #newsModal.open { display: flex; }
+        .bar { height: 6px; border-radius: 999px; background: var(--line-weak); overflow: hidden; }
+        .bar > span { display: block; height: 100%; background: var(--brand); border-radius: 999px; }
+        .cov-link { display: flex; gap: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 13px; color: var(--ink); }
+        .cov-link:hover { border-color: var(--brand-ghost); background: var(--brand-weak); }
+
+        .score.foryou { background: var(--brand); color: #fff; }
+        .match { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: var(--brand); color: #fff; }
+
+        /* Preferences drawer */
+        #prefsDrawer { display: none; }
+        #prefsDrawer.open { display: flex; }
+        .pref-section { padding: 20px 24px; border-bottom: 1px solid var(--line); }
+        .pref-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .pref-hint { font-size: 12px; color: var(--ink-60); margin-bottom: 12px; }
+        .pchip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+            border: 1px solid var(--line); background: #fff; color: var(--ink-80); cursor: pointer; }
+        .pchip:hover { border-color: var(--ink-50); }
+        .pchip.on { background: var(--brand-weak); border-color: var(--brand); color: var(--brand); }
+        .pchip.off { background: var(--accent-weak); border-color: var(--accent); color: var(--accent); text-decoration: line-through; }
+        .pchip.solid { background: var(--ink); border-color: var(--ink); color: #fff; }
+        .pchip.solid.muted { background: var(--accent); border-color: var(--accent); }
+        .pchip .x { font-size: 15px; line-height: 1; opacity: .8; }
+        .pchip.ghost { border-style: dashed; color: var(--ink-60); font-weight: 500; }
+        .banner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px 20px;
+            border-radius: var(--radius); background: var(--brand-weak); border: 1px solid var(--brand-ghost); }
+        .btn-brand { height: 38px; padding: 0 18px; border-radius: 10px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700; border: 0; cursor: pointer; }
+        .btn-brand:hover { filter: brightness(1.08); }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinning { display: inline-block; animation: spin 1s linear infinite; }
+        @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        .skeleton { background: linear-gradient(90deg, var(--line-weak) 25%, #fff 50%, var(--line-weak) 75%); background-size: 800px 100%; animation: shimmer 1.2s infinite; border-radius: var(--radius); }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+    <!-- Navigation -->
+    <div id="site-nav"></div>
+    <script src="/static/nav.js?v=2"></script>
+
+    <div class="pt-20 pb-10 news-page">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <!-- Page Header -->
+            <!-- Single row: title on the left; updated · ranked-for-you chips · settings / refresh on the right -->
+            <div class="mb-2 flex items-center justify-between gap-4 flex-wrap">
+                <h2 class="text-3xl font-bold text-blue-700 flex-none">News</h2>
+                <div class="flex items-center justify-end gap-x-3 gap-y-1 flex-wrap min-w-0 flex-1">
+                    <div class="seg" id="sort-seg">
+                        <button id="sort-top" class="active" onclick="setSort('top')" title="Ranked by score (and your interests)">
+                            <span class="flex items-center gap-1.5">Rank<span id="rank-tags" class="hidden sm:flex items-center gap-1 whitespace-nowrap"></span></span>
+                        </button>
+                        <button id="sort-latest" onclick="setSort('latest')" title="Newest first">Latest</button>
+                    </div>
+                    <button id="saved-btn" class="icon-btn" onclick="toggleSavedView()" title="Saved stories">
+                        <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2.1 0 3.8 1.2 4.6 2.8h2C13.8 6.2 15.5 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z"/></svg>
+                        <span id="saved-count" class="hidden"></span>
+                    </button>
+                    <button id="settings-btn" class="icon-btn" onclick="openPrefs()" title="Interests &amp; settings">⚙</button>
+                    <button id="refresh-btn" class="icon-btn" style="width:auto;padding:0 16px;gap:6px;font-size:13px;font-weight:600" onclick="refreshNow()" title="Fetch the latest from all sources">
+                        <span id="refresh-icon">↻</span> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category tabs -->
+            <div class="tabs-row mb-6">
+                <div id="tabs" class="tabs"></div>
+                <span class="flex-none text-sm whitespace-nowrap" style="color:var(--ink-60)">
+                    <span id="news-subtitle">Loading latest headlines…</span><span id="view-count"></span>
+                </span>
+            </div>
+
+            <!-- Personalisation prompt (shown until interests are set) -->
+            <div id="prefs-banner" class="banner mb-6 hidden">
+                <div>
+                    <p class="font-bold">Rank news by what you care about</p>
+                    <p class="text-sm" style="color:var(--ink-80)">Follow topics like Nifty, RBI or AI and pick favourite sources — matching stories move to the top.</p>
+                </div>
+                <button class="btn-brand" onclick="openPrefs()">Set my interests</button>
+            </div>
+
+            <!-- Upcoming-events timeline — shown on event tabs instead of the Top Stories carousel -->
+            <section id="events-section" class="mb-6 hidden">
+                <div class="events-panel">
+                    <div class="events-head">
+                        <div class="flex items-baseline gap-2">
+                            <h3 class="text-lg font-bold">Upcoming events</h3>
+                            <span id="events-count" class="text-sm" style="color:var(--ink-50)"></span>
+                            <span class="text-xs hidden sm:inline" style="color:var(--ink-50)" title="Each ring around the dot is one star: 1 ring = minor, 5 rings = major / very popular. Hover a dot for the reason.">· ◎ rings = popularity</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap justify-end">
+                            <div id="events-filters" class="flex items-center gap-1.5 flex-wrap"></div>
+                            <span id="events-updated" class="text-xs" style="color:var(--ink-50)"></span>
+                            <button id="events-pdf-btn" class="icon-btn" style="width:32px;height:32px" onclick="downloadEventsPdf()" title="Download these events as a PDF">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+                            </button>
+                            <button id="events-refresh-btn" class="icon-btn" style="width:32px;height:32px" onclick="refreshEventsNow()" title="Look for new events now (takes ~2 min)">
+                                <span id="events-refresh-icon">↻</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="events-list" class="events-scroll"></div>
+                </div>
+            </section>
+
+            <!-- Toolbar — one row: section title + count … search · sources · carousel controls -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <div class="flex items-baseline gap-2">
+                    <h3 id="section-title" class="text-lg font-bold">Top Stories</h3>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <input id="search-input" type="search" placeholder="Search headlines" oninput="applyFilters()" class="pill min-w-0 w-full sm:w-56">
+                    <select id="source-select" onchange="applyFilters()" class="pill min-w-0 flex-1 sm:flex-none sm:w-48">
+                        <option value="">All sources</option>
+                    </select>
+                    <div id="hero-controls" class="flex items-center gap-2 sm:ml-2">
+                        <button class="icon-btn" onclick="stepHero(-1)" aria-label="Previous top story">‹</button>
+                        <span id="hero-counter" class="counter">1 / 5</span>
+                        <button class="icon-btn" onclick="stepHero(1)" aria-label="Next top story">›</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top stories carousel -->
+            <section id="hero-section" class="mb-6 hidden">
+                <div id="hero"></div>
+            </section>
+
+            <!-- News grid -->
+            <div id="news-grid" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"></div>
+            <p id="news-empty" class="text-center py-16 hidden" style="color:var(--ink-60)">No headlines match your filters.</p>
+            <div class="text-center mt-8">
+                <button id="show-more-btn" onclick="showMore()" class="pill hidden font-semibold" style="padding:0 28px">Show more</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- News detail modal -->
+    <div id="newsModal" class="fixed inset-0 z-[60] items-center justify-center p-4" style="background:#29292d99" onclick="if (event.target === this) closeModal()">
+        <div class="bg-white w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" style="border-radius:16px;box-shadow:0 8px 32px #00000033">
+            <div class="flex items-center justify-between px-6 py-3" style="border-bottom:1px solid var(--line)">
+                <div class="flex items-center gap-2 min-w-0 text-sm">
+                    <span id="modal-category" class="label"></span>
+                    <span id="modal-source" class="font-bold truncate"></span>
+                    <span id="modal-time" class="truncate" style="color:var(--ink-60)"></span>
+                </div>
+                <button onclick="closeModal()" class="text-2xl leading-none px-2" style="color:var(--ink-50)" aria-label="Close">&times;</button>
+            </div>
+            <div class="overflow-y-auto">
+                <img id="modal-image" class="w-full max-h-80 object-cover hidden" style="object-position: center 25%" referrerpolicy="no-referrer" alt=""
+                     onerror="if (this.dataset.relay) { this.src = this.dataset.relay; this.dataset.relay = ''; } else { this.classList.add('hidden'); }">
+                <div class="px-6 py-5">
+                    <h3 id="modal-title" class="text-2xl font-bold leading-snug mb-4" style="letter-spacing:-0.01em"></h3>
+                    <p id="modal-summary" class="leading-relaxed text-base" style="color:var(--ink-80)"></p>
+
+                    <div class="mt-6 p-4" style="background:var(--bg);border-radius:var(--radius)">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-bold">Why it ranks here</span>
+                            <span id="modal-score" class="score" style="font-size:13px;padding:2px 10px"></span>
+                        </div>
+                        <div id="modal-breakdown" class="grid grid-cols-2 gap-x-6 gap-y-3 text-xs" style="color:var(--ink-60)"></div>
+                    </div>
+
+                    <div id="modal-coverage-wrap" class="mt-6 hidden">
+                        <p class="text-sm font-bold mb-2">More coverage of this story</p>
+                        <div id="modal-coverage" class="flex flex-col gap-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-between gap-3 px-6 py-4" style="border-top:1px solid var(--line)">
+                <div class="flex gap-2">
+                    <button id="modal-prev" class="icon-btn" onclick="stepModal(-1)" title="Previous (←)">‹</button>
+                    <button id="modal-next" class="icon-btn" onclick="stepModal(1)" title="Next (→)">›</button>
+                    <span id="modal-heart"></span>
+                </div>
+                <a id="modal-link" target="_blank" rel="noopener noreferrer"
+                   class="px-5 py-2.5 text-white text-sm font-bold" style="background:var(--brand);border-radius:10px">
+                    Read full article ↗
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferences drawer -->
+    <div id="prefsDrawer" class="fixed inset-0 z-[70] justify-end" style="background:#29292d99" onclick="if (event.target === this) closePrefs()">
+        <div class="bg-white h-full w-full max-w-lg flex flex-col" style="box-shadow:-8px 0 32px #00000033">
+            <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid var(--line)">
+                <div>
+                    <h3 class="text-xl font-bold">Interests &amp; settings</h3>
+                    <p class="text-xs" style="color:var(--ink-60)">Stories matching these get a higher score and rise to the top.</p>
+                </div>
+                <button onclick="closePrefs()" class="text-2xl leading-none px-2" style="color:var(--ink-50)" aria-label="Close">&times;</button>
+            </div>
+            <div class="overflow-y-auto flex-1">
+                <div class="pref-section">
+                    <p class="pref-title">Tabs</p>
+                    <p class="pref-hint">Pick the tabs to show after <b>All</b> and use ↑ ↓ to order them. Tabs marked 📅 show an upcoming-events timeline (a red dot on the tab). Nothing ticked → only All.</p>
+                    <div id="pref-tabs" class="flex flex-col gap-2"></div>
+                    <p class="pref-hint" style="margin:14px 0 8px">Add your own tab — it shows every story whose headline or summary mentions one of its keywords.</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input id="custom-tab-name" class="pill sm:w-36" placeholder="Tab name, e.g. Chess" maxlength="24">
+                        <input id="custom-tab-words" class="pill flex-1 min-w-0" placeholder="Keywords, comma separated (optional)"
+                               onkeydown="if (event.key === 'Enter') { event.preventDefault(); addCustomTab(); }">
+                        <button class="pill font-semibold" onclick="addCustomTab()">Add tab</button>
+                    </div>
+                    <p id="custom-tab-msg" class="text-xs mt-1" style="color:var(--accent)"></p>
+                </div>
+                <div class="pref-section">
+                    <p class="pref-title">Topics I follow</p>
+                    <p class="pref-hint">Words or names to look for in headlines and summaries. Matching one topic adds a strong boost; two or more adds more.</p>
+                    <div id="pref-topics" class="flex flex-wrap gap-2 mb-3"></div>
+                    <div class="flex gap-2 mb-3">
+                        <input id="topic-input" class="pill flex-1" placeholder="Add a topic, e.g. HDFC Bank" onkeydown="if (event.key === 'Enter') { event.preventDefault(); addTerm('topics', 'topic-input'); }">
+                        <button class="pill font-semibold" onclick="addTerm('topics', 'topic-input')">Add</button>
+                    </div>
+                    <p class="pref-hint" style="margin-bottom:8px">Suggestions</p>
+                    <div id="pref-suggestions" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div class="pref-section">
+                    <p class="pref-title">Sources</p>
+                    <p class="pref-hint">Tap to cycle: normal → <span style="color:var(--brand);font-weight:700">preferred</span> (small boost) → <span style="color:var(--accent);font-weight:700">hidden</span>.</p>
+                    <div id="pref-sources" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div class="pref-section">
+                    <p class="pref-title">Hide stories mentioning</p>
+                    <p class="pref-hint">Anything containing these words is left out of your feed.</p>
+                    <div id="pref-muted" class="flex flex-wrap gap-2 mb-3"></div>
+                    <div class="flex gap-2">
+                        <input id="muted-input" class="pill flex-1" placeholder="e.g. celebrity" onkeydown="if (event.key === 'Enter') { event.preventDefault(); addTerm('muted_keywords', 'muted-input'); }">
+                        <button class="pill font-semibold" onclick="addTerm('muted_keywords', 'muted-input')">Add</button>
+                    </div>
+                </div>
+                <div class="pref-section" id="pref-settings" style="border-bottom:0;background:var(--bg)">
+                    <p class="pref-title">News settings</p>
+                    <p class="pref-hint">Applies to the background refresh on the server, even when this page is closed.</p>
+                    <div class="flex items-center justify-between gap-4 mb-3">
+                        <div>
+                            <p class="text-sm font-semibold">Keep news for</p>
+                            <p class="text-xs" style="color:var(--ink-60)">Older news is cleared automatically</p>
+                        </div>
+                        <select id="retention-select" class="pill" onchange="draft.retention_days = +this.value"></select>
+                    </div>
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <p class="text-sm font-semibold">Refresh news every</p>
+                            <p class="text-xs" style="color:var(--ink-60)">How often all sources are fetched again</p>
+                        </div>
+                        <select id="refresh-select" class="pill" onchange="draft.refresh_minutes = +this.value"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-between gap-3 px-6 py-4" style="border-top:1px solid var(--line)">
+                <button class="pill font-semibold" onclick="resetPrefs()" title="Clear topics, categories, sources and hidden words">Clear interests</button>
+                <div class="flex items-center gap-3">
+                    <span id="prefs-status" class="text-xs" style="color:var(--ink-60)"></span>
+                    <button class="pill font-semibold" onclick="closePrefs()">Cancel</button>
+                    <button id="prefs-save" class="btn-brand" onclick="savePrefs()">Save &amp; re-rank</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PAGE_SIZE = 60;
+        const HERO_COUNT = 5;
+        const HERO_ROTATE_MS = 7000;
+        let tabsCatalog = [];      // [{key, categories, events?}] from the server
+        let eventsByTab = {};      // {tab: [upcoming events]}
+        let home = null;           // {city, country, source} — "domestic" = home.country
+
+        let allItems = [];
+        let stories = {};         // story_id -> all articles in that story
+        let view = [];            // items currently listed (hero + grid), in display order
+        let visibleCount = PAGE_SIZE;
+        let activeTab = 'All';
+        let sortMode = 'top';
+        let heroIndex = 0;
+        let heroTimer = null;
+        let modalIndex = -1;
+        let personalised = false;
+        let prefs = null;          // saved preferences (from /api/news)
+        let draft = null;          // preferences being edited in the drawer
+        let prefOptions = null;    // sources / categories / suggestions for the drawer
+        let lastData = null;
+        let animateNext = false;   // next grid render animates the re-rank
+        let previousRank = {};     // link -> position in the view before a reload
+        let lastFetchedAt = null;
+        let sortRestored = false;
+        let likedLinks = new Set();  // links in news_saved
+        let savedItems = [];         // snapshots from /api/news/saved
+        let savedMode = false;  // saved Rank / Latest choice applied once, on first load
+
+        function esc(s) {
+            return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function timeAgo(iso) {
+            if (!iso) return '';
+            const mins = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000));
+            if (mins < 1) return 'just now';
+            if (mins < 60) return mins + 'm ago';
+            const hrs = Math.floor(mins / 60);
+            if (hrs < 24) return hrs + 'h ago';
+            return Math.floor(hrs / 24) + 'd ago';
+        }
+
+        function fullTime(iso) {
+            if (!iso) return '';
+            return new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+        }
+
+        function initials(source) {
+            return source.split(/\s+/).filter(w => /^[A-Za-z]/.test(w)).map(w => w[0]).join('').slice(0, 3).toUpperCase();
+        }
+
+        // The publisher's own site (Google News items: the decoded article URL)
+        function publisherDomain(item) {
+            for (const u of [item.article_url, item.link]) {
+                try { const h = new URL(u).hostname; if (h && !h.endsWith('news.google.com')) return h.replace(/^www\./, ''); } catch (e) {}
+            }
+            return null;
+        }
+
+        function thumbHtml(item, cls = 'ph') {
+            // Under the photo: the publisher's logo on a tinted tile (initials if even that fails),
+            // so blocked / missing images still look intentional
+            const domain = publisherDomain(item);
+            const logo = domain ? `<img class="ph-logo" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128" alt="" loading="lazy" onerror="this.remove()">` : '';
+            const ph = `<div class="${cls} c-${esc(item.category)}"><span>${esc(initials(item.source))}</span>${logo}</div>`;
+            if (!item.image) return ph;
+            // Direct first; if the publisher blocks hot-linking, retry once through /api/news/img; then the logo tile
+            return ph + `<img src="${esc(item.image)}" loading="lazy" referrerpolicy="no-referrer" alt="" data-relay="${esc('/api/news/img?u=' + encodeURIComponent(item.image))}"
+                onerror="if (this.dataset.relay) { this.src = this.dataset.relay; this.dataset.relay = ''; } else { this.remove(); }">`;
+        }
+
+        // Top story image: the full photo (contain) over a blurred copy of itself, so nothing is cut off
+        function heroImageHtml(item) {
+            if (!item.image) return thumbHtml(item, 'ph h-full text-5xl');
+            const src = esc(item.image), relay = esc('/api/news/img?u=' + encodeURIComponent(item.image));
+            const retry = `onerror="if (this.dataset.relay) { this.src = this.dataset.relay; this.dataset.relay = ''; } else { this.remove(); }"`;
+            return thumbHtml({ ...item, image: null }, 'ph h-full text-5xl')
+                + `<img class="hero-backdrop" src="${src}" data-relay="${relay}" referrerpolicy="no-referrer" alt="" aria-hidden="true" ${retry}>`
+                + `<img class="hero-photo" src="${src}" data-relay="${relay}" referrerpolicy="no-referrer" alt="" ${retry}>`;
+        }
+
+        function showSkeleton() {
+            document.getElementById('news-grid').innerHTML =
+                Array.from({ length: 9 }, () => '<div class="skeleton" style="height:148px"></div>').join('');
+        }
+
+        async function loadNews(rerank = false) {
+            if (!allItems.length) showSkeleton();
+            try {
+                const res = await fetch('/api/news');
+                const data = await res.json();
+                // Animate only when the content actually changed (new fetch or re-score)
+                if (allItems.length && (rerank || data.fetched_at !== lastFetchedAt)) {
+                    animateNext = true;
+                    previousRank = {};
+                    view.forEach((item, i) => previousRank[item.link] = i);
+                }
+                lastFetchedAt = data.fetched_at;
+                lastData = data;
+                allItems = data.items || [];
+                tabsCatalog = data.tabs_catalog || [];
+                eventsByTab = data.events || {};
+                home = data.home || null;
+                likedLinks = new Set(data.saved_links || []);
+                updateSavedCount();
+                prefs = data.preferences || null;
+                // First load: restore the saved Rank / Latest choice before rendering
+                if (!sortRestored && prefs && prefs.sort_mode && prefs.sort_mode !== sortMode) {
+                    sortMode = prefs.sort_mode;
+                    document.getElementById('sort-top').classList.toggle('active', sortMode === 'top');
+                    document.getElementById('sort-latest').classList.toggle('active', sortMode === 'latest');
+                }
+                sortRestored = true;
+                personalised = !!data.personalised;
+                renderPrefsSummary();
+                stories = {};
+                allItems.forEach(i => (stories[i.story_id] = stories[i.story_id] || []).push(i));
+                renderMeta(data);
+                applyFilters(true);
+            } catch (e) {
+                document.getElementById('news-subtitle').textContent = 'Could not load news — ' + e.message;
+            }
+        }
+
+        function renderMeta(data) {
+            const sources = data.sources || [];
+            const ok = sources.filter(s => s.ok);
+            renderStatusLine();
+            if (prefs) {
+                const settings = `Refreshes every ${prefs.refresh_minutes} min · keeps ${prefs.retention_days} ${prefs.retention_days === 1 ? 'day' : 'days'} of news`;
+                document.getElementById('settings-btn').title = 'Interests & settings — ' + settings;
+                document.getElementById('refresh-btn').title = 'Fetch the latest from all sources now. ' + settings + '.';
+            }
+
+            const select = document.getElementById('source-select');
+            const current = select.value;
+            select.innerHTML = '<option value="">All sources</option>' +
+                ok.slice().sort((a, b) => a.name.localeCompare(b.name))
+                  .map(s => `<option value="${esc(s.name)}">${esc(s.name)}</option>`).join('');
+            select.value = ok.some(s => s.name === current) ? current : '';
+        }
+
+        // Built-in tabs from the server + the user's custom (keyword) tabs
+        function allTabDefs(customTabs) {
+            return [...tabsCatalog, ...(customTabs || []).map(c => ({ key: c.name, keywords: c.keywords, custom: true }))];
+        }
+        function tabDef(key) { return allTabDefs(prefs && prefs.custom_tabs).find(t => t.key === key); }
+        const keywordRegexCache = {};
+        function keywordRegex(words) {
+            const k = words.join('|');
+            if (!keywordRegexCache[k]) keywordRegexCache[k] = new RegExp(words.map(w => {
+                const e = w.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                return /^[\x00-\x7f]*$/.test(w) ? `\\b${e}\\b` : e;
+            }).join('|'), 'i');
+            return keywordRegexCache[k];
+        }
+        // Which articles a tab shows (null = everything)
+        function tabFilter(key) {
+            const t = key === 'All' ? null : tabDef(key);
+            if (!t) return null;
+            if (t.custom) { const rx = keywordRegex(t.keywords); return i => rx.test(i.title + ' ' + (i.summary || '')); }
+            return i => t.categories.includes(i.category);
+        }
+        function visibleTabs() {
+            return ['All', ...((prefs && prefs.tabs) || []).filter(k => tabDef(k))];
+        }
+        function isEventTab(key) { return !!(tabDef(key) || {}).events; }
+
+        function renderTabs() {
+            const pool = savedMode ? savedItems : allItems;
+            const tabs = visibleTabs();
+            if (!tabs.includes(activeTab)) activeTab = 'All';
+            document.getElementById('tabs').innerHTML = tabs.map(key => {
+                const f = tabFilter(key);
+                const n = f ? pool.filter(f).length : pool.length;
+                return `<button class="tab ${key === activeTab ? 'active' : ''}" onclick="setTab('${esc(key)}')" ${isEventTab(key) ? 'title="Has an upcoming-events timeline"' : ''}>${esc(key)}${isEventTab(key) ? '<span class="ev-flag"></span>' : ''}<span class="count">${n}</span></button>`;
+            }).join('');
+            const tabsEl = document.getElementById('tabs');
+            tabsEl.classList.toggle('overflowing', tabsEl.scrollWidth > tabsEl.clientWidth + 2);
+            tabsEl.querySelector('.tab.active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
+
+        function setTab(key) { activeTab = key; applyFilters(); }
+
+        // Finance tab ranks markets / macro / RBI / Fed news above general business stories
+        function rankScore(i) { return activeTab === 'Finance' && i.finance_score != null ? i.finance_score : i.score; }
+
+        function setSort(mode, persist = true) {
+            if (savedMode) setSavedMode(false);
+            sortMode = mode;
+            if (persist && prefs) {
+                prefs.sort_mode = mode;
+                // Remembered in MongoDB (user_profiles.news_preferences.sort_mode)
+                fetch('/api/news/preferences/sort-mode', {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sort_mode: mode }),
+                }).catch(() => {});
+            }
+            document.getElementById('sort-top').classList.toggle('active', mode === 'top');
+            document.getElementById('sort-latest').classList.toggle('active', mode === 'latest');
+            applyFilters();
+        }
+
+        function applyFilters(keepPage = false) {
+            const q = document.getElementById('search-input').value.trim().toLowerCase();
+            const source = document.getElementById('source-select').value;
+            const pool = savedMode ? savedItems : allItems;
+            const inTab = tabFilter(activeTab);
+            // Event tabs: the Domestic / International checkboxes filter the articles too
+            const ef = !savedMode && isEventTab(activeTab) ? eventFilters(activeTab) : null;
+            const matches = pool.filter(i =>
+                (!inTab || inTab(i)) &&
+                (!ef || regionAllowed(i, false, ef, activeTab)) &&
+                (!source || i.source === source) &&
+                (!q || i.title.toLowerCase().includes(q) || (i.summary || '').toLowerCase().includes(q))
+            );
+
+            if (savedMode) {
+                view = matches;   // already newest-liked first
+            } else if (sortMode === 'top') {
+                // One card per story: its best-scoring article among those matching the filters
+                const best = {};
+                matches.forEach(i => { if (!best[i.story_id] || rankScore(i) > rankScore(best[i.story_id])) best[i.story_id] = i; });
+                view = Object.values(best).sort((a, b) => rankScore(b) - rankScore(a));
+            } else {
+                // Newest time band first; within a band, highest score first
+                view = matches.slice().sort((a, b) => timeBand(a) - timeBand(b) || rankScore(b) - rankScore(a));
+            }
+
+            if (!keepPage) visibleCount = PAGE_SIZE;
+            renderTabs();
+            renderEvents();
+            renderHero(keepPage);
+            renderToolbar();
+            renderGrid();
+        }
+
+        // Rank mode: "Top Stories  3,468 stories" + carousel controls;
+        // Latest mode (or searching): "ALL · 3,893 articles"
+        function renderToolbar() {
+            const hero = heroCount() > 0;
+            const title = document.getElementById('section-title');
+            document.getElementById('news-empty').textContent = savedMode
+                ? 'No saved stories here yet — tap ♡ on any story to keep it.' : 'No headlines match your filters.';
+            if (savedMode) {
+                title.className = 'text-lg font-bold';
+                title.textContent = 'Saved';
+                document.getElementById('view-count').textContent = ` · ${view.length.toLocaleString()} saved ${view.length === 1 ? 'story' : 'stories'}`;
+                document.getElementById('hero-controls').classList.add('hidden');
+                return;
+            }
+            const noun = sortMode === 'top' ? 'stories' : 'articles';
+            title.className = 'text-lg font-bold';
+            const searching = !!document.getElementById('search-input').value.trim();
+            title.textContent = sortMode === 'latest' ? 'Latest' : searching ? 'Results' : 'Top Stories';
+            document.getElementById('view-count').textContent = ` · ${view.length.toLocaleString()} ${view.length === 1 ? noun.replace(/ies$/, 'y').replace(/s$/, '') : noun}`;
+            document.getElementById('hero-controls').classList.toggle('hidden', !hero);
+        }
+
+        // ── Upcoming-events timeline ───────────────────────────────────
+        function localDate(iso) { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); }
+        function daysFromToday(iso) {
+            const t = new Date(); t.setHours(0, 0, 0, 0);
+            return Math.round((localDate(iso) - t) / 86400000);
+        }
+        function shortDate(iso) { return localDate(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }); }
+
+        function renderEvents() {
+            const section = document.getElementById('events-section');
+            const show = !savedMode && isEventTab(activeTab);
+            section.classList.toggle('hidden', !show);
+            if (!show) return;
+            const allEvents = eventsByTab[activeTab] || [];
+            const f = eventFilters(activeTab);
+            const showMode = activeTab === 'Hackathon';
+            const events = allEvents.filter(e => passesEventFilters(e, f, showMode));
+            renderEventFilterChips(f, showMode);
+            const st = lastStatus && lastStatus.events;
+            document.getElementById('events-count').textContent = allEvents.length
+                ? (events.length === allEvents.length ? `${allEvents.length} upcoming` : `${events.length} of ${allEvents.length} upcoming`) : '';
+            document.getElementById('events-updated').textContent = st && st.fetched_at ? `checked ${timeAgo(st.fetched_at)}` : '';
+            document.getElementById('events-refresh-icon').classList.toggle('spinning', !!(st && (st.refreshing || st.queued)));
+
+            if (!events.length) {
+                document.getElementById('events-list').innerHTML = `<p class="py-6 text-sm text-center" style="color:var(--ink-50)">${
+                    allEvents.length ? 'No events match the filters above.'
+                    : st && (st.refreshing || st.queued) ? 'Looking for upcoming events…' : 'No upcoming events found yet — they are checked every 12 hours, or press ↻.'}</p>`;
+                return;
+            }
+            let month = null;
+            document.getElementById('events-list').innerHTML = events.map(e => {
+                const start = localDate(e.start_date);
+                const m = start.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+                const header = m !== month ? `<div class="ev-month">${(month = m)}</div>` : '';
+                const until = daysFromToday(e.start_date), untilEnd = daysFromToday(e.end_date);
+                const ongoing = until <= 0 && untilEnd >= 0;
+                const when = ongoing ? (e.end_date !== e.start_date ? `Ongoing · ends ${shortDate(e.end_date)}` : 'Today')
+                    : until === 1 ? 'Tomorrow' : `in ${until} days`;
+                const multi = e.end_date !== e.start_date ? ` → ${shortDate(e.end_date)}` : '';
+                return header + `
+                <div class="ev ${ongoing ? 'now' : ''}">
+                    <div class="ev-date"><div class="ev-day">${start.getDate()}</div><div class="ev-wd">${start.toLocaleDateString('en-IN', { weekday: 'short' })}</div></div>
+                    <div class="ev-rail" title="${esc(starsTitle(e))}">${starRings(e.stars)}</div>
+                    <div class="min-w-0">
+                        <a class="ev-name" href="${esc(e.url || '#')}" target="_blank" rel="noopener noreferrer"
+                           ${e.link_status === 'replaced' ? 'title="The event\'s own link was broken — this opens the page it was listed on"' : ''}>${esc(e.name)}</a>
+                        <div class="ev-meta">
+                            ${e.kind ? `<span class="ev-kind">${esc(e.kind)}</span>` : ''}
+                            ${isNearHome(e) ? `<span class="near">Near you</span>` : ''}
+                            ${e.location ? `<span>📍 ${esc(e.location)}</span>` : ''}
+                            ${multi ? `<span>${esc(shortDate(e.start_date) + multi)}</span>` : ''}
+                            <span>· ${esc(e.source || '')}</span>
+                        </div>
+                        ${e.description ? `<div class="ev-desc">${esc(e.description)}</div>` : ''}
+                    </div>
+                    <span class="ev-when ${ongoing || until <= 3 ? 'soon' : ''}">${esc(when)}</span>
+                </div>`;
+            }).join('');
+        }
+
+        // ── Event filters (Domestic / International, Online / In-person) ──
+        // Tabs whose filter splits "domestic" into Local (home city) + National
+        const LOCAL_FILTER_TABS = ['Hackathon', 'Triathlon', 'Running'];
+        function eventFilters(tab) {
+            const saved = (prefs && prefs.event_filters && prefs.event_filters[tab]) || {};
+            return { local: true, national: true, international: true, online: true, in_person: true, ...saved };
+        }
+        function homeCityRegex() {
+            if (!home || !home.city) return null;
+            const aliases = { bengaluru: 'bengaluru|bangalore', mumbai: 'mumbai|bombay', chennai: 'chennai|madras', kolkata: 'kolkata|calcutta' };
+            return new RegExp(`\\b(${aliases[home.city.toLowerCase()] || home.city})\\b`, 'i');
+        }
+        // local (home city) / national (rest of home country) / international — for events and articles
+        function regionOf(item, isEvent) {
+            const rx = homeCityRegex();
+            const where = isEvent ? (item.location || '') : `${item.title} ${item.summary || ''}`;
+            if (rx && rx.test(where)) return 'local';
+            return isDomestic(item) ? 'national' : 'international';
+        }
+        function regionAllowed(item, isEvent, f, tab) {
+            let region = regionOf(item, isEvent);
+            if (region === 'local' && !LOCAL_FILTER_TABS.includes(tab)) region = 'national';
+            return f[region];
+        }
+        function isDomestic(e) {
+            return !!(home && e.country && e.country.toLowerCase() === home.country.toLowerCase());
+        }
+        function isNearHome(e) {
+            const rx = homeCityRegex();
+            return !!(rx && e.location && rx.test(e.location));
+        }
+        function passesEventFilters(e, f, useMode) {
+            const online = e.mode === 'online';
+            if (useMode && !(online ? f.online : f.in_person)) return false;
+            if (online && !e.country) return true;   // online with no country (e.g. a global hackathon) isn't local/national/international
+            return regionAllowed(e, true, f, activeTab);
+        }
+        function renderEventFilterChips(f, showMode) {
+            const chip = (key, label, title) => `<label class="ef ${f[key] ? 'on' : ''}" title="${esc(title)}">
+                <input type="checkbox" ${f[key] ? 'checked' : ''} onchange="setEventFilter('${key}', this.checked)">${esc(label)}</label>`;
+            const country = home ? home.country : 'your country';
+            const city = home && home.city;
+            const local = LOCAL_FILTER_TABS.includes(activeTab);
+            document.getElementById('events-filters').innerHTML =
+                (showMode ? chip('in_person', 'In-person', 'Events held at a venue') + chip('online', 'Online', 'Online / virtual events') + '<span class="ef-sep"></span>' : '') +
+                (local ? chip('local', city ? `Local (${city})` : 'Local', city ? `In and around ${city} — from your ${home.source}` : 'Your city') : '') +
+                chip('national', 'National', local && city ? `Elsewhere in ${country}` : `Anywhere in ${country}`) +
+                chip('international', 'International', `Outside ${country}`);
+        }
+        function setEventFilter(key, value) {
+            const f = { ...eventFilters(activeTab), [key]: value };
+            prefs.event_filters = { ...(prefs.event_filters || {}), [activeTab]: f };
+            applyFilters();   // timeline + articles
+            // Remembered in MongoDB (user_profiles.news_preferences.event_filters)
+            fetch('/api/news/preferences/event-filters', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tab: activeTab, filters: f }),
+            }).catch(() => {});
+        }
+
+        // Dot + N concentric rings = N-star popularity (1-5)
+        function starRings(stars) {
+            const n = Math.max(1, Math.min(5, stars || 1));
+            let rings = '';
+            for (let i = 1; i <= n; i++) {
+                rings += `<circle cx="22" cy="22" r="${3.5 + i * 3.4}" fill="none" stroke="currentColor" stroke-width="1.4" opacity="${(1 - (i - 1) * 0.14).toFixed(2)}"/>`;
+            }
+            return `<svg class="ev-stars" viewBox="0 0 44 44" aria-label="${n} of 5 popularity">`
+                + `<circle class="bg" cx="22" cy="22" r="${4.5 + n * 3.4}"/>${rings}<circle cx="22" cy="22" r="3.2" fill="currentColor"/></svg>`;
+        }
+        function starsTitle(e) {
+            const n = Math.max(1, Math.min(5, e.stars || 1));
+            return `${'★'.repeat(n)}${'☆'.repeat(5 - n)} popularity ${n}/5` + (e.stars_reason ? ` — ${e.stars_reason}` : '');
+        }
+
+        // ⬇ — the events currently listed (after filters) as an executive PDF
+        async function downloadEventsPdf() {
+            const btn = document.getElementById('events-pdf-btn');
+            const f = eventFilters(activeTab);
+            const showMode = activeTab === 'Hackathon';
+            const events = (eventsByTab[activeTab] || []).filter(e => passesEventFilters(e, f, showMode));
+            const on = [...document.querySelectorAll('#events-filters .ef')].filter(l => l.querySelector('input').checked).map(l => l.textContent.trim());
+            const all = document.querySelectorAll('#events-filters .ef').length;
+            btn.disabled = true; btn.style.opacity = '.5';
+            try {
+                const res = await fetch('/api/news/events/pdf', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tab: activeTab, events, filters: on.length === all ? 'none (all events)' : on.join(', ') || 'nothing selected' }),
+                });
+                if (!res.ok) throw new Error((await res.json()).detail || 'HTTP ' + res.status);
+                const blob = await res.blob();
+                const name = (res.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/)?.[1] || `events-${activeTab}.pdf`;
+                const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: name });
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+            } catch (e) {
+                alert('Could not create the PDF: ' + e.message);
+            } finally {
+                btn.disabled = false; btn.style.opacity = '';
+            }
+        }
+
+        async function refreshEventsNow() {
+            try {
+                const res = await fetch('/api/news/events/refresh', { method: 'POST' });
+                const body = await res.json();
+                if (!res.ok) throw new Error(body.detail || 'HTTP ' + res.status);
+                lastStatus = { ...(lastStatus || {}), events: { ...((lastStatus || {}).events || {}), queued: true } };
+                renderEvents();
+                clearTimeout(pollTimer); pollTimer = setTimeout(pollStatus, 3000);
+            } catch (e) { alert('Could not start an events refresh: ' + e.message); }
+        }
+
+        // ── Top stories carousel ───────────────────────────────────────
+        function heroCount() {
+            const q = document.getElementById('search-input').value.trim();
+            return sortMode === 'top' && !q && !savedMode && !isEventTab(activeTab) ? Math.min(HERO_COUNT, view.length) : 0;
+        }
+
+        function renderHero(keepIndex = false) {
+            const n = heroCount();
+            document.getElementById('hero-section').classList.toggle('hidden', n === 0);
+            clearInterval(heroTimer);
+            if (!n) return;
+            if (!keepIndex || heroIndex >= n) heroIndex = 0;
+
+            const item = view[heroIndex];
+            const others = (stories[item.story_id] || []).length - 1;
+            document.getElementById('hero').innerHTML = `
+                <div class="hero" onclick="openModal(${heroIndex})">
+                    <div class="hero-img">${heroImageHtml(item)}
+                        <span class="rank" style="height:30px;min-width:36px;font-size:14px">#${heroIndex + 1}</span>
+                    </div>
+                    <div class="hero-body">
+                        <div class="flex items-center gap-2 flex-wrap text-xs" style="color:var(--ink-60)">
+                            <span class="label c-${esc(item.category)}">${esc(item.category)}</span>
+                            <span class="font-bold" style="color:var(--ink-80)">${esc(item.source)}</span>
+                            <span>${esc(timeAgo(item.published))}</span>
+                            <span class="flex-1"></span>
+                            ${heartHtml(item)}
+                        </div>
+                        <div class="hero-title">${esc(item.title)}</div>
+                        <div class="hero-summary">${esc(item.summary)}</div>
+                        <div class="mt-auto flex items-center gap-2 text-xs">
+                            ${(item.matched_topics || []).length ? `<span class="match">☆ ${esc(item.matched_topics.join(', '))}</span>` : ''}
+                            <span class="score">Score ${item.score}</span>
+                            ${others > 0 ? `<span class="more-src">+${others} more ${others === 1 ? 'source' : 'sources'}</span>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            document.getElementById('hero-counter').textContent = `${heroIndex + 1} / ${n}`;
+            heroTimer = setInterval(() => stepHero(1), HERO_ROTATE_MS);
+        }
+
+        function stepHero(delta) {
+            const n = heroCount();
+            if (!n) return;
+            heroIndex = (heroIndex + delta + n) % n;
+            renderHero(true);
+        }
+
+        // ── Grid ───────────────────────────────────────────────────────
+        // Latest mode orders by these bands (newest first), then by score
+        const TIME_BAND_HOURS = [1, 3, 6, 12, 24, 48, Infinity];
+
+        function timeBand(item) {
+            const hours = item.published ? (Date.now() - new Date(item.published)) / 3600000 : Infinity;
+            return TIME_BAND_HOURS.findIndex(h => hours < h);
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('news-grid');
+            const animate = animateNext;
+            animateNext = false;
+
+            // FLIP step 1 — remember where every tile was and its rank
+            const before = {};
+            if (animate) grid.querySelectorAll('.tile').forEach(el => {
+                before[el.dataset.key] = { rect: el.getBoundingClientRect(), idx: +el.dataset.idx };
+            });
+
+            const start = heroCount();
+            const shown = view.slice(start, start + visibleCount);
+            grid.innerHTML = shown.map((item, k) => {
+                const idx = start + k;
+                const others = sortMode === 'top' && !savedMode ? (stories[item.story_id] || []).length - 1 : 0;
+                const prev = animate ? previousRank[item.link] : undefined;
+                const move = !animate || sortMode !== 'top' ? ''
+                    : prev === undefined ? '<span class="move new">NEW</span>'
+                    : prev > idx ? `<span class="move up">▲${prev - idx}</span>`
+                    : prev < idx ? `<span class="move down">▼${idx - prev}</span>` : '';
+                return `
+                <button class="tile" data-key="${esc(item.link)}" data-idx="${idx}" data-move="${prev === undefined ? 'new' : prev > idx ? 'up' : prev < idx ? 'down' : ''}" onclick="openModal(${idx})" title="${esc(item.title)}">
+                    <div class="thumb">${thumbHtml(item)}
+                        ${sortMode === 'top' && !savedMode && idx < 10 ? `<span class="rank">${idx + 1}</span>` : ''}
+                    </div>
+                    <div class="tile-body">
+                        <div class="tile-meta">
+                            <span class="tile-src">${esc(item.source)}</span>
+                            <span>·</span><span>${esc(timeAgo(item.published))}</span>
+                            <span class="flex-1"></span>
+                            ${move}
+                            ${others > 0 ? `<span class="more-src">+${others}</span>` : ''}
+                            ${heartHtml(item)}
+                            <span class="score ${item.interest ? 'foryou' : ''}" title="${activeTab === 'Finance' && item.finance_score != null ? `Finance rank: score ${Math.round(item.score)} + market relevance ${item.finance_relevance}` : item.interest ? 'Matches your interests' + ((item.matched_topics || []).length ? ': ' + esc(item.matched_topics.join(', ')) : '') : 'Score'}">${item.interest ? '☆ ' : ''}${Math.round(rankScore(item))}</span>
+                        </div>
+                        <div class="tile-title ${item.summary ? '' : 'long'}">${esc(item.title)}</div>
+                        ${item.summary ? `<div class="tile-summary">${esc(item.summary)}</div>` : ''}
+                    </div>
+                </button>`;
+            }).join('');
+
+            // FLIP step 2 — slide each tile from its old spot to the new one
+            if (animate) grid.querySelectorAll('.tile').forEach(el => {
+                const old = before[el.dataset.key];
+                if (!old) { el.classList.add('tile-new'); return; }
+                const now = el.getBoundingClientRect();
+                const dx = old.rect.left - now.left, dy = old.rect.top - now.top;
+                if (Math.abs(dy) > 2400) { el.classList.add('tile-new'); return; }   // too far to read as a move
+                if (dx || dy) el.animate(
+                    [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }],
+                    { duration: 900, easing: 'cubic-bezier(.2,.8,.2,1)' });
+                if (el.dataset.move === 'up') el.classList.add('tile-up');
+                if (el.dataset.move === 'down') el.classList.add('tile-down');
+            });
+            document.getElementById('news-empty').classList.toggle('hidden', view.length > 0);
+            document.getElementById('show-more-btn').classList.toggle('hidden', view.length <= start + visibleCount);
+        }
+
+        function showMore() {
+            visibleCount += PAGE_SIZE;
+            renderGrid();
+        }
+
+        // ── Modal ──────────────────────────────────────────────────────
+        function openModal(idx) {
+            const item = view[idx];
+            if (!item) return;
+            modalIndex = idx;
+            clearInterval(heroTimer);
+
+            const badge = document.getElementById('modal-category');
+            badge.className = 'label c-' + item.category;
+            badge.textContent = item.category;
+            document.getElementById('modal-source').textContent = item.source;
+            document.getElementById('modal-time').textContent = item.published ? '· ' + fullTime(item.published) + ' (' + timeAgo(item.published) + ')' : '';
+            document.getElementById('modal-title').textContent = item.title;
+            document.getElementById('modal-summary').textContent = item.summary ||
+                'No summary is available from this source. Use "Read full article" to open the story.';
+            document.getElementById('modal-link').href = item.link;
+            document.getElementById('modal-heart').innerHTML = heartHtml(item, 'lg');
+            document.getElementById('modal-link').textContent = `Read full article on ${item.source} ↗`;
+
+            const img = document.getElementById('modal-image');
+            if (item.image) { img.dataset.relay = '/api/news/img?u=' + encodeURIComponent(item.image); img.src = item.image; img.classList.remove('hidden'); }
+            else { img.removeAttribute('src'); img.classList.add('hidden'); }
+
+            const b = item.score_breakdown || {};
+            const hints = {
+                recency: 'Recency', coverage: `Coverage · ${(item.related_sources || []).length} other publishers`,
+                keywords: `Keywords${(item.keyword_hits || []).length ? ' · ' + item.keyword_hits.join(', ') : ''}`,
+                source: 'Source reputation',
+            };
+            if (personalised) {
+                const why = [...(item.matched_topics || [])];
+                if ((prefs.preferred_sources || []).includes(item.source)) why.push(item.source);
+                hints.interest = 'Your interests' + (why.length ? ' · ' + why.join(', ') : ' · no match');
+            }
+            document.getElementById('modal-score').textContent = personalised
+                ? `Your score ${item.score} · general ${item.base_score}` : 'Score ' + item.score;
+            document.getElementById('modal-breakdown').innerHTML = Object.keys(hints).map(k => `
+                <div>
+                    <div class="flex justify-between mb-1"><span class="truncate pr-2">${esc(hints[k])}</span><span class="font-bold" style="color:var(--ink)">${Math.round(b[k] || 0)}</span></div>
+                    <div class="bar"><span style="width:${Math.min(100, b[k] || 0)}%"></span></div>
+                </div>`).join('');
+
+            const coverage = (stories[item.story_id] || []).filter(i => i.link !== item.link)
+                .sort((a, b) => b.score - a.score);
+            document.getElementById('modal-coverage-wrap').classList.toggle('hidden', !coverage.length);
+            document.getElementById('modal-coverage').innerHTML = coverage.map(i => `
+                <a class="cov-link" href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">
+                    <span class="font-bold flex-none" style="width:120px">${esc(i.source)}</span>
+                    <span class="flex-1">${esc(i.title)}</span>
+                    <span class="flex-none" style="color:var(--ink-50)">${esc(timeAgo(i.published))}</span>
+                </a>`).join('');
+
+            document.getElementById('modal-prev').disabled = idx <= 0;
+            document.getElementById('modal-next').disabled = idx >= view.length - 1;
+            document.getElementById('newsModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function stepModal(delta) {
+            const next = modalIndex + delta;
+            if (next < 0 || next >= view.length) return;
+            if (next >= heroCount() + visibleCount) { visibleCount += PAGE_SIZE; renderGrid(); }
+            openModal(next);
+        }
+
+        function closeModal() {
+            document.getElementById('newsModal').classList.remove('open');
+            document.body.style.overflow = '';
+            modalIndex = -1;
+            renderHero(true);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('prefsDrawer').classList.contains('open')) { closePrefs(); return; }
+            if (modalIndex < 0) return;
+            if (e.key === 'Escape') closeModal();
+            else if (e.key === 'ArrowLeft') stepModal(-1);
+            else if (e.key === 'ArrowRight') stepModal(1);
+        });
+
+        // ── Likes / saved stories ──────────────────────────────────────
+        const HEART_SVG = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2.1 0 3.8 1.2 4.6 2.8h2C13.8 6.2 15.5 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z"/></svg>';
+
+        function heartHtml(item, size = '') {
+            const on = likedLinks.has(item.link);
+            return `<span class="heart ${size} ${on ? 'on' : ''}" role="button" tabindex="0" data-link="${esc(item.link)}"
+                title="${on ? 'Saved — click to remove' : 'Save this story'}"
+                onclick="event.stopPropagation(); toggleLike(this.dataset.link, this)"
+                onkeydown="if (event.key === 'Enter') { event.stopPropagation(); event.preventDefault(); toggleLike(this.dataset.link, this); }">${HEART_SVG}</span>`;
+        }
+
+        function paintHearts(link) {
+            const on = likedLinks.has(link);
+            document.querySelectorAll('.heart').forEach(el => {
+                if (el.dataset.link !== link) return;
+                el.classList.toggle('on', on);
+                el.title = on ? 'Saved — click to remove' : 'Save this story';
+            });
+        }
+
+        function updateSavedCount() {
+            const badge = document.getElementById('saved-count');
+            badge.textContent = likedLinks.size;
+            badge.classList.toggle('hidden', likedLinks.size === 0);
+        }
+
+        async function toggleLike(link, el) {
+            const liking = !likedLinks.has(link);
+            liking ? likedLinks.add(link) : likedLinks.delete(link);   // optimistic
+            paintHearts(link);
+            updateSavedCount();
+            if (el && liking) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+            try {
+                const res = liking
+                    ? await fetch('/api/news/saved', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ link }) })
+                    : await fetch('/api/news/saved?link=' + encodeURIComponent(link), { method: 'DELETE' });
+                if (!res.ok) throw new Error((await res.json()).detail || 'HTTP ' + res.status);
+                if (liking) savedItems = [(await res.json()).item, ...savedItems.filter(i => i.link !== link)];
+                else savedItems = savedItems.filter(i => i.link !== link);
+                if (savedMode && !liking && modalIndex < 0) applyFilters(true);
+            } catch (e) {
+                liking ? likedLinks.delete(link) : likedLinks.add(link);   // roll back
+                paintHearts(link);
+                updateSavedCount();
+                alert('Could not update saved stories: ' + e.message);
+            }
+        }
+
+        function setSavedMode(on) {
+            savedMode = on;
+            document.getElementById('saved-btn').classList.toggle('active', on);
+            document.getElementById('sort-seg').classList.toggle('dim', on);
+        }
+
+        async function toggleSavedView() {
+            if (savedMode) { setSavedMode(false); applyFilters(); return; }
+            try {
+                savedItems = (await (await fetch('/api/news/saved')).json()).items || [];
+            } catch (e) { alert('Could not load saved stories: ' + e.message); return; }
+            setSavedMode(true);
+            activeTab = 'All';
+            applyFilters();
+        }
+
+        // ── Interests / preferences ────────────────────────────────────
+        function renderPrefsSummary() {
+            document.getElementById('prefs-banner').classList.toggle('hidden', personalised);
+            const el = document.getElementById('rank-tags');
+            if (!personalised) { el.innerHTML = ''; return; }
+            el.innerHTML = prefs.topics.map(t => `<span class="match">☆ ${esc(t)}</span>`).join('');
+        }
+
+        async function openPrefs(scrollTo) {
+            if (!prefOptions) {
+                const res = await fetch('/api/news/preferences');
+                prefOptions = await res.json();
+                prefs = prefs || prefOptions.preferences;
+            }
+            draft = JSON.parse(JSON.stringify(prefs || prefOptions.preferences));
+            document.getElementById('prefs-status').textContent = '';
+            renderPrefs();
+            document.getElementById('prefsDrawer').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            if (scrollTo) document.getElementById(scrollTo).scrollIntoView({ block: 'start' });
+        }
+
+        function closePrefs() {
+            document.getElementById('prefsDrawer').classList.remove('open');
+            document.body.style.overflow = '';
+            if (location.hash === '#interests') history.replaceState(null, '', location.pathname);
+        }
+
+        function has(list, value) { return list.some(v => v.toLowerCase() === value.toLowerCase()); }
+
+        function renderPrefs() {
+            const removable = (key, cls = 'solid') => draft[key].map((t, i) =>
+                `<button class="pchip ${cls}" onclick="removeTerm('${key}', ${i})">${esc(t)} <span class="x">×</span></button>`).join('');
+            document.getElementById('pref-topics').innerHTML = removable('topics') ||
+                '<span class="text-xs" style="color:var(--ink-50)">No topics yet — add one or pick a suggestion.</span>';
+            document.getElementById('pref-muted').innerHTML = removable('muted_keywords', 'solid muted');
+
+            document.getElementById('pref-suggestions').innerHTML = prefOptions.suggested_topics
+                .filter(t => !has(draft.topics, t))
+                .map(t => `<button class="pchip ghost" onclick='addSuggestion(${JSON.stringify(t).replace(/'/g, "&#39;")})'>+ ${esc(t)}</button>`).join('');
+
+            renderTabChecklist();
+
+
+            document.getElementById('retention-select').innerHTML = prefOptions.retention_options.map(d =>
+                `<option value="${d}" ${d === draft.retention_days ? 'selected' : ''}>${d} ${d === 1 ? 'day' : 'days'}</option>`).join('');
+            document.getElementById('refresh-select').innerHTML = prefOptions.refresh_options.map(m =>
+                `<option value="${m}" ${m === draft.refresh_minutes ? 'selected' : ''}>${m < 60 ? m + ' minutes' : '1 hour'}</option>`).join('');
+
+            document.getElementById('pref-sources').innerHTML = prefOptions.sources.map((s, i) => {
+                const state = draft.preferred_sources.includes(s.name) ? 'on' : draft.muted_sources.includes(s.name) ? 'off' : '';
+                return `<button class="pchip ${state}" onclick="cycleSource(${i})">${state === 'on' ? '★ ' : ''}${esc(s.name)}</button>`;
+            }).join('');
+        }
+
+        function renderTabChecklist() {
+            const catalog = allTabDefs(draft.custom_tabs).map(t => ({ categories: [], ...t }));
+            const on = draft.tabs.filter(k => catalog.some(t => t.key === k));
+            const off = catalog.map(t => t.key).filter(k => !on.includes(k));
+            const row = (key, checked, i) => {
+                const t = catalog.find(x => x.key === key);
+                const desc = t.custom ? 'custom · matches: ' + t.keywords.join(', ')
+                    : (t.categories.length > 1 || t.categories[0] !== t.key ? t.categories.join(' + ') + ' news' : '') + (t.events ? (t.categories.length > 1 || t.categories[0] !== t.key ? ' · ' : '') + '📅 events timeline' : '');
+                return `<div class="tab-row ${checked ? '' : 'off'}">
+                    <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleTab('${esc(key)}')">
+                    <div class="flex-1 min-w-0"><div class="tab-name">${esc(key)}</div>${desc ? `<div class="tab-desc">${esc(desc)}</div>` : ''}</div>
+                    ${checked ? `<button class="mv" ${i === 0 ? 'disabled' : ''} onclick="moveTab(${i}, -1)" title="Move left">↑</button>
+                                 <button class="mv" ${i === on.length - 1 ? 'disabled' : ''} onclick="moveTab(${i}, 1)" title="Move right">↓</button>` : ''}
+                    ${t.custom ? `<button class="mv" onclick="removeCustomTab('${esc(key)}')" title="Delete this custom tab">✕</button>` : ''}
+                </div>`;
+            };
+            document.getElementById('pref-tabs').innerHTML =
+                `<div class="tab-row"><input type="checkbox" checked disabled><div class="flex-1"><div class="tab-name">All</div><div class="tab-desc">always shown first</div></div></div>` +
+                on.map((k, i) => row(k, true, i)).join('') + off.map(k => row(k, false)).join('');
+        }
+
+        function addCustomTab() {
+            const nameEl = document.getElementById('custom-tab-name'), wordsEl = document.getElementById('custom-tab-words');
+            const name = nameEl.value.trim().slice(0, 24);
+            const msg = document.getElementById('custom-tab-msg');
+            if (!name) { msg.textContent = 'Give the tab a name.'; return; }
+            if (name.toLowerCase() === 'all' || allTabDefs(draft.custom_tabs).some(t => t.key.toLowerCase() === name.toLowerCase())) {
+                msg.textContent = `There is already a tab called “${name}”.`; return;
+            }
+            const words = wordsEl.value.split(',').map(w => w.trim()).filter(Boolean);
+            draft.custom_tabs = [...(draft.custom_tabs || []), { name, keywords: words.length ? words.slice(0, 10) : [name] }];
+            draft.tabs = [...draft.tabs, name];
+            nameEl.value = ''; wordsEl.value = ''; msg.textContent = '';
+            renderPrefs();
+        }
+
+        function removeCustomTab(name) {
+            draft.custom_tabs = draft.custom_tabs.filter(c => c.name !== name);
+            draft.tabs = draft.tabs.filter(k => k !== name);
+            renderPrefs();
+        }
+
+        function toggleTab(key) {
+            draft.tabs = draft.tabs.includes(key) ? draft.tabs.filter(k => k !== key) : [...draft.tabs, key];
+            renderPrefs();
+        }
+
+        function moveTab(i, delta) {
+            const j = i + delta;
+            [draft.tabs[i], draft.tabs[j]] = [draft.tabs[j], draft.tabs[i]];
+            renderPrefs();
+        }
+
+        function addTerm(key, inputId) {
+            const input = document.getElementById(inputId);
+            input.value.split(',').map(v => v.trim()).filter(Boolean).forEach(v => { if (!has(draft[key], v)) draft[key].push(v); });
+            input.value = '';
+            renderPrefs();
+            input.focus();
+        }
+
+        function addSuggestion(t) { if (!has(draft.topics, t)) draft.topics.push(t); renderPrefs(); }
+        function removeTerm(key, i) { draft[key].splice(i, 1); renderPrefs(); }
+
+
+        function cycleSource(i) {
+            const name = prefOptions.sources[i].name;
+            if (draft.preferred_sources.includes(name)) {
+                draft.preferred_sources = draft.preferred_sources.filter(x => x !== name);
+                draft.muted_sources.push(name);
+            } else if (draft.muted_sources.includes(name)) {
+                draft.muted_sources = draft.muted_sources.filter(x => x !== name);
+            } else {
+                draft.preferred_sources.push(name);
+            }
+            renderPrefs();
+        }
+
+        function resetPrefs() {
+            // Clears interests only — retention / refresh settings stay
+            draft = { ...draft, topics: [], preferred_sources: [], muted_sources: [], muted_keywords: [] };
+            renderPrefs();
+        }
+
+        async function savePrefs() {
+            const btn = document.getElementById('prefs-save');
+            const status = document.getElementById('prefs-status');
+            btn.disabled = true;
+            status.textContent = 'Re-ranking…';
+            try {
+                const res = await fetch('/api/news/preferences', {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft),
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                closePrefs();
+                await loadNews(true);   // scores changed — animate the re-rank
+            } catch (e) {
+                status.textContent = 'Could not save — ' + e.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        if (location.hash === '#interests') openPrefs();
+        loadNews();
+
+        // ── Refresh status ─────────────────────────────────────────────
+        // All fetching happens in Celery (src/news_refresh.py). The page only
+        // watches /api/news/status: it reloads when fetched_at changes, shows
+        // "Refreshing…" while a task is queued/running, and asks for a refresh
+        // itself if one is due (the server does that inside /status).
+        const STATUS_POLL_MS = 30 * 1000;      // normal
+        const STATUS_FAST_MS = 3 * 1000;       // while a refresh is queued / running
+        let lastStatus = null;
+        let lastEventsFetchedAt = null;
+        let pollTimer = null;
+        let waitingForButton = false;
+
+        function renderStatusLine() {
+            const el = document.getElementById('news-subtitle');
+            const st = lastStatus;
+            const busy = st && (st.refreshing || st.queued);
+            document.getElementById('refresh-icon').classList.toggle('spinning', !!busy);
+            const updated = lastFetchedAt ? `Updated ${timeAgo(lastFetchedAt)}` : 'No news fetched yet';
+            if (busy) {
+                el.innerHTML = `${updated} · <b style="color:var(--brand)">Refreshing…</b>`;
+            } else if (st && !st.scheduler_alive && st.due) {
+                el.innerHTML = `${updated} · <b style="color:var(--accent)" title="Start it with: celery -A src.tasks.celery_app worker --loglevel=info">Auto-refresh off — Celery worker not running</b>`;
+            } else if (st && st.last && st.last.status === 'error') {
+                el.innerHTML = `${updated} · <b style="color:var(--accent)" title="${esc(st.last.reason || '')}">Last refresh failed</b>`;
+            } else if (st && st.next_refresh_at) {
+                const mins = Math.max(0, Math.round((new Date(st.next_refresh_at) - Date.now()) / 60000));
+                el.textContent = `${updated} · next ${mins ? 'in ' + mins + 'm' : 'any moment'}`;
+            } else {
+                el.textContent = updated;
+            }
+        }
+
+        async function pollStatus() {
+            clearTimeout(pollTimer);
+            let next = STATUS_POLL_MS;
+            if (!document.hidden) {
+                try {
+                    lastStatus = await (await fetch('/api/news/status')).json();
+                    const busy = modalIndex >= 0 || document.getElementById('prefsDrawer').classList.contains('open');
+                    const ev = lastStatus.events || {};
+                    const eventsChanged = ev.fetched_at && lastEventsFetchedAt && ev.fetched_at !== lastEventsFetchedAt;
+                    if (!lastEventsFetchedAt || eventsChanged) lastEventsFetchedAt = ev.fetched_at;
+                    if ((lastStatus.fetched_at && lastStatus.fetched_at !== lastFetchedAt || eventsChanged) && !busy) {
+                        waitingForButton = false;
+                        await loadNews();
+                    }
+                    if (lastStatus.refreshing || lastStatus.queued || waitingForButton) next = STATUS_FAST_MS;
+                    else if (ev.refreshing || ev.queued) next = 10 * 1000;
+                    renderEvents();
+                    if (waitingForButton && !lastStatus.refreshing && !lastStatus.queued && lastStatus.last
+                            && ['skipped', 'error'].includes(lastStatus.last.status)) waitingForButton = false;
+                } catch (e) { /* offline — try again next tick */ }
+                renderStatusLine();
+            }
+            pollTimer = setTimeout(pollStatus, next);
+        }
+
+        async function refreshNow() {
+            try {
+                const res = await fetch('/api/news/refresh', { method: 'POST' });
+                const body = await res.json();
+                if (!res.ok) throw new Error(body.detail || 'HTTP ' + res.status);
+                waitingForButton = true;
+                lastStatus = { ...(lastStatus || {}), queued: true };
+                renderStatusLine();
+                pollTimer = setTimeout(pollStatus, 1000);
+            } catch (e) {
+                alert('Could not start a refresh: ' + e.message);
+            }
+        }
+
+        pollTimer = setTimeout(pollStatus, 1500);
+        // Back from another tab, or the Mac waking from sleep: check straight away
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) pollStatus(); });
+        window.addEventListener('focus', pollStatus);
+        window.addEventListener('online', pollStatus);
+    </script>
+</body>
+</html>

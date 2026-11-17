@@ -1,0 +1,1604 @@
+{
+  "data_as_of": "May 2026",
+  "geography": "India",
+  "sources": [
+    "RBI",
+    "SEBI",
+    "NSE",
+    "BSE",
+    "CRISIL",
+    "Value Research",
+    "Moneycontrol",
+    "Bank/AMC official websites",
+    "ANAROCK",
+    "Knight Frank India"
+  ],
+  "currency": "INR",
+  "instruments": [
+    {
+      "investment_name": "SBI Fixed Deposit (1–3 Years, General Public)",
+      "category": "FD",
+      "sub_type": "Public Sector Bank FD",
+      "return_profile": {
+        "return_type": "GUARANTEED",
+        "expected_annual_return": "6.45%–6.55% p.a. (1–3Y); senior citizens up to 7.05%",
+        "return_frequency": "Monthly / Quarterly / Cumulative",
+        "income_stability": "STABLE"
+      },
+      "risk_safety": {
+        "risk_level": "LOW",
+        "capital_safety": "FULL (DICGC insured up to ₹5 lakh per depositor per bank)",
+        "credit_quality": "Sovereign-backed (Govt of India majority owned)",
+        "volatility": "LOW"
+      },
+      "liquidity": {
+        "lock_in_period": "None (premature withdrawal allowed)",
+        "exit_ease": "1–3 DAYS",
+        "exit_cost": "Premature withdrawal penalty (~0.5%–1%)"
+      },
+      "taxation": {
+        "tax_on_returns": "Slab rate (TDS if interest > ₹50,000; ₹1,00,000 for sr. citizens)",
+        "tax_benefits": "None (5Y Tax Saver FD eligible for 80C)"
+      },
+      "investment_horizon": {
+        "ideal_duration": "SHORT to MEDIUM TERM",
+        "minimum_holding_period": "7 days"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME / EMERGENCY",
+        "suitable_for": "Conservative Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Nil",
+        "hidden_costs": "Premature withdrawal penalty"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (at renewal)",
+        "equity_market_dependency": "NONE",
+        "inflation_protection": "NO"
+      },
+      "entry_details": {
+        "minimum_investment": "₹1,000",
+        "mode": "Lump Sum"
+      },
+      "special_features": {
+        "additional_benefits": "DICGC insurance ₹5 lakh, sovereign-grade safety, SBI We-Care additional 50 bps for senior citizens on 5–10Y",
+        "limitations": "Returns below inflation in real terms; fully taxable at slab"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "~7.05% p.a. (senior citizen, longer tenure)",
+        "average_expected_return": "~6.45%–6.55% p.a. (general)",
+        "worst_case_scenario": "Real return negative if inflation > FD rate; bank failure highly unlikely (govt-backed)"
+      }
+    },
+    {
+      "investment_name": "HDFC Bank Fixed Deposit (1–3 Years, General Public)",
+      "category": "FD",
+      "sub_type": "Private Sector Bank FD",
+      "return_profile": {
+        "return_type": "GUARANTEED",
+        "expected_annual_return": "6.60%–7.00% p.a. (general); up to 7.10% for senior citizens",
+        "return_frequency": "Monthly / Quarterly / Annual / Cumulative",
+        "income_stability": "STABLE"
+      },
+      "risk_safety": {
+        "risk_level": "LOW",
+        "capital_safety": "FULL (DICGC insured up to ₹5 lakh)",
+        "credit_quality": "AAA (CRISIL/ICRA)",
+        "volatility": "LOW"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "1–3 DAYS",
+        "exit_cost": "~1% premature withdrawal penalty"
+      },
+      "taxation": {
+        "tax_on_returns": "Slab rate (TDS applicable)",
+        "tax_benefits": "5Y Tax Saver FD eligible for 80C (₹1.5 lakh limit)"
+      },
+      "investment_horizon": {
+        "ideal_duration": "SHORT to MEDIUM TERM",
+        "minimum_holding_period": "7 days"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME / EMERGENCY",
+        "suitable_for": "Conservative Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Nil",
+        "hidden_costs": "Premature withdrawal penalty"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES",
+        "equity_market_dependency": "NONE",
+        "inflation_protection": "NO"
+      },
+      "entry_details": {
+        "minimum_investment": "₹5,000",
+        "mode": "Lump Sum"
+      },
+      "special_features": {
+        "additional_benefits": "Sweep-in / overdraft facility; flexible payouts; AAA-rated bank",
+        "limitations": "Fully taxable; real returns modest"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "~7.10% p.a. (senior citizen)",
+        "average_expected_return": "~6.60%–7.00% p.a.",
+        "worst_case_scenario": "Real returns negative if inflation > rate"
+      }
+    },
+    {
+      "investment_name": "Suryoday Small Finance Bank FD (5 Years)",
+      "category": "FD",
+      "sub_type": "Small Finance Bank FD",
+      "return_profile": {
+        "return_type": "GUARANTEED",
+        "expected_annual_return": "8.05% p.a. (general); 8.10%–8.25% (senior citizens). SFB segment up to 8.50% (ESAF)",
+        "return_frequency": "Monthly / Quarterly / Cumulative",
+        "income_stability": "STABLE"
+      },
+      "risk_safety": {
+        "risk_level": "LOW to MEDIUM",
+        "capital_safety": "FULL up to ₹5 lakh DICGC insured; above that depends on bank",
+        "credit_quality": "A/A+ category (lower than large banks)",
+        "volatility": "LOW"
+      },
+      "liquidity": {
+        "lock_in_period": "None for regular FD; 5Y for tax saver",
+        "exit_ease": "1–3 DAYS",
+        "exit_cost": "Premature withdrawal penalty (~1%)"
+      },
+      "taxation": {
+        "tax_on_returns": "Slab rate",
+        "tax_benefits": "5Y Tax Saver FD eligible for 80C"
+      },
+      "investment_horizon": {
+        "ideal_duration": "MEDIUM TERM",
+        "minimum_holding_period": "7 days"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME",
+        "suitable_for": "Conservative to Moderate Investors (limit ₹5 lakh per SFB)"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Nil",
+        "hidden_costs": "Penalty on premature withdrawal"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES",
+        "equity_market_dependency": "NONE",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "₹1,000–₹10,000",
+        "mode": "Lump Sum"
+      },
+      "special_features": {
+        "additional_benefits": "Higher yield than PSU/private banks; DICGC cover up to ₹5 lakh",
+        "limitations": "Smaller balance sheet, weaker credit profile vs large banks; concentration risk"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "~8.50% p.a. (top SFB, senior citizen)",
+        "average_expected_return": "~8.05%–8.25% p.a.",
+        "worst_case_scenario": "DICGC limit ₹5 lakh — amounts above are at issuer credit risk"
+      }
+    },
+    {
+      "investment_name": "Nippon India Large Cap Fund (Direct, Growth)",
+      "category": "MF",
+      "sub_type": "Equity – Large Cap",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "3Y CAGR ~17.15%; 5Y CAGR ~18.07%–21.8% (Value Research)",
+        "return_frequency": "Growth (no payout)",
+        "income_stability": "VOLATILE"
+      },
+      "risk_safety": {
+        "risk_level": "HIGH",
+        "capital_safety": "NONE (capital subject to market risk)",
+        "credit_quality": "N/A (equity)",
+        "volatility": "HIGH"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "1–3 DAYS (T+2 redemption)",
+        "exit_cost": "Exit load ~1% if redeemed within 1 year"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20% (<12 months); LTCG 12.5% on gains > ₹1.25 lakh/year (>12 months)",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years recommended"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / GROWTH",
+        "suitable_for": "Moderate to Aggressive Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Direct plan ~0.65%–0.85%; Regular ~1.6%–1.8%",
+        "hidden_costs": "Exit load; STT on units sold"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "YES (long-term)"
+      },
+      "entry_details": {
+        "minimum_investment": "₹100 (lump sum or SIP)",
+        "mode": "SIP / Lump Sum"
+      },
+      "special_features": {
+        "additional_benefits": "5★ Value Research rating; consistent alpha vs Nifty 100 TRI; AUM ₹41,764 Cr",
+        "limitations": "Large AUM may reduce agility; subject to drawdowns of 20–30% in corrections"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "20%+ p.a. in bull cycles",
+        "average_expected_return": "12–14% p.a. over 7–10 year cycles",
+        "worst_case_scenario": "20–35% temporary drawdown in market crash; recovery takes 1–3 years"
+      }
+    },
+    {
+      "investment_name": "Parag Parikh Flexi Cap Fund (Direct, Growth)",
+      "category": "MF",
+      "sub_type": "Equity – Flexi Cap",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "3Y CAGR ~16–18%; 5Y CAGR ~20–22%",
+        "return_frequency": "Growth",
+        "income_stability": "VOLATILE"
+      },
+      "risk_safety": {
+        "risk_level": "HIGH",
+        "capital_safety": "NONE",
+        "credit_quality": "N/A",
+        "volatility": "MEDIUM (lower than pure mid/small cap due to flexi structure + foreign equity)"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "1–3 DAYS",
+        "exit_cost": "Exit load 2% if redeemed within 365 days; 1% within 730 days"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh/year",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / DIVERSIFICATION",
+        "suitable_for": "Moderate to Aggressive Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Direct ~0.6%; Regular ~1.4%",
+        "hidden_costs": "Exit load if early redemption"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "₹1,000 lump sum / ₹1,000 SIP",
+        "mode": "SIP / Lump Sum"
+      },
+      "special_features": {
+        "additional_benefits": "Diversification across market caps + up to 35% international equity exposure; consistent risk-adjusted returns",
+        "limitations": "Higher exit load than peers; foreign holdings subject to currency / regulation risk"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "22%+ p.a. in strong cycles",
+        "average_expected_return": "13–15% p.a. long-term",
+        "worst_case_scenario": "20–30% drawdown in equity correction"
+      }
+    },
+    {
+      "investment_name": "ICICI Prudential Bluechip Fund (Direct, Growth)",
+      "category": "MF",
+      "sub_type": "Equity – Large Cap",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~19.3%; 3Y CAGR ~16–17%",
+        "return_frequency": "Growth",
+        "income_stability": "VOLATILE"
+      },
+      "risk_safety": {
+        "risk_level": "HIGH",
+        "capital_safety": "NONE",
+        "credit_quality": "N/A",
+        "volatility": "MEDIUM-HIGH"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "1–3 DAYS",
+        "exit_cost": "Exit load 1% if <1 year"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh/year",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / GROWTH",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Direct ~0.85%; Regular ~1.5%",
+        "hidden_costs": "Exit load"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "₹100",
+        "mode": "SIP / Lump Sum"
+      },
+      "special_features": {
+        "additional_benefits": "Largest AUM in category ₹78,160 Cr; value-oriented approach by S Naren; cushions in downturns",
+        "limitations": "Can underperform momentum-driven rallies; size constraint"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "20%+ p.a.",
+        "average_expected_return": "12–14% p.a. long term",
+        "worst_case_scenario": "20–30% drawdown in correction"
+      }
+    },
+    {
+      "investment_name": "HDFC Bank Ltd. (NSE: HDFCBANK)",
+      "category": "Stock",
+      "sub_type": "Sector – Banking & Financial Services (Private Bank)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "Historic 5Y CAGR ~10–12% (range bound post-merger); analyst targets 12–15% p.a.",
+        "return_frequency": "Capital appreciation + ~1% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA (issuer)",
+        "volatility": "MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT (T+1 settlement)",
+        "exit_cost": "Brokerage + STT + market loss risk"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20% (<1Y); LTCG 12.5% on gains > ₹1.25 lakh/year",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage (₹0–20/order discount brokers)",
+        "hidden_costs": "STT, exchange fees, GST, stamp duty, DP charges"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (NIM impact)",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "Largest private bank by market cap; ~4.66% Nifty 100 weight; consistent ROA/ROE",
+        "limitations": "Post-merger NIM compression; index re-balancing impact"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "15–18% p.a.",
+        "average_expected_return": "12–14% p.a.",
+        "worst_case_scenario": "20–30% drawdown in banking crisis or NPA shock"
+      }
+    },
+    {
+      "investment_name": "ICICI Bank Ltd. (NSE: ICICIBANK)",
+      "category": "Stock",
+      "sub_type": "Sector – Banking & Financial Services (Private Bank)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "Historic 5Y CAGR ~25%+; forward 12–16% p.a. (analyst consensus)",
+        "return_frequency": "Capital appreciation + ~0.7% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage charges",
+        "hidden_costs": "STT, GST, stamp duty"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "~3.57% Nifty 100 weight; best-in-class asset quality; strong digital franchise",
+        "limitations": "Sensitive to credit cycles; rate cycle pressure on NIM"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "18–22% p.a.",
+        "average_expected_return": "13–15% p.a.",
+        "worst_case_scenario": "20–30% drawdown in banking stress"
+      }
+    },
+    {
+      "investment_name": "Tata Consultancy Services Ltd. (NSE: TCS)",
+      "category": "Stock",
+      "sub_type": "Sector – Information Technology",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~10–12% (post 2025 IT downcycle); long-term 10–14% p.a.",
+        "return_frequency": "Capital appreciation + ~3.0%–3.5% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / INCOME (dividend)",
+        "suitable_for": "Conservative to Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "India's largest IT exporter; high dividend payout; rupee depreciation tailwind; debt-free; AI/Gen-AI capability ramp-up",
+        "limitations": "Global IT spend slowdown; US tariff headwinds in 2025; high valuation vs peers"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "15% p.a.",
+        "average_expected_return": "10–12% p.a. + dividend",
+        "worst_case_scenario": "15–25% drawdown in global recession / IT downcycle"
+      }
+    },
+    {
+      "investment_name": "Infosys Ltd. (NSE: INFY)",
+      "category": "Stock",
+      "sub_type": "Sector – Information Technology",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~12–15%; Kotak BUY target ₹1,440 from CMP ~₹1,168",
+        "return_frequency": "Capital appreciation + ~2.5% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "~2.41% Nifty 50 weight; strong AI focus; Optimum Healthcare IT acquisition; consistent buybacks",
+        "limitations": "Goldman Sachs downgrade citing high valuation and slowing growth; Europe IT softness"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "20%+ to ₹1,440 target",
+        "average_expected_return": "10–13% p.a.",
+        "worst_case_scenario": "15–25% drawdown in IT downcycle"
+      }
+    },
+    {
+      "investment_name": "Reliance Industries Ltd. (NSE: RELIANCE)",
+      "category": "Stock",
+      "sub_type": "Sector – Energy / Oil & Gas (also Telecom, Retail)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~10–13%; analyst consensus 12–15% p.a.",
+        "return_frequency": "Capital appreciation + ~0.4% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / DIVERSIFICATION",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "PARTIAL (energy hedge)"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "Highest Nifty 100 weight ~7.76%; Jio Platforms & Reliance Retail unlock; refining & petchem cash cow",
+        "limitations": "Crude oil price volatility (West Asia conflict in 2026); large-base growth limitation"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "18% p.a.",
+        "average_expected_return": "12–14% p.a.",
+        "worst_case_scenario": "20–30% drawdown if oil cycle reverses + telecom price war"
+      }
+    },
+    {
+      "investment_name": "ITC Ltd. (NSE: ITC)",
+      "category": "Stock",
+      "sub_type": "Sector – FMCG (Diversified Conglomerate)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~15–18%; forward 10–13%",
+        "return_frequency": "Capital appreciation + ~3.0%–3.5% dividend yield",
+        "income_stability": "STABLE"
+      },
+      "risk_safety": {
+        "risk_level": "LOW to MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "LOW-MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME + GROWTH",
+        "suitable_for": "Conservative to Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "LOW",
+        "equity_market_dependency": "MEDIUM (defensive)",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "Nifty FMCG weight ~17.41%; high dividend yield; ITC Hotels demerger value unlock; rural demand revival",
+        "limitations": "Tobacco regulatory risk; NCCD revisions on chewing tobacco from 1 May 2026"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "15% p.a.",
+        "average_expected_return": "10–13% p.a. + dividends",
+        "worst_case_scenario": "10–15% drawdown (defensive cushion)"
+      }
+    },
+    {
+      "investment_name": "Hindustan Unilever Ltd. (NSE: HINDUNILVR)",
+      "category": "Stock",
+      "sub_type": "Sector – FMCG",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~6–9% (subdued); forward 10–13% with rural recovery",
+        "return_frequency": "Capital appreciation + ~1.8%–2.2% dividend yield",
+        "income_stability": "STABLE"
+      },
+      "risk_safety": {
+        "risk_level": "LOW to MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "LOW"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME / DIVERSIFICATION",
+        "suitable_for": "Conservative Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "LOW",
+        "equity_market_dependency": "MEDIUM",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "MNC parentage; rural reach; GST cuts on FMCG essentials (5% slab) tailwind; consistent dividends",
+        "limitations": "Premium valuation; volume growth muted; high competition from D2C / regional brands"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "15% p.a.",
+        "average_expected_return": "10–12% p.a. + dividends",
+        "worst_case_scenario": "10–15% drawdown (defensive)"
+      }
+    },
+    {
+      "investment_name": "Maruti Suzuki India Ltd. (NSE: MARUTI)",
+      "category": "Stock",
+      "sub_type": "Sector – Automobile",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~12–15%; CMP ~₹13,722 (May 6 2026); 52W range ₹12,016–17,370",
+        "return_frequency": "Capital appreciation + ~0.9% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM-HIGH"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION",
+        "suitable_for": "Moderate to Aggressive Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "MEDIUM",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "~2.17% Nifty 50 weight; #1 PV market share; GST rate cuts (28%→18%) and EV subsidies tailwind; strong cashflow",
+        "limitations": "EV transition lag vs Tata/M&M; rural demand sensitivity; commodity cost pressure"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "20% p.a.",
+        "average_expected_return": "12–14% p.a.",
+        "worst_case_scenario": "20–30% drawdown in auto downcycle"
+      }
+    },
+    {
+      "investment_name": "Mahindra & Mahindra Ltd. (NSE: M&M)",
+      "category": "Stock",
+      "sub_type": "Sector – Automobile (SUV / Tractor / EV)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~30%+ (one of best auto performers); forward 12–16% p.a.",
+        "return_frequency": "Capital appreciation + ~0.8% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM-HIGH"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION",
+        "suitable_for": "Moderate to Aggressive Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "MEDIUM",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "Strongest SUV portfolio (XUV700, Thar, Scorpio-N); leading tractor maker; EV pipeline (BE/XEV); rural demand revival",
+        "limitations": "Group complexity; cyclical earnings"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "25%+ p.a.",
+        "average_expected_return": "13–16% p.a.",
+        "worst_case_scenario": "25–35% drawdown in deep auto/rural slowdown"
+      }
+    },
+    {
+      "investment_name": "Sun Pharmaceutical Industries Ltd. (NSE: SUNPHARMA)",
+      "category": "Stock",
+      "sub_type": "Sector – Pharmaceutical",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~20%+; forward 10–14% p.a.",
+        "return_frequency": "Capital appreciation + ~0.8% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / DEFENSIVE GROWTH",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "LOW",
+        "equity_market_dependency": "MEDIUM",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "~2.23% Nifty 50 weight; India's largest pharma company; specialty US franchise (Ilumya, Cequa)",
+        "limitations": "USFDA inspection risk; specialty pipeline execution; pricing pressure in generics"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "18% p.a.",
+        "average_expected_return": "11–14% p.a.",
+        "worst_case_scenario": "20–25% drawdown on USFDA action / specialty miss"
+      }
+    },
+    {
+      "investment_name": "Dr. Reddy's Laboratories Ltd. (NSE: DRREDDY)",
+      "category": "Stock",
+      "sub_type": "Sector – Pharmaceutical",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "5Y CAGR ~10–13%; forward 10–13% p.a.",
+        "return_frequency": "Capital appreciation + ~0.6% dividend yield",
+        "income_stability": "VARIABLE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE",
+        "credit_quality": "AAA",
+        "volatility": "MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + STT"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "3+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / DEFENSIVE",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Brokerage",
+        "hidden_costs": "STT, GST"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "LOW",
+        "equity_market_dependency": "MEDIUM",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 share",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "~0.55% Nifty 50 weight; strong US generics franchise; biosimilars pipeline; debt-free",
+        "limitations": "US generics price erosion; gRevlimid one-off rolloff; FDA exposure"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "15% p.a.",
+        "average_expected_return": "10–12% p.a.",
+        "worst_case_scenario": "20–25% drawdown on USFDA observations / pricing"
+      }
+    },
+    {
+      "investment_name": "Nippon India ETF Nifty BeES (NSE: NIFTYBEES)",
+      "category": "ETF",
+      "sub_type": "Equity Index ETF – Nifty 50",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "3Y CAGR ~13.9% (Nifty 50 TRI); 5Y total return ~70–101% (Nifty 50 indicative)",
+        "return_frequency": "Growth (price appreciation; small dividend reinvested)",
+        "income_stability": "VOLATILE"
+      },
+      "risk_safety": {
+        "risk_level": "HIGH",
+        "capital_safety": "NONE",
+        "credit_quality": "N/A",
+        "volatility": "HIGH"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT (one of most liquid ETFs in India)",
+        "exit_cost": "Brokerage + bid-ask spread"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh/year",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years recommended"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / DIVERSIFICATION",
+        "suitable_for": "Moderate to Aggressive Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "~0.04%–0.05%",
+        "hidden_costs": "Bid-ask spread; tracking error <0.10%"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "YES (long term)"
+      },
+      "entry_details": {
+        "minimum_investment": "1 unit (~₹260–₹280)",
+        "mode": "Trading (demat required)"
+      },
+      "special_features": {
+        "additional_benefits": "India's first and most liquid ETF (since 2001); transparent; very low TER",
+        "limitations": "Tracking error; cash drag; not suitable for short-term horizon"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "18%+ p.a. in bull cycle",
+        "average_expected_return": "12–14% p.a. long-term",
+        "worst_case_scenario": "20–35% drawdown in market correction"
+      }
+    },
+    {
+      "investment_name": "SBI ETF Nifty 50 (NSE: SETFNIF50)",
+      "category": "ETF",
+      "sub_type": "Equity Index ETF – Nifty 50",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "3Y CAGR ~13.9% (Nifty 50 TRI tracking); 1Y ~14.24%",
+        "return_frequency": "Growth",
+        "income_stability": "VOLATILE"
+      },
+      "risk_safety": {
+        "risk_level": "HIGH",
+        "capital_safety": "NONE",
+        "credit_quality": "N/A",
+        "volatility": "HIGH (volatility 0.97 vs Nifty)"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT",
+        "exit_cost": "Brokerage + bid-ask spread"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG 20%; LTCG 12.5% above ₹1.25 lakh/year",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / DIVERSIFICATION",
+        "suitable_for": "Moderate to Aggressive Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "~0.04% (lowest in category)",
+        "hidden_costs": "Bid-ask spread"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "Indirect",
+        "equity_market_dependency": "HIGH",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "1 unit (~₹270)",
+        "mode": "Trading"
+      },
+      "special_features": {
+        "additional_benefits": "Largest Nifty 50 ETF by AUM (~₹2.14 lakh crore); ultra-low cost; backed by SBI MF",
+        "limitations": "Tracking error; concentrated in Nifty 50 (no Next 50 / mid-small)"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "18% p.a.",
+        "average_expected_return": "12–14% p.a.",
+        "worst_case_scenario": "20–35% drawdown in correction"
+      }
+    },
+    {
+      "investment_name": "Sammaan Capital Limited Bond (~9.5%–9.6% coupon, 2035 maturity, AA category)",
+      "category": "Bond",
+      "sub_type": "Corporate Bond / Listed NCD (NBFC – Housing Finance)",
+      "return_profile": {
+        "return_type": "GUARANTEED (subject to issuer credit)",
+        "expected_annual_return": "Coupon ~9.50%–9.60% p.a.; YTM similar at par",
+        "return_frequency": "Annual / Quarterly / Monthly (varies by series)",
+        "income_stability": "STABLE (if no default)"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "FULL if held to maturity and no default; PARTIAL credit risk",
+        "credit_quality": "AA category (CRISIL/ICRA/CARE)",
+        "volatility": "MEDIUM (long duration price sensitivity)"
+      },
+      "liquidity": {
+        "lock_in_period": "None (listed)",
+        "exit_ease": "1–3 DAYS (secondary market – thin liquidity possible)",
+        "exit_cost": "Bid-ask spread; market loss risk if rates rise"
+      },
+      "taxation": {
+        "tax_on_returns": "Interest at slab; LTCG 12.5% (>12 months listed bonds, no indexation)",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "Hold-to-maturity preferred"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Nil (direct holding)",
+        "hidden_costs": "Brokerage on OBPP / exchange purchase"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (long duration)",
+        "equity_market_dependency": "LOW",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "₹10,000 (typically 1 unit ₹1,000 face value)",
+        "mode": "Purchase via NSE/BSE or SEBI-registered OBPP (IndiaBonds, GoldenPi, Bondscanner, etc.)"
+      },
+      "special_features": {
+        "additional_benefits": "Long tenor lock-in of high yields; AA-range credit profile; secured/senior structures available",
+        "limitations": "Credit downgrade risk; long duration interest-rate risk; not DICGC insured"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "9.5%–9.6% p.a. + minor capital gains if rates fall",
+        "average_expected_return": "9.5% p.a. held to maturity",
+        "worst_case_scenario": "Credit event / default leading to delayed/partial recovery; mark-to-market loss if rates rise sharply"
+      }
+    },
+    {
+      "investment_name": "Aye Finance Pvt. Ltd. NCD (~10%–11% coupon, ~2027 maturity, AA– category)",
+      "category": "Bond",
+      "sub_type": "Corporate Bond / NCD (NBFC – MSME Lending)",
+      "return_profile": {
+        "return_type": "GUARANTEED (subject to issuer credit)",
+        "expected_annual_return": "Coupon ~10%–11% p.a.; YTM similar",
+        "return_frequency": "Monthly / Quarterly / Annual (varies)",
+        "income_stability": "STABLE (if no default)"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "FULL if held to maturity and no default; partial credit risk",
+        "credit_quality": "AA– (CRISIL/CARE/ICRA, recent upgrades)",
+        "volatility": "LOW-MEDIUM (short duration)"
+      },
+      "liquidity": {
+        "lock_in_period": "None (listed)",
+        "exit_ease": "1–3 DAYS (secondary market; can be thin)",
+        "exit_cost": "Bid-ask spread"
+      },
+      "taxation": {
+        "tax_on_returns": "Interest at slab; LTCG 12.5% on listed bonds >12 months",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "MEDIUM TERM",
+        "minimum_holding_period": "Hold-to-maturity preferred"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Nil",
+        "hidden_costs": "Brokerage on OBPP"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (low for short tenor)",
+        "equity_market_dependency": "LOW",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "₹10,000",
+        "mode": "Purchase via NSE/BSE / OBPP (IndiaBonds, GoldenPi, Wint Wealth, Bondscanner)"
+      },
+      "special_features": {
+        "additional_benefits": "Strong MSME franchise; gross NPA ~1.21% (FY24); AUM ₹4,400+ Cr; competitive yield vs FD",
+        "limitations": "MSME credit cycle risk; sector concentration; smaller NBFC vs AAA peers"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "10%–11% p.a. held to maturity",
+        "average_expected_return": "~10.5% p.a.",
+        "worst_case_scenario": "Default / restructuring leading to delayed payments; mark-to-market loss in interim"
+      }
+    },
+    {
+      "investment_name": "Bharat Bond ETF – April 2030/2031/2032 (e.g., NSE: EBBETF0430)",
+      "category": "Bond",
+      "sub_type": "Target Maturity ETF – AAA PSU Bonds",
+      "return_profile": {
+        "return_type": "GUARANTEED (held to target maturity, subject to AAA PSU credit)",
+        "expected_annual_return": "1Y ~7.76%–8.68%; 5Y ~38.92% absolute (e.g., Apr 2030)",
+        "return_frequency": "Growth (no payout); maturity proceeds at target date",
+        "income_stability": "STABLE"
+      },
+      "risk_safety": {
+        "risk_level": "LOW",
+        "capital_safety": "FULL at target maturity (subject to AAA PSU default — historically near-zero)",
+        "credit_quality": "AAA (PSU portfolio: IRFC, NABARD, REC, PFC, etc.)",
+        "volatility": "LOW-MEDIUM (mark-to-market interim)"
+      },
+      "liquidity": {
+        "lock_in_period": "None (listed; matures on target date)",
+        "exit_ease": "INSTANT (exchange-traded)",
+        "exit_cost": "Bid-ask spread; market loss if rates rise"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG slab (<12 months) / LTCG 12.5% (>12 months) post-April 2023 finance act for debt funds, but Bharat Bond ETF — slab rate or LTCG 12.5% per current rules",
+        "tax_benefits": "None (indexation removed)"
+      },
+      "investment_horizon": {
+        "ideal_duration": "MEDIUM to LONG TERM (target maturity)",
+        "minimum_holding_period": "Match to target maturity for predictable yield"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME / SAFETY",
+        "suitable_for": "Conservative to Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "~0.0005%–0.01% (one of the cheapest)",
+        "hidden_costs": "Bid-ask spread"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (interim NAV)",
+        "equity_market_dependency": "NONE",
+        "inflation_protection": "PARTIAL"
+      },
+      "entry_details": {
+        "minimum_investment": "1 unit (~₹1,200–1,300)",
+        "mode": "Trading (demat) / FOF route also available"
+      },
+      "special_features": {
+        "additional_benefits": "AAA PSU-only portfolio managed by Edelweiss MF; predictable maturity yield; ultra-low expense; sovereign-quasi safety",
+        "limitations": "MTM volatility before maturity; new tax regime treats as slab/12.5% LTCG (less attractive vs old indexation)"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "~8%–8.7% p.a. (held to target maturity)",
+        "average_expected_return": "~7.5%–8% p.a.",
+        "worst_case_scenario": "Mark-to-market loss if rates rise sharply and exited early; AAA default risk near-zero"
+      }
+    },
+    {
+      "investment_name": "Nippon India ETF Gold BeES (NSE: GOLDBEES)",
+      "category": "Gold",
+      "sub_type": "Gold ETF (physical gold backed)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "1Y ~81.52%; 6M ~55.65%; long-term 8–12% p.a. (gold INR)",
+        "return_frequency": "Growth (price appreciation only; no income)",
+        "income_stability": "VOLATILE"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "NONE (gold price can fall)",
+        "credit_quality": "N/A (backed by 99.5% pure physical gold held in custody)",
+        "volatility": "MEDIUM-HIGH (~2.24x Nifty volatility per analytics)"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "INSTANT (listed on NSE/BSE)",
+        "exit_cost": "Brokerage + bid-ask spread"
+      },
+      "taxation": {
+        "tax_on_returns": "STCG slab (<12 months); LTCG 12.5% (>12 months) post-July 2024 (no indexation)",
+        "tax_benefits": "None"
+      },
+      "investment_horizon": {
+        "ideal_duration": "MEDIUM to LONG TERM",
+        "minimum_holding_period": "12+ months for LTCG"
+      },
+      "purpose_fit": {
+        "best_use_case": "DIVERSIFICATION / INFLATION HEDGE",
+        "suitable_for": "All Investors (small allocation 5–15%)"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "~0.80%",
+        "hidden_costs": "Bid-ask spread; brokerage"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (inverse to real rates / USD)",
+        "equity_market_dependency": "NONE (often inverse)",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "1 unit (~₹130; tracks ~1g gold)",
+        "mode": "Trading (demat required)"
+      },
+      "special_features": {
+        "additional_benefits": "AUM ~₹58,453 Cr (largest gold ETF); transparent; no making charges/storage; tracks domestic gold",
+        "limitations": "No interest income; FX & global gold price volatility; expense ratio higher than equity ETFs"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "20%+ p.a. in geopolitical / inflation crises",
+        "average_expected_return": "8–12% p.a. INR over long term",
+        "worst_case_scenario": "10–20% drawdown in strong USD / risk-on cycles"
+      }
+    },
+    {
+      "investment_name": "Sovereign Gold Bond (SGB) – Secondary Market",
+      "category": "Gold",
+      "sub_type": "Sovereign Gold Bond (RBI-issued, secondary market only — fresh issuance discontinued)",
+      "return_profile": {
+        "return_type": "HYBRID (gold price-linked capital + 2.5% guaranteed coupon)",
+        "expected_annual_return": "Gold price appreciation + 2.5% p.a. (on issue price) coupon",
+        "return_frequency": "Semi-annual coupon; capital at maturity (8 years)",
+        "income_stability": "STABLE coupon + VOLATILE gold component"
+      },
+      "risk_safety": {
+        "risk_level": "LOW",
+        "capital_safety": "FULL (Sovereign-backed)",
+        "credit_quality": "Sovereign (Govt of India)",
+        "volatility": "MEDIUM (gold-linked)"
+      },
+      "liquidity": {
+        "lock_in_period": "Effectively up to 8 years (early exit only via exchange or 5Y RBI window)",
+        "exit_ease": "MONTHS (thin secondary market; can sell on NSE/BSE)",
+        "exit_cost": "Bid-ask spread can be wide"
+      },
+      "taxation": {
+        "tax_on_returns": "Coupon taxable at slab; capital gains TAX-FREE if held to maturity (8 years); LTCG 12.5% if sold on exchange after 12 months",
+        "tax_benefits": "Capital gains exempt at maturity (sovereign backing)"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM (hold to 8Y maturity)",
+        "minimum_holding_period": "Tax-free maturity at 8Y; early redemption from 5Y"
+      },
+      "purpose_fit": {
+        "best_use_case": "DIVERSIFICATION / INFLATION HEDGE / TAX-EFFICIENT GOLD",
+        "suitable_for": "Conservative to Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Nil",
+        "hidden_costs": "Bid-ask spread on secondary market"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (inverse to real rates)",
+        "equity_market_dependency": "NONE (often inverse)",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "1 gram (NSE/BSE secondary; multiple series available)",
+        "mode": "Purchase via demat (secondary market)"
+      },
+      "special_features": {
+        "additional_benefits": "2.5% guaranteed coupon on top of gold; tax-free capital gains at maturity; sovereign safety; no storage/making charges",
+        "limitations": "Fresh tranches discontinued by Govt as of 2024–25; only secondary market available; thin liquidity / premium-discount"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "Gold appreciation 12–15% p.a. + 2.5% coupon = 14–17% p.a.",
+        "average_expected_return": "8–10% p.a. (gold) + 2.5% coupon",
+        "worst_case_scenario": "Gold flat/down for extended period; secondary market discount on sale"
+      }
+    },
+    {
+      "investment_name": "Bengaluru Real Estate – Sarjapur Road (Residential)",
+      "category": "Real Estate",
+      "sub_type": "Residential – Apartments / Gated Communities",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "Capital appreciation ~7%–10% p.a. (Knight Frank); ANAROCK shows 79% rise from end-2021 to Q2-2025 (~17%–18% CAGR); rental yield 3.5%–4.5%",
+        "return_frequency": "Annual rental income + Capital appreciation on exit",
+        "income_stability": "STABLE rental; VARIABLE appreciation"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "PARTIAL (project / developer / market risk)",
+        "credit_quality": "Developer-dependent",
+        "volatility": "LOW-MEDIUM (price); MEDIUM (liquidity)"
+      },
+      "liquidity": {
+        "lock_in_period": "None (legally); practically 3–5 years to optimize gains",
+        "exit_ease": "MONTHS to YEARS",
+        "exit_cost": "Brokerage 1–2%, registration / stamp duty on buyer side, capital gains tax"
+      },
+      "taxation": {
+        "tax_on_returns": "Rental: slab; LTCG 12.5% without indexation (>24 months) post-July 2024",
+        "tax_benefits": "Section 24(b) home loan interest up to ₹2 lakh; Section 80C principal up to ₹1.5 lakh"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / INCOME",
+        "suitable_for": "Moderate Investors with sizable corpus"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Stamp duty (5–6.6% in Karnataka), registration ~1%, GST 5% (under-construction)",
+        "hidden_costs": "Maintenance, property tax, brokerage, society charges"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES (home loan rates)",
+        "equity_market_dependency": "LOW",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "₹80 lakh – ₹2 crore (2/3 BHK avg ~₹10,800/sq ft Q2 2025)",
+        "mode": "Purchase (lump sum / home loan)"
+      },
+      "special_features": {
+        "additional_benefits": "Located between ORR–Electronic City–Whitefield; upcoming Namma Metro Phase 3A; PRR; presence of Wipro SEZ, RGA Tech Park; top schools (Greenwood, Inventure); strong rental absorption",
+        "limitations": "High ticket size; illiquid; ongoing infrastructure congestion; project execution risk"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "12–15% p.a. (capital + rent) when metro/PRR lights up",
+        "average_expected_return": "9–12% p.a. (~7–10% capital + 3–4% rental)",
+        "worst_case_scenario": "Builder delay/RERA issue, 5–10% near-term price stagnation, illiquid exit"
+      }
+    },
+    {
+      "investment_name": "Bengaluru Real Estate – Whitefield (Residential)",
+      "category": "Real Estate",
+      "sub_type": "Residential – Apartments / Premium Gated Communities",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "Capital appreciation ~7%–10% p.a. (some pockets ~36% in 1Y per locality reports); rental yield 3.5%–4.5%",
+        "return_frequency": "Annual rental + capital appreciation",
+        "income_stability": "STABLE rental"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "PARTIAL",
+        "credit_quality": "Developer-dependent",
+        "volatility": "LOW-MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "MONTHS",
+        "exit_cost": "Brokerage 1–2%; CGT"
+      },
+      "taxation": {
+        "tax_on_returns": "Rental at slab; LTCG 12.5% (>24 months) without indexation",
+        "tax_benefits": "Section 24(b) ₹2 lakh interest; 80C principal"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME / WEALTH CREATION",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "Stamp duty 5–6.6%, registration 1%, GST 5% under-construction",
+        "hidden_costs": "Maintenance, property tax, brokerage"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES",
+        "equity_market_dependency": "LOW",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "₹80 lakh – ₹2 crore (avg ~₹8,000–9,500/sq ft, premium ~₹12,000+)",
+        "mode": "Purchase"
+      },
+      "special_features": {
+        "additional_benefits": "Mature IT corridor (ITPL, EPIP, Embassy); Purple Line metro operational; established social infra (Phoenix Marketcity, VR Bengaluru, top schools/hospitals); deepest tenant pool",
+        "limitations": "Mature market = lower future appreciation upside than Sarjapur; congestion; resale dependency on developer / age"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "10–13% p.a.",
+        "average_expected_return": "8–11% p.a. (capital + rental)",
+        "worst_case_scenario": "5–10% near-term price stagnation; difficulty selling old stock"
+      }
+    },
+    {
+      "investment_name": "Chennai Real Estate – OMR / Sholinganallur (Residential)",
+      "category": "Real Estate",
+      "sub_type": "Residential – Apartments (IT Corridor)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "Capital appreciation 8.41% YoY (2024); 5Y ~32% appreciation in Chennai metro; rental yield 3.5%–4.5%",
+        "return_frequency": "Annual rental + capital appreciation",
+        "income_stability": "STABLE rental"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "PARTIAL",
+        "credit_quality": "Developer-dependent",
+        "volatility": "LOW-MEDIUM"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "MONTHS",
+        "exit_cost": "Brokerage 1–2%; CGT"
+      },
+      "taxation": {
+        "tax_on_returns": "Rental at slab; LTCG 12.5% (>24 months)",
+        "tax_benefits": "Section 24(b); 80C principal"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "INCOME / WEALTH CREATION",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "TN stamp duty 7%, registration 4%, GST 5% under-construction",
+        "hidden_costs": "Maintenance, property tax, brokerage"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES",
+        "equity_market_dependency": "LOW",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "₹50 lakh – ₹1.5 crore (avg ~₹7,173/sq ft Chennai 2024)",
+        "mode": "Purchase"
+      },
+      "special_features": {
+        "additional_benefits": "OMR/ECR IT corridor; Chennai Metro Phase II expansion; Fintech City; high rental yields from IT/ITES tenants; coastal lifestyle (ECR)",
+        "limitations": "Flooding/monsoon risk in low-lying pockets; high stamp duty (7%); execution delays"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "12–14% p.a.",
+        "average_expected_return": "9–11% p.a. (capital + rental)",
+        "worst_case_scenario": "5–10% stagnation; flooding-related insurance / repair costs"
+      }
+    },
+    {
+      "investment_name": "Coimbatore Real Estate – Saravanampatti / Kalapatti (Residential)",
+      "category": "Real Estate",
+      "sub_type": "Residential – Apartments / Plotted Developments (IT + Industrial)",
+      "return_profile": {
+        "return_type": "MARKET-LINKED",
+        "expected_annual_return": "Capital appreciation 14%–47% in 1Y (top tier-2 cities); home sales grew 21% YoY (early 2025); rental yield 6%–9% (homes), up to 14% (warehouses)",
+        "return_frequency": "Annual rental + capital appreciation",
+        "income_stability": "STABLE rental"
+      },
+      "risk_safety": {
+        "risk_level": "MEDIUM",
+        "capital_safety": "PARTIAL",
+        "credit_quality": "Developer-dependent",
+        "volatility": "MEDIUM (tier-2 dynamics)"
+      },
+      "liquidity": {
+        "lock_in_period": "None",
+        "exit_ease": "MONTHS to YEARS (lower buyer pool than metros)",
+        "exit_cost": "Brokerage 1–2%; CGT"
+      },
+      "taxation": {
+        "tax_on_returns": "Rental at slab; LTCG 12.5% (>24 months) without indexation",
+        "tax_benefits": "Section 24(b); 80C"
+      },
+      "investment_horizon": {
+        "ideal_duration": "LONG TERM",
+        "minimum_holding_period": "5+ years"
+      },
+      "purpose_fit": {
+        "best_use_case": "WEALTH CREATION / INCOME",
+        "suitable_for": "Moderate Investors"
+      },
+      "cost_structure": {
+        "expense_ratio_charges": "TN stamp duty 7%, registration 4%, GST 5% under-construction",
+        "hidden_costs": "Maintenance, property tax, brokerage"
+      },
+      "market_dependency": {
+        "interest_rate_sensitivity": "YES",
+        "equity_market_dependency": "LOW",
+        "inflation_protection": "YES"
+      },
+      "entry_details": {
+        "minimum_investment": "₹35–80 lakh (avg ~₹5,800–6,350/sq ft)",
+        "mode": "Purchase"
+      },
+      "special_features": {
+        "additional_benefits": "\"Manchester of South India\"; IT corridor + textile / engineering industries; upcoming metro; Tamil Nadu Defence Industrial Corridor; high rental yield 6–9%; lower entry price",
+        "limitations": "Smaller secondary buyer pool; rental tenant pool narrower than metros; supply concentration"
+      },
+      "realistic_expectation_summary": {
+        "best_case_scenario_return": "20%+ p.a. in industrial corridor expansion",
+        "average_expected_return": "12–15% p.a. (capital + rental)",
+        "worst_case_scenario": "10–15% stagnation if industrial growth slows; long sale timeline"
+      }
+    }
+  ],
+  "summary_counts": {
+    "FD_Banks": 3,
+    "Mutual_Funds": 3,
+    "Stocks_Top2_Per_Sector": {
+      "Banking": ["HDFC Bank", "ICICI Bank"],
+      "IT": ["TCS", "Infosys"],
+      "Energy": ["Reliance Industries"],
+      "FMCG": ["ITC", "Hindustan Unilever"],
+      "Auto": ["Maruti Suzuki", "Mahindra & Mahindra"],
+      "Pharma": ["Sun Pharma", "Dr. Reddy's"]
+    },
+    "ETFs": 2,
+    "Bonds": 3,
+    "Gold": 2,
+    "Real_Estate_Bengaluru": ["Sarjapur Road", "Whitefield"],
+    "Real_Estate_TamilNadu": ["Chennai (OMR/Sholinganallur)", "Coimbatore (Saravanampatti/Kalapatti)"]
+  }
+}
